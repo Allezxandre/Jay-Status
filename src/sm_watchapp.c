@@ -466,12 +466,12 @@ static void animate_layers(){
 	property_animation_destroy((PropertyAnimation*)ani_out);
 
 
-	ani_out = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(0, 124, 143, 45), &GRect(-138, 124, 143, 45));
+	ani_out = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(0, 78, 143, 45), &GRect(-138, 78, 143, 45)); // &GRect(0, 124, 143, 45), &GRect(-138, 124, 143, 45));
 	animation_schedule((Animation*)ani_out);
 
 	active_layer = (active_layer + 1) % (NUM_LAYERS);
 
-	ani_in = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(138, 124, 144, 45), &GRect(0, 124, 144, 45));
+	ani_in = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(138, 78, 144, 45), &GRect(0, 78, 144, 45)); // &GRect(138, 124, 144, 45), &GRect(0, 124, 144, 45));
 	animation_schedule((Animation*)ani_in);
 }
 
@@ -663,22 +663,22 @@ font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52)
 	
 
 	//init weather layer and add weather image, weather condition, temperature, and battery indicator
-	weather_layer = layer_create(GRect(0, 78, 144, 45));
+	weather_layer = layer_create(GRect(0, 124, 144, 45)); // GRect(0, 78, 144, 45));
 	layer_add_child(window_layer, weather_layer);
 
 	battery_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_PHONE);
 	battery_pbl_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_PEBBLE);
 
-	battery_image_layer = bitmap_layer_create(GRect(100, 7, 37, 14));
+	battery_image_layer = bitmap_layer_create(GRect(100, 7, 37, 14)); // GRect(100, 7, 37, 14));
 	layer_add_child(weather_layer, bitmap_layer_get_layer(battery_image_layer));
 	bitmap_layer_set_bitmap(battery_image_layer, battery_image);
 
-	battery_pbl_image_layer = bitmap_layer_create(GRect(100, 23, 37, 14));
+	battery_pbl_image_layer = bitmap_layer_create(GRect(100, 23, 37, 14)); // GRect(100, 23, 37, 14));
 	layer_add_child(weather_layer, bitmap_layer_get_layer(battery_pbl_image_layer));
 	bitmap_layer_set_bitmap(battery_pbl_image_layer, battery_pbl_image);
 
 
-	text_battery_layer = text_layer_create(GRect(99, 20, 40, 60));
+	text_battery_layer = text_layer_create(GRect(99, 20, 40, 60)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_battery_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_battery_layer, GColorWhite);
 	text_layer_set_background_color(text_battery_layer, GColorClear);
@@ -688,14 +688,14 @@ font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52)
 	layer_set_hidden(text_layer_get_layer(text_battery_layer), true);
 
 
-	battery_layer = layer_create(GRect(102, 8, 19, 11));
+	battery_layer = layer_create(GRect(102, 8, 19, 11)); // GRect(102, 8, 19, 11));
 	layer_set_update_proc(battery_layer, battery_layer_update_callback);
 	layer_add_child(weather_layer, battery_layer);
 
 	batteryPercent = 100;
 	layer_mark_dirty(battery_layer);
 
-	battery_pbl_layer = layer_create(GRect(102, 24, 19, 11));
+	battery_pbl_layer = layer_create(GRect(102, 24, 19, 11)); // GRect(102, 24, 19, 11));
 	layer_set_update_proc(battery_pbl_layer, battery_pbl_layer_update_callback);
 	layer_add_child(weather_layer, battery_pbl_layer);
 
@@ -720,12 +720,12 @@ font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52)
 		weather_img = NUM_WEATHER_IMAGES - 1;
 	}
 
-	weather_image = bitmap_layer_create(GRect(5, 2, 40, 40)); 
+	weather_image = bitmap_layer_create(GRect(5, 2, 40, 40));  // GRect(5, 2, 40, 40)); 
 	layer_add_child(weather_layer, bitmap_layer_get_layer(weather_image));
 	bitmap_layer_set_bitmap(weather_image, weather_status_imgs[weather_img]);
 
 
-	text_weather_temp_layer = text_layer_create(GRect(48, 3, 48, 40)); 
+	text_weather_temp_layer = text_layer_create(GRect(48, 3, 48, 40));  // GRect(48, 3, 48, 40)); 
 	text_layer_set_text_alignment(text_weather_temp_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_weather_temp_layer, GColorWhite);
 	text_layer_set_background_color(text_weather_temp_layer, GColorClear);
@@ -741,7 +741,7 @@ font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52)
 	text_layer_set_text_alignment(text_date_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_date_layer, GColorWhite);
 	text_layer_set_background_color(text_date_layer, GColorClear);
-	layer_set_frame(text_layer_get_layer(text_date_layer), GRect(0, 50, 144, 30));
+	layer_set_frame(text_layer_get_layer(text_date_layer), GRect(0, 50, 144, 30)); // GRect(0, 50, 144, 30));
 	text_layer_set_font(text_date_layer, font_date);
 	layer_add_child(window_layer, text_layer_get_layer(text_date_layer));
 
@@ -750,17 +750,17 @@ font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52)
 	text_layer_set_text_alignment(text_time_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_time_layer, GColorWhite);
 	text_layer_set_background_color(text_time_layer, GColorClear);
-	layer_set_frame(text_layer_get_layer(text_time_layer), GRect(0, -5, 144, 55));
+	layer_set_frame(text_layer_get_layer(text_time_layer), GRect(0, -5, 144, 55)); // GRect(0, -5, 144, 55));
 	text_layer_set_font(text_time_layer, font_time);
 	layer_add_child(window_layer, text_layer_get_layer(text_time_layer));
 
 
 	//init calendar layer
-	animated_layer[CALENDAR_LAYER] = layer_create(GRect(0, 124, 144, 45)); 
+	animated_layer[CALENDAR_LAYER] = layer_create(GRect(0, 78, 144, 45)); //(GRect(0, 124, 144, 45)); 
 		//										 _with_data to make sure it can be allocated dynamically
 	layer_add_child(window_layer, animated_layer[CALENDAR_LAYER]);
 	
-	calendar_date_layer = text_layer_create(GRect(6, 0, 132, 21));
+	calendar_date_layer = text_layer_create(GRect(6, 0, 132, 21)); //(GRect(6, 0, 132, 21));
 	text_layer_set_text_alignment(calendar_date_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(calendar_date_layer, GColorWhite);
 	text_layer_set_background_color(calendar_date_layer, GColorClear);
@@ -769,7 +769,7 @@ font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52)
 	text_layer_set_text(calendar_date_layer, STRING_DEFAULT_CALENDAR_1); 	
 
 
-	calendar_text_layer = text_layer_create(GRect(6, 15, 132, 28));
+	calendar_text_layer = text_layer_create(GRect(6, 15, 132, 28)); //(GRect(6, 15, 132, 28));
 	text_layer_set_text_alignment(calendar_text_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(calendar_text_layer, GColorWhite);
 	text_layer_set_background_color(calendar_text_layer, GColorClear);
@@ -780,10 +780,10 @@ font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52)
 	
 	
 	//init music layer
-	animated_layer[MUSIC_LAYER] = layer_create(GRect(144, 124, 144, 45));
+	animated_layer[MUSIC_LAYER] = layer_create(GRect(144, 78, 144, 45)); // (GRect(144, 124, 144, 45));
 	layer_add_child(window_layer, animated_layer[MUSIC_LAYER]);
 	
-	music_artist_layer = text_layer_create(GRect(6, 0, 132, 21));
+	music_artist_layer = text_layer_create(GRect(6, 0, 132, 21)); // (GRect(6, 0, 132, 21));
 	text_layer_set_text_alignment(music_artist_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(music_artist_layer, GColorWhite);
 	text_layer_set_background_color(music_artist_layer, GColorClear);
@@ -792,7 +792,7 @@ font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52)
 	text_layer_set_text(music_artist_layer, STRING_DEFAULT_MUSIC_1); 	
 
 
-	music_song_layer = text_layer_create(GRect(6, 15, 132, 28));
+	music_song_layer = text_layer_create(GRect(6, 15, 132, 28)); // (GRect(6, 15, 132, 28));
 	text_layer_set_text_alignment(music_song_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(music_song_layer, GColorWhite);
 	text_layer_set_background_color(music_song_layer, GColorClear);

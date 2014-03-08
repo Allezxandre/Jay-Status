@@ -74,11 +74,6 @@
             },
             {
                 "type": "png",
-                "name": "IMAGE_BATTERY",
-                "file": "images/battery.png"
-            },
-            {
-                "type": "png",
                 "name": "IMAGE_BATTERY_PHONE",
                 "file": "images/battery_phone.png"
             },
