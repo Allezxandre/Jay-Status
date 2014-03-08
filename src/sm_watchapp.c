@@ -239,11 +239,11 @@ static void apptDisplay(char *appt_string) {
 	}
 	APP_LOG(APP_LOG_LEVEL_DEBUG,"    'days_difference' = %i",days_difference);
 				if (appointment->is_past) {
-					snprintf(date_of_appt,30, STRING_EVENT_IS_PAST,appointment->day, month_of_year[interm]);
+					snprintf(date_of_appt,30, STRING_EVENT_IS_PAST,month_of_year[interm], appointment->day);
 					appointment->is_all_day = true;
 					APP_LOG(APP_LOG_LEVEL_DEBUG,"    Event has started in the past, not today");
 				} else if (days_difference > 4) {
-					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_GLOBAL,appointment->day, month_of_year[interm], appointment->hour,appointment->min);
+					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_GLOBAL,month_of_year[interm], appointment->day, appointment->hour,appointment->min);
 					appointment->is_today = false; // Just so we don't write the time again
 					time_string[0] = '\0';
 				} else if (days_difference != 0) {
@@ -565,7 +565,7 @@ if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) 
 	 	// Print the result
 
 
-   snprintf(date_text, sizeof(date_text), "%s %i %s", day_of_week[day_int], tick_time->tm_mday, month_of_year[month_int]);
+   snprintf(date_text, sizeof(date_text), "%s, %s %i", day_of_week[day_int], month_of_year[month_int], tick_time->tm_mday);
    text_layer_set_text(text_date_layer, date_text);
 	  APP_LOG(APP_LOG_LEVEL_INFO, "Displayed date : [%s %i %s]", day_of_week[day_int], tick_time->tm_mday, month_of_year[month_int]);
   	}

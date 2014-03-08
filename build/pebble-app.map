@@ -524,7 +524,7 @@ LOAD /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib
  .pbl_header    0x0000000000000000       0x82 appinfo.auto.c.22.o
                 0x0000000000000000                __pbl_app_info
 
-.text           0x0000000000000084     0x33ca
+.text           0x0000000000000084     0x339f
  *(.text)
  .text          0x0000000000000084       0x14 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
  .text          0x0000000000000098      0x370 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
@@ -882,207 +882,207 @@ LOAD /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib
                 0x0000000000002ce8       0x24 src/sm_watchapp.c.22.o
                 0x0000000000002ce8                WEATHER_IMG_IDS
  .rodata.str1.1
-                0x0000000000002d0c      0x742 src/sm_watchapp.c.22.o
+                0x0000000000002d0c      0x717 src/sm_watchapp.c.22.o
 
-.glue_7         0x0000000000003450        0x0
+.glue_7         0x0000000000003424        0x0
  .glue_7        0x0000000000000000        0x0 linker stubs
 
-.glue_7t        0x0000000000003450        0x0
+.glue_7t        0x0000000000003424        0x0
  .glue_7t       0x0000000000000000        0x0 linker stubs
 
-.vfp11_veneer   0x0000000000003450        0x0
+.vfp11_veneer   0x0000000000003424        0x0
  .vfp11_veneer  0x0000000000000000        0x0 linker stubs
 
-.v4_bx          0x0000000000003450        0x0
+.v4_bx          0x0000000000003424        0x0
  .v4_bx         0x0000000000000000        0x0 linker stubs
 
-.iplt           0x0000000000003450        0x0
+.iplt           0x0000000000003424        0x0
  .iplt          0x0000000000000000        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
 
-.rel.dyn        0x0000000000003450        0x0
+.rel.dyn        0x0000000000003424        0x0
  .rel.iplt      0x0000000000000000        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
  .rel.got       0x0000000000000000        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
 
-.data           0x0000000000003450       0xa8
+.data           0x0000000000003424       0xa8
  *(.data)
- .data          0x0000000000003450        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crti.o
- .data          0x0000000000003450        0x4 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
-                0x0000000000003450                __dso_handle
- .data          0x0000000000003454       0x10 src/sm_watchapp.c.22.o
- .data          0x0000000000003464        0x0 appinfo.auto.c.22.o
- .data          0x0000000000003464        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
- .data          0x0000000000003464        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
- .data          0x0000000000003464        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
- .data          0x0000000000003464        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
- .data          0x0000000000003464        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtend.o
- .data          0x0000000000003464        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtn.o
+ .data          0x0000000000003424        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crti.o
+ .data          0x0000000000003424        0x4 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
+                0x0000000000003424                __dso_handle
+ .data          0x0000000000003428       0x10 src/sm_watchapp.c.22.o
+ .data          0x0000000000003438        0x0 appinfo.auto.c.22.o
+ .data          0x0000000000003438        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+ .data          0x0000000000003438        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
+ .data          0x0000000000003438        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
+ .data          0x0000000000003438        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
+ .data          0x0000000000003438        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtend.o
+ .data          0x0000000000003438        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtn.o
  *(.data.*)
  .data.rel.ro.local.before_after
-                0x0000000000003464        0x8 src/sm_watchapp.c.22.o
+                0x0000000000003438        0x8 src/sm_watchapp.c.22.o
  .data.last_run_minute
-                0x000000000000346c        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003440        0x4 src/sm_watchapp.c.22.o
  .data.time_text.6646
-                0x0000000000003470        0x6 src/sm_watchapp.c.22.o
+                0x0000000000003444        0x6 src/sm_watchapp.c.22.o
  .data.last_text
-                0x0000000000003476        0x9 src/sm_watchapp.c.22.o
+                0x000000000000344a        0x9 src/sm_watchapp.c.22.o
  .data.date_text.6649
-                0x000000000000347f        0xc src/sm_watchapp.c.22.o
- *fill*         0x000000000000348b        0x1 
+                0x0000000000003453        0xc src/sm_watchapp.c.22.o
+ *fill*         0x000000000000345f        0x1 
  .data.s_sequence_number
-                0x000000000000348c        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003460        0x4 src/sm_watchapp.c.22.o
  .data.rel.ro.local.day_of_week
-                0x0000000000003490       0x1c src/sm_watchapp.c.22.o
+                0x0000000000003464       0x1c src/sm_watchapp.c.22.o
  .data.digit.6529
-                0x00000000000034ac        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003480        0x4 src/sm_watchapp.c.22.o
  .data.rel.ro.local.month_of_year
-                0x00000000000034b0       0x30 src/sm_watchapp.c.22.o
+                0x0000000000003484       0x30 src/sm_watchapp.c.22.o
  .data.stringBuffer.6541
-                0x00000000000034e0        0x3 src/sm_watchapp.c.22.o
- *fill*         0x00000000000034e3        0x1 
+                0x00000000000034b4        0x3 src/sm_watchapp.c.22.o
+ *fill*         0x00000000000034b7        0x1 
  .data.rel.ro.local.days_from_today
-                0x00000000000034e4       0x10 src/sm_watchapp.c.22.o
+                0x00000000000034b8       0x10 src/sm_watchapp.c.22.o
  .data.unit.6530
-                0x00000000000034f4        0x4 src/sm_watchapp.c.22.o
+                0x00000000000034c8        0x4 src/sm_watchapp.c.22.o
 
-.igot.plt       0x00000000000034f8        0x0
+.igot.plt       0x00000000000034cc        0x0
  .igot.plt      0x0000000000000000        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
 
-.got            0x00000000000034f8       0x1c
- .got           0x00000000000034f8       0x1c /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
+.got            0x00000000000034cc       0x1c
+ .got           0x00000000000034cc       0x1c /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
 
-.got.plt        0x0000000000003514        0xc
- .got.plt       0x0000000000003514        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
-                0x0000000000003514                _GLOBAL_OFFSET_TABLE_
+.got.plt        0x00000000000034e8        0xc
+ .got.plt       0x00000000000034e8        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
+                0x00000000000034e8                _GLOBAL_OFFSET_TABLE_
 
-.bss            0x0000000000003520      0x66c
+.bss            0x00000000000034f4      0x66c
  *(.bss)
  *(.bss.*)
  .bss.weather_img
-                0x0000000000003520        0x4 src/sm_watchapp.c.22.o
+                0x00000000000034f4        0x4 src/sm_watchapp.c.22.o
  .bss.Watch_Face_Initialized
-                0x0000000000003524        0x1 src/sm_watchapp.c.22.o
- *fill*         0x0000000000003525        0x3 
- .bss.window    0x0000000000003528        0x4 src/sm_watchapp.c.22.o
+                0x00000000000034f8        0x1 src/sm_watchapp.c.22.o
+ *fill*         0x00000000000034f9        0x3 
+ .bss.window    0x00000000000034fc        0x4 src/sm_watchapp.c.22.o
  .bss.timerUpdateMusic
-                0x000000000000352c        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003500        0x4 src/sm_watchapp.c.22.o
  .bss.animated_layer
-                0x0000000000003530        0x8 src/sm_watchapp.c.22.o
+                0x0000000000003504        0x8 src/sm_watchapp.c.22.o
  .bss.music_artist_layer
-                0x0000000000003538        0x4 src/sm_watchapp.c.22.o
+                0x000000000000350c        0x4 src/sm_watchapp.c.22.o
  .bss.hideMusicLayer
-                0x000000000000353c        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003510        0x4 src/sm_watchapp.c.22.o
  .bss.weather_temp_str
-                0x0000000000003540        0x5 src/sm_watchapp.c.22.o
- *fill*         0x0000000000003545        0x3 
+                0x0000000000003514        0x5 src/sm_watchapp.c.22.o
+ *fill*         0x0000000000003519        0x3 
  .bss.time_format.6647
-                0x0000000000003548        0x4 src/sm_watchapp.c.22.o
+                0x000000000000351c        0x4 src/sm_watchapp.c.22.o
  .bss.offset.6528
-                0x000000000000354c        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003520        0x4 src/sm_watchapp.c.22.o
  .bss.text_date_layer
-                0x0000000000003550        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003524        0x4 src/sm_watchapp.c.22.o
  .bss.status_layer
-                0x0000000000003554        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003528        0x4 src/sm_watchapp.c.22.o
  .bss.weather_image
-                0x0000000000003558        0x4 src/sm_watchapp.c.22.o
+                0x000000000000352c        0x4 src/sm_watchapp.c.22.o
  .bss.calendar_text_layer
-                0x000000000000355c        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003530        0x4 src/sm_watchapp.c.22.o
  .bss.batteryPercent
-                0x0000000000003560        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003534        0x4 src/sm_watchapp.c.22.o
  .bss.music_title_str1
-                0x0000000000003564       0xff src/sm_watchapp.c.22.o
- *fill*         0x0000000000003663        0x1 
+                0x0000000000003538       0xff src/sm_watchapp.c.22.o
+ *fill*         0x0000000000003637        0x1 
  .bss.weather_layer
-                0x0000000000003664        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003638        0x4 src/sm_watchapp.c.22.o
  .bss.music_song_layer
-                0x0000000000003668        0x4 src/sm_watchapp.c.22.o
+                0x000000000000363c        0x4 src/sm_watchapp.c.22.o
  .bss.calendar_date_str
-                0x000000000000366c        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003640        0x4 src/sm_watchapp.c.22.o
  .bss.text_phone_layer
-                0x0000000000003670        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003644        0x4 src/sm_watchapp.c.22.o
  .bss.date_of_appt.6538
-                0x0000000000003674       0x1e src/sm_watchapp.c.22.o
+                0x0000000000003648       0x1e src/sm_watchapp.c.22.o
  .bss.phone_is_connected
-                0x0000000000003692        0x1 src/sm_watchapp.c.22.o
- *fill*         0x0000000000003693        0x1 
+                0x0000000000003666        0x1 src/sm_watchapp.c.22.o
+ *fill*         0x0000000000003667        0x1 
  .bss.text_sms_layer
-                0x0000000000003694        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003668        0x4 src/sm_watchapp.c.22.o
  .bss.music_artist_str1
-                0x0000000000003698       0xff src/sm_watchapp.c.22.o
- *fill*         0x0000000000003797        0x1 
+                0x000000000000366c       0xff src/sm_watchapp.c.22.o
+ *fill*         0x000000000000376b        0x1 
  .bss.background_image
-                0x0000000000003798        0x4 src/sm_watchapp.c.22.o
- .bss.ani_out   0x000000000000379c        0x4 src/sm_watchapp.c.22.o
+                0x000000000000376c        0x4 src/sm_watchapp.c.22.o
+ .bss.ani_out   0x0000000000003770        0x4 src/sm_watchapp.c.22.o
  .bss.active_layer
-                0x00000000000037a0        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003774        0x4 src/sm_watchapp.c.22.o
  .bss.time_string.6539
-                0x00000000000037a4       0x14 src/sm_watchapp.c.22.o
+                0x0000000000003778       0x14 src/sm_watchapp.c.22.o
  .bss.date_time_for_appt.6540
-                0x00000000000037b8       0x32 src/sm_watchapp.c.22.o
- *fill*         0x00000000000037ea        0x2 
+                0x000000000000378c       0x32 src/sm_watchapp.c.22.o
+ *fill*         0x00000000000037be        0x2 
  .bss.text_mail_layer
-                0x00000000000037ec        0x4 src/sm_watchapp.c.22.o
+                0x00000000000037c0        0x4 src/sm_watchapp.c.22.o
  .bss.text_weather_cond_layer
-                0x00000000000037f0        0x4 src/sm_watchapp.c.22.o
+                0x00000000000037c4        0x4 src/sm_watchapp.c.22.o
  .bss.sms_count_str
-                0x00000000000037f4        0x5 src/sm_watchapp.c.22.o
+                0x00000000000037c8        0x5 src/sm_watchapp.c.22.o
  .bss.weather_cond_str
-                0x00000000000037f9       0xff src/sm_watchapp.c.22.o
+                0x00000000000037cd       0xff src/sm_watchapp.c.22.o
  .bss.text_weather_temp_layer
-                0x00000000000038f8        0x4 src/sm_watchapp.c.22.o
+                0x00000000000038cc        0x4 src/sm_watchapp.c.22.o
  .bss.text_battery_layer
-                0x00000000000038fc        0x4 src/sm_watchapp.c.22.o
+                0x00000000000038d0        0x4 src/sm_watchapp.c.22.o
  .bss.calendar_text_str
-                0x0000000000003900       0xff src/sm_watchapp.c.22.o
- *fill*         0x00000000000039ff        0x1 
+                0x00000000000038d4       0xff src/sm_watchapp.c.22.o
+ *fill*         0x00000000000039d3        0x1 
  .bss.timerUpdateCalendar
-                0x0000000000003a00        0x4 src/sm_watchapp.c.22.o
+                0x00000000000039d4        0x4 src/sm_watchapp.c.22.o
  .bss.days_difference.6545
-                0x0000000000003a04        0x4 src/sm_watchapp.c.22.o
- .bss.ani_in    0x0000000000003a08        0x4 src/sm_watchapp.c.22.o
+                0x00000000000039d8        0x4 src/sm_watchapp.c.22.o
+ .bss.ani_in    0x00000000000039dc        0x4 src/sm_watchapp.c.22.o
  .bss.batteryPblPercent
-                0x0000000000003a0c        0x4 src/sm_watchapp.c.22.o
+                0x00000000000039e0        0x4 src/sm_watchapp.c.22.o
  .bss.battery_pbl_image_layer
-                0x0000000000003a10        0x4 src/sm_watchapp.c.22.o
+                0x00000000000039e4        0x4 src/sm_watchapp.c.22.o
  .bss.num_chars.6722
-                0x0000000000003a14        0x4 src/sm_watchapp.c.22.o
+                0x00000000000039e8        0x4 src/sm_watchapp.c.22.o
  .bss.general_Timer
-                0x0000000000003a18        0x4 src/sm_watchapp.c.22.o
+                0x00000000000039ec        0x4 src/sm_watchapp.c.22.o
  .bss.battery_pbl_layer
-                0x0000000000003a1c        0x4 src/sm_watchapp.c.22.o
+                0x00000000000039f0        0x4 src/sm_watchapp.c.22.o
  .bss.day_int.6650
-                0x0000000000003a20        0x4 src/sm_watchapp.c.22.o
+                0x00000000000039f4        0x4 src/sm_watchapp.c.22.o
  .bss.mail_count_str
-                0x0000000000003a24        0x5 src/sm_watchapp.c.22.o
- *fill*         0x0000000000003a29        0x3 
+                0x00000000000039f8        0x5 src/sm_watchapp.c.22.o
+ *fill*         0x00000000000039fd        0x3 
  .bss.heure.6648
-                0x0000000000003a2c        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003a00        0x4 src/sm_watchapp.c.22.o
  .bss.timerUpdateWeather
-                0x0000000000003a30        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003a04        0x4 src/sm_watchapp.c.22.o
  .bss.calendar_date_layer
-                0x0000000000003a34        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003a08        0x4 src/sm_watchapp.c.22.o
  .bss.month_int.6651
-                0x0000000000003a38        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003a0c        0x4 src/sm_watchapp.c.22.o
  .bss.battery_image_layer
-                0x0000000000003a3c        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003a10        0x4 src/sm_watchapp.c.22.o
  .bss.letter.6531
-                0x0000000000003a40        0x1 src/sm_watchapp.c.22.o
+                0x0000000000003a14        0x1 src/sm_watchapp.c.22.o
  .bss.string_buffer
-                0x0000000000003a41       0xff src/sm_watchapp.c.22.o
+                0x0000000000003a15       0xff src/sm_watchapp.c.22.o
  .bss.text_time_layer
-                0x0000000000003b40        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003b14        0x4 src/sm_watchapp.c.22.o
  .bss.battery_layer
-                0x0000000000003b44        0x4 src/sm_watchapp.c.22.o
+                0x0000000000003b18        0x4 src/sm_watchapp.c.22.o
  .bss.phone_count_str
-                0x0000000000003b48        0x5 src/sm_watchapp.c.22.o
- *fill*         0x0000000000003b4d        0x3 
- COMMON         0x0000000000003b50       0x3c src/sm_watchapp.c.22.o
-                0x0000000000003b50                battery_image
-                0x0000000000003b54                weather_status_imgs
-                0x0000000000003b78                font_date
-                0x0000000000003b7c                battery_pbl_image
-                0x0000000000003b80                font_time
-                0x0000000000003b84                appointment
-                0x0000000000003b88                bg_image
+                0x0000000000003b1c        0x5 src/sm_watchapp.c.22.o
+ *fill*         0x0000000000003b21        0x3 
+ COMMON         0x0000000000003b24       0x3c src/sm_watchapp.c.22.o
+                0x0000000000003b24                battery_image
+                0x0000000000003b28                weather_status_imgs
+                0x0000000000003b4c                font_date
+                0x0000000000003b50                battery_pbl_image
+                0x0000000000003b54                font_time
+                0x0000000000003b58                appointment
+                0x0000000000003b5c                bg_image
 
 DISCARD
  libc.a(*)
@@ -1121,12 +1121,12 @@ OUTPUT(/Users/alexandrejouandin/Documents/GitHub/jay-Status/build/pebble-app.elf
  .comment       0x0000000000000000       0x4f appinfo.auto.c.22.o
  .comment       0x0000000000000000       0x4f /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtend.o
 
-.debug_info     0x0000000000000000     0x4a07
- .debug_info    0x0000000000000000     0x4460 src/sm_watchapp.c.22.o
- .debug_info    0x0000000000004460      0x37c appinfo.auto.c.22.o
- .debug_info    0x00000000000047dc       0xb9 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
- .debug_info    0x0000000000004895       0xb9 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
- .debug_info    0x000000000000494e       0xb9 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
+.debug_info     0x0000000000000000     0x4a05
+ .debug_info    0x0000000000000000     0x445e src/sm_watchapp.c.22.o
+ .debug_info    0x000000000000445e      0x37c appinfo.auto.c.22.o
+ .debug_info    0x00000000000047da       0xb9 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
+ .debug_info    0x0000000000004893       0xb9 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
+ .debug_info    0x000000000000494c       0xb9 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
 
 .debug_abbrev   0x0000000000000000      0x65b
  .debug_abbrev  0x0000000000000000      0x574 src/sm_watchapp.c.22.o
@@ -1153,12 +1153,12 @@ OUTPUT(/Users/alexandrejouandin/Documents/GitHub/jay-Status/build/pebble-app.elf
 .debug_ranges   0x0000000000000000      0x230
  .debug_ranges  0x0000000000000000      0x230 src/sm_watchapp.c.22.o
 
-.debug_line     0x0000000000000000      0xf12
- .debug_line    0x0000000000000000      0x928 src/sm_watchapp.c.22.o
- .debug_line    0x0000000000000928      0x134 appinfo.auto.c.22.o
- .debug_line    0x0000000000000a5c      0x20a /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
- .debug_line    0x0000000000000c66      0x226 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
- .debug_line    0x0000000000000e8c       0x86 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
+.debug_line     0x0000000000000000      0xf0f
+ .debug_line    0x0000000000000000      0x925 src/sm_watchapp.c.22.o
+ .debug_line    0x0000000000000925      0x134 appinfo.auto.c.22.o
+ .debug_line    0x0000000000000a59      0x20a /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
+ .debug_line    0x0000000000000c63      0x226 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
+ .debug_line    0x0000000000000e89       0x86 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
 
 .debug_str      0x0000000000000000     0x1b33
  .debug_str     0x0000000000000000     0x19e4 src/sm_watchapp.c.22.o
