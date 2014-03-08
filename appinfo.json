@@ -4,12 +4,12 @@
     "appKeys": {
     "dummy": 0
     },
-    "longName": "SmartFrenchIze JB",
+    "longName": "Jay Status FR",
     "versionCode": 1,
     "capabilities": [
         ""
     ],
-    "shortName": "SmartStatus",
+    "shortName": "Jay Status",
     "companyName": "Alexandre Jouandin",
     "watchapp": {
         "watchface": false

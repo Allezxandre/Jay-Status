@@ -38,9 +38,11 @@ static PropertyAnimation *ani_out, *ani_in;
 
 static Layer *animated_layer[NUM_LAYERS], *weather_layer;
 static Layer *battery_layer, *battery_pbl_layer;
+static Layer *status_layer;
 
 static TextLayer *text_date_layer, *text_time_layer;
 
+static TextLayer *text_mail_layer, *text_sms_layer, *text_phone_layer;
 static TextLayer *text_weather_cond_layer, *text_weather_temp_layer, *text_battery_layer;
 static TextLayer *calendar_date_layer, *calendar_text_layer;
 static TextLayer *music_artist_layer, *music_song_layer;
@@ -51,6 +53,7 @@ static int active_layer;
 
 static char string_buffer[STRING_LENGTH];
 static char weather_cond_str[STRING_LENGTH], weather_temp_str[5];
+static char sms_count_str[5], mail_count_str[5], phone_count_str[5];
 static int weather_img, batteryPercent, batteryPblPercent;
 
 static char *calendar_date_str;
@@ -677,6 +680,33 @@ font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52)
 	layer_add_child(weather_layer, bitmap_layer_get_layer(battery_pbl_image_layer));
 	bitmap_layer_set_bitmap(battery_pbl_image_layer, battery_pbl_image);
 
+status_layer = layer_create(GRect(0, 148, 144, 20));
+layer_add_child(window_layer, status_layer);
+
+		text_mail_layer = text_layer_create(GRect(24, -3, 11, 20));
+		text_layer_set_text_alignment(text_mail_layer, GTextAlignmentCenter);
+		text_layer_set_text_color(text_mail_layer, GColorWhite);
+		text_layer_set_background_color(text_mail_layer, GColorClear);
+		text_layer_set_font(text_mail_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
+		layer_add_child(status_layer, text_layer_get_layer(text_mail_layer));
+		text_layer_set_text(text_mail_layer, "-"); 	
+
+
+		text_sms_layer = text_layer_create(GRect(60, -3, 11, 20));
+		text_layer_set_text_alignment(text_sms_layer, GTextAlignmentCenter);
+		text_layer_set_text_color(text_sms_layer, GColorWhite);
+		text_layer_set_background_color(text_sms_layer, GColorClear);
+		text_layer_set_font(text_sms_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18));
+		layer_add_child(status_layer, text_layer_get_layer(text_sms_layer));
+		text_layer_set_text(text_sms_layer, "-"); 	
+
+		text_phone_layer = text_layer_create(GRect(93, -3, 11, 20));
+		text_layer_set_text_alignment(text_phone_layer, GTextAlignmentCenter);
+		text_layer_set_text_color(text_phone_layer, GColorWhite);
+		text_layer_set_background_color(text_phone_layer, GColorClear);
+		text_layer_set_font(text_phone_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18));
+		layer_add_child(status_layer, text_layer_get_layer(text_phone_layer));
+		text_layer_set_text(text_phone_layer, "-"); 
 
 	text_battery_layer = text_layer_create(GRect(99, 20, 40, 60)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_battery_layer, GTextAlignmentCenter);
@@ -741,7 +771,7 @@ font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52)
 	text_layer_set_text_alignment(text_date_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_date_layer, GColorWhite);
 	text_layer_set_background_color(text_date_layer, GColorClear);
-	layer_set_frame(text_layer_get_layer(text_date_layer), GRect(0, 70, 144, 30)); // GRect(0, 50, 144, 30));
+	layer_set_frame(text_layer_get_layer(text_date_layer), GRect(0, 75, 144, 30)); // GRect(0, 50, 144, 30));
 	text_layer_set_font(text_date_layer, font_date);
 	layer_add_child(window_layer, text_layer_get_layer(text_date_layer));
 
@@ -750,7 +780,7 @@ font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52)
 	text_layer_set_text_alignment(text_time_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_time_layer, GColorWhite);
 	text_layer_set_background_color(text_time_layer, GColorClear);
-	layer_set_frame(text_layer_get_layer(text_time_layer), GRect(0, 20, 144, 55)); // GRect(0, -5, 144, 55));
+	layer_set_frame(text_layer_get_layer(text_time_layer), GRect(0, 25, 144, 55)); // GRect(0, -5, 144, 55));
 	text_layer_set_font(text_time_layer, font_time);
 	layer_add_child(window_layer, text_layer_get_layer(text_time_layer));
 
@@ -842,7 +872,6 @@ static void deinit(void) {
 	general_Timer = NULL;
 
 	bitmap_layer_destroy(background_image);
-	layer_destroy(weather_layer);
 	bitmap_layer_destroy(battery_image_layer);
 	bitmap_layer_destroy(battery_pbl_image_layer);
 	text_layer_destroy(text_battery_layer);
@@ -857,6 +886,11 @@ static void deinit(void) {
 	text_layer_destroy(calendar_text_layer);
 	text_layer_destroy(music_artist_layer);
 	text_layer_destroy(music_song_layer);
+	text_layer_destroy(text_mail_layer);
+	text_layer_destroy(text_sms_layer);
+	text_layer_destroy(text_phone_layer);
+	layer_destroy(weather_layer);
+	layer_destroy(status_layer);
 	
 	if (calendar_date_str != NULL) {
  		free(calendar_date_str);
@@ -938,6 +972,27 @@ void rcv(DictionaryIterator *received, void *context) {
 	t=dict_find(received, SM_WEATHER_ICON_KEY); 
 	if (t!=NULL) {
 		bitmap_layer_set_bitmap(weather_image, weather_status_imgs[t->value->uint8]);	  	
+	}
+
+	t=dict_find(received, SM_COUNT_MAIL_KEY); 
+	if (t!=NULL) {
+		memcpy(mail_count_str, t->value->cstring, strlen(t->value->cstring));
+        mail_count_str[strlen(t->value->cstring)] = '\0';
+		text_layer_set_text(text_mail_layer, mail_count_str); 	
+	}
+
+	t=dict_find(received, SM_COUNT_SMS_KEY); 
+	if (t!=NULL) {
+		memcpy(sms_count_str, t->value->cstring, strlen(t->value->cstring));
+        sms_count_str[strlen(t->value->cstring)] = '\0';
+		text_layer_set_text(text_sms_layer, sms_count_str); 	
+	}
+
+	t=dict_find(received, SM_COUNT_PHONE_KEY); 
+	if (t!=NULL) {
+		memcpy(phone_count_str, t->value->cstring, strlen(t->value->cstring));
+        phone_count_str[strlen(t->value->cstring)] = '\0';
+		text_layer_set_text(text_phone_layer, phone_count_str); 	
 	}
 
 	t=dict_find(received, SM_COUNT_BATTERY_KEY); 
