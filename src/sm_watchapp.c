@@ -7,8 +7,9 @@
 	All credits go to Robhh
 	© Robhh : https://github.com/robhh/SmartStatus-AppStore
 	© Alexandre Jouandin : https://github.com/Allezxandre/Smart-FrenchIze
+	Idea by J Dishaw
 */
-#define DEBUG 1
+//#define DEBUG 1
 #define STRING_LENGTH 255
 #define NUM_WEATHER_IMAGES	9
 #define VIBE_ON_HOUR true
@@ -28,7 +29,7 @@ static int last_run_minute = -1;
 enum {CALENDAR_LAYER, MUSIC_LAYER, NUM_LAYERS};
 
 static void reset();
-static void animate_layers();
+static void animate_layers(ClickRecognizerRef recognizer, void *context);
 static void auto_switch(void *data);
 static void display_Notification(char *text1, char *text2, int time);
 
@@ -391,35 +392,35 @@ static void display_Notification(char *text1, char *text2, int time) {
 			app_timer_cancel(hideMusicLayer);
 		hideMusicLayer = app_timer_register(time , auto_switch, NULL);
 		if (active_layer != MUSIC_LAYER) 
-				animate_layers();
+				animate_layers(NULL,NULL);
 		text_layer_set_text(music_artist_layer, text1);
 		text_layer_set_text(music_song_layer, text2);
 		strncpy(last_text,"12345678",8);
 	}
 
 
-static void select_click_down_handler(ClickRecognizerRef recognizer, void *context) {
+/*static void select_click_down_handler(ClickRecognizerRef recognizer, void *context) {
 	//show the weather condition instead of temperature while center button is pressed
 	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), true);
 	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false);
-}
+} */
 
-static void select_click_up_handler(ClickRecognizerRef recognizer, void *context) {
+static void update_all(ClickRecognizerRef recognizer, void *context) {
 	//update all data
 	if (phone_is_connected) {
 		reset();
 		sendCommandInt(SM_SCREEN_ENTER_KEY, STATUS_SCREEN_APP);
-	} else {
+	} /* else {
 		layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false);
 		layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true);
-	}
+	}*/
 }
 
-static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
+static void call_siri(ClickRecognizerRef recognizer, void *context) {
 	sendCommand(SM_OPEN_SIRI_KEY);
 }
 
-static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
+static void next_track_action(ClickRecognizerRef recognizer, void *context) {
 	if (phone_is_connected) {sendCommand(SM_NEXT_TRACK_KEY);} else {light_enable(false);}
 	if (hideMusicLayer != NULL) 
 			app_timer_cancel(hideMusicLayer);
@@ -434,12 +435,12 @@ static void notif_find_my_iphone(ClickRecognizerRef recognizer, void *context) {
 		display_Notification("iPhone", STRING_DISCONNECTED, 2000);
 	}
 }
-static void find_my_iphone(ClickRecognizerRef recognizer, void *context) {
+/* static void find_my_iphone(ClickRecognizerRef recognizer, void *context) {
 	if (phone_is_connected) {
 		vibes_long_pulse();
 	}
 	sendCommand(SM_FIND_MY_PHONE_KEY);
-}
+} */
 
 static void turn_off_the_light(void *data) {
 		light_enable(false);
@@ -449,7 +450,7 @@ static void turn_off_the_light(void *data) {
 		}
 }
 
-static void held_down_button_down(ClickRecognizerRef recognizer, void *context) {
+static void play_pause_action(ClickRecognizerRef recognizer, void *context) {
 	if (phone_is_connected) { // If phone is connected, we play music
 		strncpy(last_text,"12345678",8); // We kind of force a new displaying of song
 		sendCommand(SM_PLAYPAUSE_KEY);
@@ -463,7 +464,7 @@ static void held_down_button_down(ClickRecognizerRef recognizer, void *context) 
 	}
 }
 
-static void animate_layers(){
+static void animate_layers(ClickRecognizerRef recognizer, void *context){
 	//slide layers in/out
 
 	property_animation_destroy((PropertyAnimation*)ani_in);
@@ -481,11 +482,11 @@ static void animate_layers(){
 
 
 static void click_config_provider(void *context) {
-  window_raw_click_subscribe(BUTTON_ID_SELECT, select_click_down_handler, select_click_up_handler, context);
-  window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
-  window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
-  window_long_click_subscribe(BUTTON_ID_UP, 3000, notif_find_my_iphone, find_my_iphone);
-  window_long_click_subscribe(BUTTON_ID_DOWN, 500, held_down_button_down, NULL);
+  window_long_click_subscribe(BUTTON_ID_UP, 750, call_siri, NULL);
+  window_single_click_subscribe(BUTTON_ID_SELECT, animate_layers);
+  window_single_click_subscribe(BUTTON_ID_DOWN, update_all);
+  window_long_click_subscribe(BUTTON_ID_SELECT, 750, play_pause_action, NULL);
+  window_long_click_subscribe(BUTTON_ID_DOWN, 750, next_track_action, NULL);
 }
 
 static void window_load(Window *window) {
@@ -534,9 +535,9 @@ void battery_pbl_layer_update_callback(Layer *me, GContext* ctx) {
 
 
 void reset() {
-	
+	/*
 	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), true);
-	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false);
+	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false); */
 	text_layer_set_text(text_weather_cond_layer, STRING_UPDATING); 	
 	
 }
@@ -549,8 +550,6 @@ void handle_second_tick(struct tm *tick_time, TimeUnits units_changed) {
 	strftime(seconds_text, sizeof(seconds_text), "%S", tick_time);
 	text_layer_set_text(text_seconds_layer, seconds_text);
 
-	if ((((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized)) && (calendar_date_str != NULL)) 
-		{apptDisplay(calendar_date_str);}
 	
 
 if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) ){
@@ -602,6 +601,10 @@ if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) 
 	
   text_layer_set_text(text_time_layer, time_text);
 }
+
+if ((((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized)) && (calendar_date_str != NULL)) 
+	{apptDisplay(calendar_date_str);}
+
 }
 
 
@@ -676,17 +679,17 @@ font_secs = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_20)
 	
 
 	//init weather layer and add weather image, weather condition, temperature, and battery indicator
-	weather_layer = layer_create(GRect(0, 7, 144, 45)); // GRect(0, 78, 144, 45));
+	weather_layer = layer_create(GRect(0, 0, 144, 45)); // GRect(0, 78, 144, 45));
 	layer_add_child(window_layer, weather_layer);
 
 	battery_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_PHONE);
 	battery_pbl_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_PEBBLE);
 
-	battery_image_layer = bitmap_layer_create(GRect(100, -1, 37, 14)); // GRect(100, 7, 37, 14));
+	battery_image_layer = bitmap_layer_create(GRect(105, 5, 37, 14)); // GRect(100, 7, 37, 14));
 	layer_add_child(weather_layer, bitmap_layer_get_layer(battery_image_layer));
 	bitmap_layer_set_bitmap(battery_image_layer, battery_image);
 
-	battery_pbl_image_layer = bitmap_layer_create(GRect(100, 13, 37, 14)); // GRect(100, 23, 37, 14));
+	battery_pbl_image_layer = bitmap_layer_create(GRect(68, 5, 37, 14)); // GRect(100, 23, 37, 14));
 	layer_add_child(weather_layer, bitmap_layer_get_layer(battery_pbl_image_layer));
 	bitmap_layer_set_bitmap(battery_pbl_image_layer, battery_pbl_image);
 
@@ -702,7 +705,7 @@ layer_add_child(window_layer, status_layer);
 		text_layer_set_text(text_mail_layer, "-"); 	
 
 
-		text_sms_layer = text_layer_create(GRect(60, -3, 11, 20));
+		text_sms_layer = text_layer_create(GRect(72, -3, 11, 20));
 		text_layer_set_text_alignment(text_sms_layer, GTextAlignmentCenter);
 		text_layer_set_text_color(text_sms_layer, GColorWhite);
 		text_layer_set_background_color(text_sms_layer, GColorClear);
@@ -710,7 +713,7 @@ layer_add_child(window_layer, status_layer);
 		layer_add_child(status_layer, text_layer_get_layer(text_sms_layer));
 		text_layer_set_text(text_sms_layer, "-"); 	
 
-		text_phone_layer = text_layer_create(GRect(93, -3, 11, 20));
+		text_phone_layer = text_layer_create(GRect(120, -3, 11, 20));
 		text_layer_set_text_alignment(text_phone_layer, GTextAlignmentCenter);
 		text_layer_set_text_color(text_phone_layer, GColorWhite);
 		text_layer_set_background_color(text_phone_layer, GColorClear);
@@ -728,14 +731,14 @@ layer_add_child(window_layer, status_layer);
 	layer_set_hidden(text_layer_get_layer(text_battery_layer), true);
 
 
-	battery_layer = layer_create(GRect(102, 0, 19, 11)); // GRect(102, 8, 19, 11));
+	battery_layer = layer_create(GRect(107, 6, 19, 11)); // GRect(102, 8, 19, 11)); GRect(105, -1, 37, 14)
 	layer_set_update_proc(battery_layer, battery_layer_update_callback);
 	layer_add_child(weather_layer, battery_layer);
 
 	batteryPercent = 100;
 	layer_mark_dirty(battery_layer);
 
-	battery_pbl_layer = layer_create(GRect(102, 14, 19, 11)); // GRect(102, 24, 19, 11));
+	battery_pbl_layer = layer_create(GRect(70, 6, 19, 11)); // GRect(102, 24, 19, 11)); GRect(68, -1, 37, 14)
 	layer_set_update_proc(battery_pbl_layer, battery_pbl_layer_update_callback);
 	layer_add_child(weather_layer, battery_pbl_layer);
 
@@ -744,7 +747,7 @@ layer_add_child(window_layer, status_layer);
 	layer_mark_dirty(battery_pbl_layer);
 
 
-	text_weather_cond_layer = text_layer_create(GRect(25, 0, 100, 20)); // GRect(5, 2, 47, 40)
+	text_weather_cond_layer = text_layer_create(GRect(5, 15, 100, 20)); // GRect(5, 2, 47, 40)
 	text_layer_set_text_alignment(text_weather_cond_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(text_weather_cond_layer, GColorWhite);
 	text_layer_set_background_color(text_weather_cond_layer, GColorClear);
@@ -773,7 +776,7 @@ layer_add_child(window_layer, status_layer);
 	layer_add_child(weather_layer, text_layer_get_layer(text_weather_temp_layer));
 	text_layer_set_text(text_weather_temp_layer, "-°"); 	
 
-	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), true);
+	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false); // changed from true to false
 
 	
 	//init layers for time and date
@@ -923,6 +926,7 @@ static void deinit(void) {
 
  	fonts_unload_custom_font(font_date);
 	fonts_unload_custom_font(font_time);
+	fonts_unload_custom_font(font_secs);
 
 	for (int i=0; i<NUM_LAYERS; i++) {
 		if (animated_layer[i]!=NULL)
@@ -962,7 +966,7 @@ static void updateMusic(void *data) {
 
 static void auto_switch(void *data){
 	hideMusicLayer = NULL;
-	if (active_layer == MUSIC_LAYER) animate_layers();
+	if (active_layer == MUSIC_LAYER) animate_layers(NULL,NULL);
 }
 
 void rcv(DictionaryIterator *received, void *context) {
@@ -983,8 +987,8 @@ void rcv(DictionaryIterator *received, void *context) {
         weather_temp_str[strlen(t->value->cstring)] = '\0';
 		text_layer_set_text(text_weather_temp_layer, weather_temp_str); 
 		
-		layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true);
-		layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false);
+		/*layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true);
+		layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false); */
 			
 	}
 
@@ -1077,7 +1081,7 @@ void rcv(DictionaryIterator *received, void *context) {
 		if ((strncmp(last_text,music_title_str1,8) != 0) && (strncmp(music_title_str1,"No Title",8) != 0)) {
 			strncpy(last_text,music_title_str1,8);
 			if (active_layer != MUSIC_LAYER) 
-				animate_layers();
+				animate_layers(NULL,NULL);
 			if (hideMusicLayer != NULL) 
 				app_timer_cancel(hideMusicLayer);
 			hideMusicLayer = app_timer_register(5000 , auto_switch, NULL);
