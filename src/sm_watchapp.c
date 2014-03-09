@@ -40,7 +40,7 @@ static Layer *animated_layer[NUM_LAYERS], *weather_layer;
 static Layer *battery_layer, *battery_pbl_layer;
 static Layer *status_layer;
 
-static TextLayer *text_date_layer, *text_time_layer;
+static TextLayer *text_date_layer, *text_time_layer, *text_seconds_layer;
 
 static TextLayer *text_mail_layer, *text_sms_layer, *text_phone_layer;
 static TextLayer *text_weather_cond_layer, *text_weather_temp_layer, *text_battery_layer;
@@ -73,6 +73,7 @@ static AppTimer *general_Timer = NULL;
 /* Preload the fonts */
 GFont font_date;
 GFont font_time;
+GFont font_secs;
 
 const int WEATHER_IMG_IDS[] = {	
   RESOURCE_ID_IMAGE_SUN,
@@ -189,11 +190,11 @@ static void apptDisplay(char *appt_string) {
 		// appt_month 	> appointment->month
 		// appt_hour	> appointment->hour
 		// appt_minute	> appointment->min */
-					strncpy(stringBuffer, appt_string,2);
+					strncpy(stringBuffer, appt_string+3,2);
 					appointment->day = string2number(stringBuffer);
 					//APP_LOG(APP_LOG_LEVEL_DEBUG,"appointment->day is    %i",appointment->day);
 
-					strncpy(stringBuffer, appt_string+3,2);
+					strncpy(stringBuffer, appt_string,2);
 					appointment->month = string2number(stringBuffer);
 					//APP_LOG(APP_LOG_LEVEL_DEBUG,"appointment->month is  %i",appointment->month);
 
@@ -542,8 +543,16 @@ void reset() {
 
 
 void handle_second_tick(struct tm *tick_time, TimeUnits units_changed) {
+	
+	// Seconds Display
+	static char seconds_text[] = "00";
+	strftime(seconds_text, sizeof(seconds_text), "%S", tick_time);
+	text_layer_set_text(text_seconds_layer, seconds_text);
+
 	if ((((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized)) && (calendar_date_str != NULL)) 
 		{apptDisplay(calendar_date_str);}
+	
+
 if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) ){
 	// Need to be static because they're used by the system later.
 	static char time_text[] = "00:00";
@@ -645,7 +654,8 @@ static void init(void) {
   window_stack_push(window, animated);
   // Choose fonts
 font_date = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_CONDENSED_21));
-font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52));
+font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_47));
+font_secs = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_20));
 
 	//init weather images
 	for (int i=0; i<NUM_WEATHER_IMAGES; i++) {
@@ -777,12 +787,20 @@ layer_add_child(window_layer, status_layer);
 
 
 	text_time_layer = text_layer_create(bg_bounds);
-	text_layer_set_text_alignment(text_time_layer, GTextAlignmentCenter);
+	text_layer_set_text_alignment(text_time_layer, GTextAlignmentLeft); //Previous was center
 	text_layer_set_text_color(text_time_layer, GColorWhite);
 	text_layer_set_background_color(text_time_layer, GColorClear);
-	layer_set_frame(text_layer_get_layer(text_time_layer), GRect(0, 25, 144, 55)); // GRect(0, -5, 144, 55));
+	layer_set_frame(text_layer_get_layer(text_time_layer), GRect(0, 27, 120, 55)); // GRect(0, -5, 144, 55));
 	text_layer_set_font(text_time_layer, font_time);
 	layer_add_child(window_layer, text_layer_get_layer(text_time_layer));
+
+	text_seconds_layer = text_layer_create(bg_bounds);
+	text_layer_set_text_alignment(text_seconds_layer, GTextAlignmentLeft); //Previous was center
+	text_layer_set_text_color(text_seconds_layer, GColorWhite);
+	text_layer_set_background_color(text_seconds_layer, GColorClear);
+	layer_set_frame(text_layer_get_layer(text_seconds_layer), GRect(120, 37, 24, 24)); // GRect(0, -5, 144, 55));
+	text_layer_set_font(text_seconds_layer, font_secs);
+	layer_add_child(window_layer, text_layer_get_layer(text_seconds_layer));
 
 
 	//init calendar layer
@@ -836,7 +854,7 @@ layer_add_child(window_layer, status_layer);
 	reset();
 
   	//tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
-	tick_timer_service_subscribe(MINUTE_UNIT, handle_second_tick);
+	tick_timer_service_subscribe(SECOND_UNIT, handle_second_tick);
 
 	bluetooth_connection_service_subscribe(bluetoothChanged);
 	battery_state_service_subscribe(batteryChanged);
@@ -882,6 +900,7 @@ static void deinit(void) {
 	text_layer_destroy(text_weather_temp_layer);
 	text_layer_destroy(text_date_layer);
 	text_layer_destroy(text_time_layer);
+	text_layer_destroy(text_seconds_layer);
 	text_layer_destroy(calendar_date_layer);
 	text_layer_destroy(calendar_text_layer);
 	text_layer_destroy(music_artist_layer);
