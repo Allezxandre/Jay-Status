@@ -91,15 +91,14 @@
                 "trackingAdjust": -2,
                 "characterRegex": "[:0-9]",
                 "type": "font",
-                "name": "FONT_BOLD_47",
-                "file": "fonts/ClearSans-Bold.ttf"
+                "name": "FONT_BOLD_52",
+                "file": "fonts/digital-7-mono.ttf"
             },
             {
-                "trackingAdjust": -2,
                 "characterRegex": "[:0-9]",
                 "type": "font",
-                "name": "FONT_BOLD_20",
-                "file": "fonts/ClearSans-Regular.ttf"
+                "name": "FONT_BOLD_25",
+                "file": "fonts/digital-7-mono.ttf"
             }
         ]
     }

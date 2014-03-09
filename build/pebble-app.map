@@ -530,7 +530,7 @@ LOAD /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib
  .pbl_header    0x0000000000000000       0x82 appinfo.auto.c.23.o
                 0x0000000000000000                __pbl_app_info
 
-.text           0x0000000000000084     0x2aab
+.text           0x0000000000000084     0x2adb
  *(.text)
  .text          0x0000000000000084       0x14 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
  .text          0x0000000000000098      0x370 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
@@ -572,516 +572,516 @@ LOAD /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib
  .text.turn_off_the_light
                 0x0000000000000924       0x20 src/sm_watchapp.c.23.o
  .text.animate_layers
-                0x0000000000000944       0xc8 src/sm_watchapp.c.23.o
+                0x0000000000000944       0xe0 src/sm_watchapp.c.23.o
  .text.display_hour.6554
-                0x0000000000000a0c       0xf8 src/sm_watchapp.c.23.o
+                0x0000000000000a24       0xf8 src/sm_watchapp.c.23.o
  .text.battery_pbl_layer_update_callback
-                0x0000000000000b04       0x68 src/sm_watchapp.c.23.o
-                0x0000000000000b04                battery_pbl_layer_update_callback
+                0x0000000000000b1c       0x68 src/sm_watchapp.c.23.o
+                0x0000000000000b1c                battery_pbl_layer_update_callback
  .text.battery_layer_update_callback
-                0x0000000000000b6c       0x68 src/sm_watchapp.c.23.o
-                0x0000000000000b6c                battery_layer_update_callback
+                0x0000000000000b84       0x68 src/sm_watchapp.c.23.o
+                0x0000000000000b84                battery_layer_update_callback
  .text.auto_switch
-                0x0000000000000bd4       0x24 src/sm_watchapp.c.23.o
+                0x0000000000000bec       0x24 src/sm_watchapp.c.23.o
  .text.display_Notification.constprop.5
-                0x0000000000000bf8       0x88 src/sm_watchapp.c.23.o
+                0x0000000000000c10       0x88 src/sm_watchapp.c.23.o
  .text.bluetoothChanged
-                0x0000000000000c80       0x88 src/sm_watchapp.c.23.o
-                0x0000000000000c80                bluetoothChanged
+                0x0000000000000c98       0x90 src/sm_watchapp.c.23.o
+                0x0000000000000c98                bluetoothChanged
  .text.letter2digit
-                0x0000000000000d08       0x16 src/sm_watchapp.c.23.o
-                0x0000000000000d08                letter2digit
- *fill*         0x0000000000000d1e        0x2 
+                0x0000000000000d28       0x16 src/sm_watchapp.c.23.o
+                0x0000000000000d28                letter2digit
+ *fill*         0x0000000000000d3e        0x2 
  .text.string2number.constprop.6
-                0x0000000000000d20       0xc8 src/sm_watchapp.c.23.o
+                0x0000000000000d40       0xc8 src/sm_watchapp.c.23.o
  .text.apptDisplay
-                0x0000000000000de8      0x308 src/sm_watchapp.c.23.o
- .text.rcv      0x00000000000010f0      0x478 src/sm_watchapp.c.23.o
-                0x00000000000010f0                rcv
+                0x0000000000000e08      0x308 src/sm_watchapp.c.23.o
+ .text.rcv      0x0000000000001110      0x478 src/sm_watchapp.c.23.o
+                0x0000000000001110                rcv
  .text.handle_second_tick
-                0x0000000000001568      0x188 src/sm_watchapp.c.23.o
-                0x0000000000001568                handle_second_tick
+                0x0000000000001588      0x188 src/sm_watchapp.c.23.o
+                0x0000000000001588                handle_second_tick
  .text.sm_message_out_get
-                0x00000000000016f0       0x34 src/sm_watchapp.c.23.o
-                0x00000000000016f0                sm_message_out_get
+                0x0000000000001710       0x34 src/sm_watchapp.c.23.o
+                0x0000000000001710                sm_message_out_get
  .text.sendCommand
-                0x0000000000001724       0x1e src/sm_watchapp.c.23.o
-                0x0000000000001724                sendCommand
- *fill*         0x0000000000001742        0x2 
+                0x0000000000001744       0x1e src/sm_watchapp.c.23.o
+                0x0000000000001744                sendCommand
+ *fill*         0x0000000000001762        0x2 
  .text.next_track_action
-                0x0000000000001744       0x38 src/sm_watchapp.c.23.o
+                0x0000000000001764       0x38 src/sm_watchapp.c.23.o
  .text.play_pause_action
-                0x000000000000177c       0x6c src/sm_watchapp.c.23.o
+                0x000000000000179c       0x6c src/sm_watchapp.c.23.o
  .text.call_siri
-                0x00000000000017e8        0x8 src/sm_watchapp.c.23.o
+                0x0000000000001808        0x8 src/sm_watchapp.c.23.o
  .text.updateMusic
-                0x00000000000017f0        0x8 src/sm_watchapp.c.23.o
+                0x0000000000001810        0x8 src/sm_watchapp.c.23.o
  .text.updateCalendar
-                0x00000000000017f8        0x8 src/sm_watchapp.c.23.o
+                0x0000000000001818        0x8 src/sm_watchapp.c.23.o
  .text.updateWeather
-                0x0000000000001800        0x8 src/sm_watchapp.c.23.o
+                0x0000000000001820        0x8 src/sm_watchapp.c.23.o
  .text.sendCommandInt
-                0x0000000000001808       0x1e src/sm_watchapp.c.23.o
-                0x0000000000001808                sendCommandInt
+                0x0000000000001828       0x1e src/sm_watchapp.c.23.o
+                0x0000000000001828                sendCommandInt
  .text.window_disappear
-                0x0000000000001826        0xa src/sm_watchapp.c.23.o
+                0x0000000000001846        0xa src/sm_watchapp.c.23.o
  .text.window_appear
-                0x0000000000001830        0xa src/sm_watchapp.c.23.o
- *fill*         0x000000000000183a        0x2 
+                0x0000000000001850        0xa src/sm_watchapp.c.23.o
+ *fill*         0x000000000000185a        0x2 
  .text.update_all
-                0x000000000000183c       0x24 src/sm_watchapp.c.23.o
+                0x000000000000185c       0x34 src/sm_watchapp.c.23.o
  .text.reconnect
-                0x0000000000001860       0x14 src/sm_watchapp.c.23.o
-                0x0000000000001860                reconnect
+                0x0000000000001890       0x14 src/sm_watchapp.c.23.o
+                0x0000000000001890                reconnect
  .text.startup.main
-                0x0000000000001874      0xc1c src/sm_watchapp.c.23.o
-                0x0000000000001874                main
+                0x00000000000018a4      0xc1c src/sm_watchapp.c.23.o
+                0x00000000000018a4                main
  .text.animation_schedule
-                0x0000000000002490        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002490                animation_schedule
- .text.app_event_loop
-                0x000000000000249c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x000000000000249c                app_event_loop
- .text.app_message_deregister_callbacks
-                0x00000000000024a8        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000024a8                app_message_deregister_callbacks
- .text.app_message_open
-                0x00000000000024b4        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000024b4                app_message_open
- .text.app_timer_cancel
                 0x00000000000024c0        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000024c0                app_timer_cancel
- .text.app_timer_register
+                0x00000000000024c0                animation_schedule
+ .text.app_event_loop
                 0x00000000000024cc        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000024cc                app_timer_register
- .text.battery_state_service_peek
+                0x00000000000024cc                app_event_loop
+ .text.app_message_deregister_callbacks
                 0x00000000000024d8        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000024d8                battery_state_service_peek
- .text.battery_state_service_subscribe
+                0x00000000000024d8                app_message_deregister_callbacks
+ .text.app_message_open
                 0x00000000000024e4        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000024e4                battery_state_service_subscribe
- .text.battery_state_service_unsubscribe
+                0x00000000000024e4                app_message_open
+ .text.app_timer_cancel
                 0x00000000000024f0        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000024f0                battery_state_service_unsubscribe
- .text.bitmap_layer_create
+                0x00000000000024f0                app_timer_cancel
+ .text.app_timer_register
                 0x00000000000024fc        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000024fc                bitmap_layer_create
- .text.bitmap_layer_destroy
+                0x00000000000024fc                app_timer_register
+ .text.battery_state_service_peek
                 0x0000000000002508        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002508                bitmap_layer_destroy
- .text.bitmap_layer_get_layer
+                0x0000000000002508                battery_state_service_peek
+ .text.battery_state_service_subscribe
                 0x0000000000002514        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002514                bitmap_layer_get_layer
- .text.bitmap_layer_set_bitmap
+                0x0000000000002514                battery_state_service_subscribe
+ .text.battery_state_service_unsubscribe
                 0x0000000000002520        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002520                bitmap_layer_set_bitmap
- .text.bluetooth_connection_service_peek
+                0x0000000000002520                battery_state_service_unsubscribe
+ .text.bitmap_layer_create
                 0x000000000000252c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x000000000000252c                bluetooth_connection_service_peek
- .text.bluetooth_connection_service_subscribe
+                0x000000000000252c                bitmap_layer_create
+ .text.bitmap_layer_destroy
                 0x0000000000002538        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002538                bluetooth_connection_service_subscribe
- .text.bluetooth_connection_service_unsubscribe
+                0x0000000000002538                bitmap_layer_destroy
+ .text.bitmap_layer_get_layer
                 0x0000000000002544        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002544                bluetooth_connection_service_unsubscribe
- .text.clock_is_24h_style
+                0x0000000000002544                bitmap_layer_get_layer
+ .text.bitmap_layer_set_bitmap
                 0x0000000000002550        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002550                clock_is_24h_style
- .text.dict_find
+                0x0000000000002550                bitmap_layer_set_bitmap
+ .text.bluetooth_connection_service_peek
                 0x000000000000255c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x000000000000255c                dict_find
- .text.dict_write_int32
+                0x000000000000255c                bluetooth_connection_service_peek
+ .text.bluetooth_connection_service_subscribe
                 0x0000000000002568        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002568                dict_write_int32
- .text.dict_write_int8
+                0x0000000000002568                bluetooth_connection_service_subscribe
+ .text.bluetooth_connection_service_unsubscribe
                 0x0000000000002574        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002574                dict_write_int8
- .text.fonts_get_system_font
+                0x0000000000002574                bluetooth_connection_service_unsubscribe
+ .text.clock_is_24h_style
                 0x0000000000002580        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002580                fonts_get_system_font
- .text.fonts_load_custom_font
+                0x0000000000002580                clock_is_24h_style
+ .text.dict_find
                 0x000000000000258c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x000000000000258c                fonts_load_custom_font
- .text.fonts_unload_custom_font
+                0x000000000000258c                dict_find
+ .text.dict_write_int32
                 0x0000000000002598        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002598                fonts_unload_custom_font
- .text.free     0x00000000000025a4        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000025a4                free
- .text.gbitmap_create_with_resource
+                0x0000000000002598                dict_write_int32
+ .text.dict_write_int8
+                0x00000000000025a4        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x00000000000025a4                dict_write_int8
+ .text.fonts_get_system_font
                 0x00000000000025b0        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000025b0                gbitmap_create_with_resource
- .text.gbitmap_destroy
+                0x00000000000025b0                fonts_get_system_font
+ .text.fonts_load_custom_font
                 0x00000000000025bc        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000025bc                gbitmap_destroy
- .text.graphics_context_set_fill_color
+                0x00000000000025bc                fonts_load_custom_font
+ .text.fonts_unload_custom_font
                 0x00000000000025c8        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000025c8                graphics_context_set_fill_color
- .text.graphics_context_set_stroke_color
-                0x00000000000025d4        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000025d4                graphics_context_set_stroke_color
- .text.graphics_fill_rect
+                0x00000000000025c8                fonts_unload_custom_font
+ .text.free     0x00000000000025d4        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x00000000000025d4                free
+ .text.gbitmap_create_with_resource
                 0x00000000000025e0        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000025e0                graphics_fill_rect
- .text.layer_add_child
+                0x00000000000025e0                gbitmap_create_with_resource
+ .text.gbitmap_destroy
                 0x00000000000025ec        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000025ec                layer_add_child
- .text.layer_create
+                0x00000000000025ec                gbitmap_destroy
+ .text.graphics_context_set_fill_color
                 0x00000000000025f8        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000025f8                layer_create
- .text.layer_destroy
+                0x00000000000025f8                graphics_context_set_fill_color
+ .text.graphics_context_set_stroke_color
                 0x0000000000002604        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002604                layer_destroy
- .text.layer_get_bounds
+                0x0000000000002604                graphics_context_set_stroke_color
+ .text.graphics_fill_rect
                 0x0000000000002610        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002610                layer_get_bounds
- .text.layer_get_frame
+                0x0000000000002610                graphics_fill_rect
+ .text.layer_add_child
                 0x000000000000261c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x000000000000261c                layer_get_frame
- .text.layer_mark_dirty
+                0x000000000000261c                layer_add_child
+ .text.layer_create
                 0x0000000000002628        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002628                layer_mark_dirty
- .text.layer_set_frame
+                0x0000000000002628                layer_create
+ .text.layer_destroy
                 0x0000000000002634        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002634                layer_set_frame
- .text.layer_set_hidden
+                0x0000000000002634                layer_destroy
+ .text.layer_get_bounds
                 0x0000000000002640        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002640                layer_set_hidden
- .text.layer_set_update_proc
+                0x0000000000002640                layer_get_bounds
+ .text.layer_get_frame
                 0x000000000000264c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x000000000000264c                layer_set_update_proc
- .text.light_enable
+                0x000000000000264c                layer_get_frame
+ .text.layer_mark_dirty
                 0x0000000000002658        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002658                light_enable
- .text.localtime
+                0x0000000000002658                layer_mark_dirty
+ .text.layer_set_frame
                 0x0000000000002664        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002664                localtime
- .text.malloc   0x0000000000002670        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002670                malloc
- .text.memcpy   0x000000000000267c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x000000000000267c                memcpy
- .text.memmove  0x0000000000002688        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002688                memmove
- .text.property_animation_create_layer_frame
+                0x0000000000002664                layer_set_frame
+ .text.layer_set_hidden
+                0x0000000000002670        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x0000000000002670                layer_set_hidden
+ .text.layer_set_update_proc
+                0x000000000000267c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x000000000000267c                layer_set_update_proc
+ .text.light_enable
+                0x0000000000002688        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x0000000000002688                light_enable
+ .text.localtime
                 0x0000000000002694        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002694                property_animation_create_layer_frame
+                0x0000000000002694                localtime
+ .text.malloc   0x00000000000026a0        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x00000000000026a0                malloc
+ .text.memcpy   0x00000000000026ac        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x00000000000026ac                memcpy
+ .text.memmove  0x00000000000026b8        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x00000000000026b8                memmove
+ .text.property_animation_create_layer_frame
+                0x00000000000026c4        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x00000000000026c4                property_animation_create_layer_frame
  .text.property_animation_destroy
-                0x00000000000026a0        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000026a0                property_animation_destroy
+                0x00000000000026d0        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x00000000000026d0                property_animation_destroy
  .text.resource_get_handle
-                0x00000000000026ac        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000026ac                resource_get_handle
- .text.snprintf
-                0x00000000000026b8        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000026b8                snprintf
- .text.strcat   0x00000000000026c4        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000026c4                strcat
- .text.strcpy   0x00000000000026d0        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000026d0                strcpy
- .text.strftime
                 0x00000000000026dc        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000026dc                strftime
- .text.strlen   0x00000000000026e8        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000026e8                strlen
- .text.strncmp  0x00000000000026f4        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000026f4                strncmp
- .text.strncpy  0x0000000000002700        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002700                strncpy
- .text.text_layer_create
+                0x00000000000026dc                resource_get_handle
+ .text.snprintf
+                0x00000000000026e8        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x00000000000026e8                snprintf
+ .text.strcat   0x00000000000026f4        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x00000000000026f4                strcat
+ .text.strcpy   0x0000000000002700        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x0000000000002700                strcpy
+ .text.strftime
                 0x000000000000270c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x000000000000270c                text_layer_create
- .text.text_layer_destroy
-                0x0000000000002718        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002718                text_layer_destroy
- .text.text_layer_get_layer
-                0x0000000000002724        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002724                text_layer_get_layer
- .text.text_layer_set_background_color
-                0x0000000000002730        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002730                text_layer_set_background_color
- .text.text_layer_set_font
+                0x000000000000270c                strftime
+ .text.strlen   0x0000000000002718        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x0000000000002718                strlen
+ .text.strncmp  0x0000000000002724        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x0000000000002724                strncmp
+ .text.strncpy  0x0000000000002730        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x0000000000002730                strncpy
+ .text.text_layer_create
                 0x000000000000273c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x000000000000273c                text_layer_set_font
- .text.text_layer_set_text
+                0x000000000000273c                text_layer_create
+ .text.text_layer_destroy
                 0x0000000000002748        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002748                text_layer_set_text
- .text.text_layer_set_text_alignment
+                0x0000000000002748                text_layer_destroy
+ .text.text_layer_get_layer
                 0x0000000000002754        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002754                text_layer_set_text_alignment
- .text.text_layer_set_text_color
+                0x0000000000002754                text_layer_get_layer
+ .text.text_layer_set_background_color
                 0x0000000000002760        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002760                text_layer_set_text_color
- .text.tick_timer_service_subscribe
+                0x0000000000002760                text_layer_set_background_color
+ .text.text_layer_set_font
                 0x000000000000276c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x000000000000276c                tick_timer_service_subscribe
- .text.tick_timer_service_unsubscribe
+                0x000000000000276c                text_layer_set_font
+ .text.text_layer_set_text
                 0x0000000000002778        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002778                tick_timer_service_unsubscribe
- .text.time     0x0000000000002784        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002784                time
- .text.vibes_double_pulse
+                0x0000000000002778                text_layer_set_text
+ .text.text_layer_set_text_alignment
+                0x0000000000002784        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x0000000000002784                text_layer_set_text_alignment
+ .text.text_layer_set_text_color
                 0x0000000000002790        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002790                vibes_double_pulse
- .text.vibes_short_pulse
+                0x0000000000002790                text_layer_set_text_color
+ .text.tick_timer_service_subscribe
                 0x000000000000279c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x000000000000279c                vibes_short_pulse
- .text.window_create
+                0x000000000000279c                tick_timer_service_subscribe
+ .text.tick_timer_service_unsubscribe
                 0x00000000000027a8        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000027a8                window_create
- .text.window_destroy
-                0x00000000000027b4        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000027b4                window_destroy
- .text.window_get_root_layer
+                0x00000000000027a8                tick_timer_service_unsubscribe
+ .text.time     0x00000000000027b4        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x00000000000027b4                time
+ .text.vibes_double_pulse
                 0x00000000000027c0        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000027c0                window_get_root_layer
- .text.window_set_click_config_provider
+                0x00000000000027c0                vibes_double_pulse
+ .text.vibes_short_pulse
                 0x00000000000027cc        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000027cc                window_set_click_config_provider
- .text.window_set_fullscreen
+                0x00000000000027cc                vibes_short_pulse
+ .text.window_create
                 0x00000000000027d8        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000027d8                window_set_fullscreen
- .text.window_set_window_handlers
+                0x00000000000027d8                window_create
+ .text.window_destroy
                 0x00000000000027e4        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000027e4                window_set_window_handlers
- .text.window_stack_push
+                0x00000000000027e4                window_destroy
+ .text.window_get_root_layer
                 0x00000000000027f0        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000027f0                window_stack_push
- .text.app_message_inbox_size_maximum
+                0x00000000000027f0                window_get_root_layer
+ .text.window_set_click_config_provider
                 0x00000000000027fc        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x00000000000027fc                app_message_inbox_size_maximum
- .text.app_message_outbox_begin
+                0x00000000000027fc                window_set_click_config_provider
+ .text.window_set_fullscreen
                 0x0000000000002808        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002808                app_message_outbox_begin
- .text.app_message_outbox_send
+                0x0000000000002808                window_set_fullscreen
+ .text.window_set_window_handlers
                 0x0000000000002814        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002814                app_message_outbox_send
- .text.app_message_outbox_size_maximum
+                0x0000000000002814                window_set_window_handlers
+ .text.window_stack_push
                 0x0000000000002820        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002820                app_message_outbox_size_maximum
- .text.app_message_register_inbox_received
+                0x0000000000002820                window_stack_push
+ .text.app_message_inbox_size_maximum
                 0x000000000000282c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x000000000000282c                app_message_register_inbox_received
- .text.window_long_click_subscribe
+                0x000000000000282c                app_message_inbox_size_maximum
+ .text.app_message_outbox_begin
                 0x0000000000002838        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002838                window_long_click_subscribe
- .text.window_single_click_subscribe
+                0x0000000000002838                app_message_outbox_begin
+ .text.app_message_outbox_send
                 0x0000000000002844        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
-                0x0000000000002844                window_single_click_subscribe
+                0x0000000000002844                app_message_outbox_send
+ .text.app_message_outbox_size_maximum
+                0x0000000000002850        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x0000000000002850                app_message_outbox_size_maximum
+ .text.app_message_register_inbox_received
+                0x000000000000285c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x000000000000285c                app_message_register_inbox_received
+ .text.window_long_click_subscribe
+                0x0000000000002868        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x0000000000002868                window_long_click_subscribe
+ .text.window_single_click_subscribe
+                0x0000000000002874        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+                0x0000000000002874                window_single_click_subscribe
  *(.rodata)
- .rodata        0x0000000000002850       0xb8 src/sm_watchapp.c.23.o
+ .rodata        0x0000000000002880       0xb8 src/sm_watchapp.c.23.o
  *(.rodata*)
  .rodata.days_per_month
-                0x0000000000002908       0x30 src/sm_watchapp.c.23.o
+                0x0000000000002938       0x30 src/sm_watchapp.c.23.o
  .rodata.WEATHER_IMG_IDS
-                0x0000000000002938       0x24 src/sm_watchapp.c.23.o
-                0x0000000000002938                WEATHER_IMG_IDS
+                0x0000000000002968       0x24 src/sm_watchapp.c.23.o
+                0x0000000000002968                WEATHER_IMG_IDS
  .rodata.str1.1
-                0x000000000000295c      0x1d3 src/sm_watchapp.c.23.o
+                0x000000000000298c      0x1d3 src/sm_watchapp.c.23.o
 
-.glue_7         0x0000000000002b30        0x0
+.glue_7         0x0000000000002b60        0x0
  .glue_7        0x0000000000000000        0x0 linker stubs
 
-.glue_7t        0x0000000000002b30        0x0
+.glue_7t        0x0000000000002b60        0x0
  .glue_7t       0x0000000000000000        0x0 linker stubs
 
-.vfp11_veneer   0x0000000000002b30        0x0
+.vfp11_veneer   0x0000000000002b60        0x0
  .vfp11_veneer  0x0000000000000000        0x0 linker stubs
 
-.v4_bx          0x0000000000002b30        0x0
+.v4_bx          0x0000000000002b60        0x0
  .v4_bx         0x0000000000000000        0x0 linker stubs
 
-.iplt           0x0000000000002b30        0x0
+.iplt           0x0000000000002b60        0x0
  .iplt          0x0000000000000000        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
 
-.rel.dyn        0x0000000000002b30        0x0
+.rel.dyn        0x0000000000002b60        0x0
  .rel.iplt      0x0000000000000000        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
  .rel.got       0x0000000000000000        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
 
-.data           0x0000000000002b30       0xac
+.data           0x0000000000002b60       0xac
  *(.data)
- .data          0x0000000000002b30        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crti.o
- .data          0x0000000000002b30        0x4 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
-                0x0000000000002b30                __dso_handle
- .data          0x0000000000002b34       0x10 src/sm_watchapp.c.23.o
- .data          0x0000000000002b44        0x0 appinfo.auto.c.23.o
- .data          0x0000000000002b44        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
- .data          0x0000000000002b44        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
- .data          0x0000000000002b44        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
- .data          0x0000000000002b44        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
- .data          0x0000000000002b44        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtend.o
- .data          0x0000000000002b44        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtn.o
+ .data          0x0000000000002b60        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crti.o
+ .data          0x0000000000002b60        0x4 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
+                0x0000000000002b60                __dso_handle
+ .data          0x0000000000002b64       0x10 src/sm_watchapp.c.23.o
+ .data          0x0000000000002b74        0x0 appinfo.auto.c.23.o
+ .data          0x0000000000002b74        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/Pebble/lib/libpebble.a(tmpziGGmipebble.o)
+ .data          0x0000000000002b74        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
+ .data          0x0000000000002b74        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
+ .data          0x0000000000002b74        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
+ .data          0x0000000000002b74        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtend.o
+ .data          0x0000000000002b74        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtn.o
  *(.data.*)
  .data.stringBuffer.6546
-                0x0000000000002b44        0x3 src/sm_watchapp.c.23.o
- *fill*         0x0000000000002b47        0x1 
- .data.last_run_minute
-                0x0000000000002b48        0x4 src/sm_watchapp.c.23.o
- .data.unit.6535
-                0x0000000000002b4c        0x4 src/sm_watchapp.c.23.o
- .data.date_text.6649
-                0x0000000000002b50        0xc src/sm_watchapp.c.23.o
- .data.seconds_text.6645
-                0x0000000000002b5c        0x3 src/sm_watchapp.c.23.o
- *fill*         0x0000000000002b5f        0x1 
- .data.digit.6534
-                0x0000000000002b60        0x4 src/sm_watchapp.c.23.o
- .data.s_sequence_number
-                0x0000000000002b64        0x4 src/sm_watchapp.c.23.o
- .data.time_text.6646
-                0x0000000000002b68        0x6 src/sm_watchapp.c.23.o
- .data.last_text
-                0x0000000000002b6e        0x9 src/sm_watchapp.c.23.o
+                0x0000000000002b74        0x3 src/sm_watchapp.c.23.o
  *fill*         0x0000000000002b77        0x1 
+ .data.last_run_minute
+                0x0000000000002b78        0x4 src/sm_watchapp.c.23.o
+ .data.unit.6535
+                0x0000000000002b7c        0x4 src/sm_watchapp.c.23.o
+ .data.date_text.6649
+                0x0000000000002b80        0xc src/sm_watchapp.c.23.o
+ .data.seconds_text.6645
+                0x0000000000002b8c        0x3 src/sm_watchapp.c.23.o
+ *fill*         0x0000000000002b8f        0x1 
+ .data.digit.6534
+                0x0000000000002b90        0x4 src/sm_watchapp.c.23.o
+ .data.s_sequence_number
+                0x0000000000002b94        0x4 src/sm_watchapp.c.23.o
+ .data.time_text.6646
+                0x0000000000002b98        0x6 src/sm_watchapp.c.23.o
+ .data.last_text
+                0x0000000000002b9e        0x9 src/sm_watchapp.c.23.o
+ *fill*         0x0000000000002ba7        0x1 
  .data.rel.ro.local.before_after
-                0x0000000000002b78        0x8 src/sm_watchapp.c.23.o
+                0x0000000000002ba8        0x8 src/sm_watchapp.c.23.o
  .data.rel.ro.local.day_of_week
-                0x0000000000002b80       0x1c src/sm_watchapp.c.23.o
+                0x0000000000002bb0       0x1c src/sm_watchapp.c.23.o
  .data.rel.ro.local.month_of_year
-                0x0000000000002b9c       0x30 src/sm_watchapp.c.23.o
+                0x0000000000002bcc       0x30 src/sm_watchapp.c.23.o
  .data.rel.ro.local.days_from_today
-                0x0000000000002bcc       0x10 src/sm_watchapp.c.23.o
+                0x0000000000002bfc       0x10 src/sm_watchapp.c.23.o
 
-.igot.plt       0x0000000000002bdc        0x0
+.igot.plt       0x0000000000002c0c        0x0
  .igot.plt      0x0000000000000000        0x0 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
 
-.got            0x0000000000002bdc       0x20
- .got           0x0000000000002bdc       0x20 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
+.got            0x0000000000002c0c       0x20
+ .got           0x0000000000002c0c       0x20 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
 
-.got.plt        0x0000000000002bfc        0xc
- .got.plt       0x0000000000002bfc        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
-                0x0000000000002bfc                _GLOBAL_OFFSET_TABLE_
+.got.plt        0x0000000000002c2c        0xc
+ .got.plt       0x0000000000002c2c        0xc /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
+                0x0000000000002c2c                _GLOBAL_OFFSET_TABLE_
 
-.bss            0x0000000000002c08      0x678
+.bss            0x0000000000002c38      0x678
  *(.bss)
  *(.bss.*)
  .bss.time_string.6544
-                0x0000000000002c08       0x14 src/sm_watchapp.c.23.o
+                0x0000000000002c38       0x14 src/sm_watchapp.c.23.o
  .bss.weather_img
-                0x0000000000002c1c        0x4 src/sm_watchapp.c.23.o
- .bss.ani_in    0x0000000000002c20        0x4 src/sm_watchapp.c.23.o
- .bss.window    0x0000000000002c24        0x4 src/sm_watchapp.c.23.o
- .bss.timerUpdateMusic
-                0x0000000000002c28        0x4 src/sm_watchapp.c.23.o
- .bss.animated_layer
-                0x0000000000002c2c        0x8 src/sm_watchapp.c.23.o
- .bss.music_artist_layer
-                0x0000000000002c34        0x4 src/sm_watchapp.c.23.o
- .bss.hideMusicLayer
-                0x0000000000002c38        0x4 src/sm_watchapp.c.23.o
- .bss.weather_temp_str
-                0x0000000000002c3c        0x5 src/sm_watchapp.c.23.o
- *fill*         0x0000000000002c41        0x3 
- .bss.time_format.6647
-                0x0000000000002c44        0x4 src/sm_watchapp.c.23.o
- .bss.text_date_layer
-                0x0000000000002c48        0x4 src/sm_watchapp.c.23.o
- .bss.status_layer
                 0x0000000000002c4c        0x4 src/sm_watchapp.c.23.o
- .bss.weather_image
-                0x0000000000002c50        0x4 src/sm_watchapp.c.23.o
- .bss.calendar_text_layer
-                0x0000000000002c54        0x4 src/sm_watchapp.c.23.o
- .bss.batteryPercent
+ .bss.ani_in    0x0000000000002c50        0x4 src/sm_watchapp.c.23.o
+ .bss.window    0x0000000000002c54        0x4 src/sm_watchapp.c.23.o
+ .bss.timerUpdateMusic
                 0x0000000000002c58        0x4 src/sm_watchapp.c.23.o
+ .bss.animated_layer
+                0x0000000000002c5c        0x8 src/sm_watchapp.c.23.o
+ .bss.music_artist_layer
+                0x0000000000002c64        0x4 src/sm_watchapp.c.23.o
+ .bss.hideMusicLayer
+                0x0000000000002c68        0x4 src/sm_watchapp.c.23.o
+ .bss.weather_temp_str
+                0x0000000000002c6c        0x5 src/sm_watchapp.c.23.o
+ *fill*         0x0000000000002c71        0x3 
+ .bss.time_format.6647
+                0x0000000000002c74        0x4 src/sm_watchapp.c.23.o
+ .bss.text_date_layer
+                0x0000000000002c78        0x4 src/sm_watchapp.c.23.o
+ .bss.status_layer
+                0x0000000000002c7c        0x4 src/sm_watchapp.c.23.o
+ .bss.weather_image
+                0x0000000000002c80        0x4 src/sm_watchapp.c.23.o
+ .bss.calendar_text_layer
+                0x0000000000002c84        0x4 src/sm_watchapp.c.23.o
+ .bss.batteryPercent
+                0x0000000000002c88        0x4 src/sm_watchapp.c.23.o
  .bss.music_title_str1
-                0x0000000000002c5c       0xff src/sm_watchapp.c.23.o
- *fill*         0x0000000000002d5b        0x1 
+                0x0000000000002c8c       0xff src/sm_watchapp.c.23.o
+ *fill*         0x0000000000002d8b        0x1 
  .bss.weather_layer
-                0x0000000000002d5c        0x4 src/sm_watchapp.c.23.o
+                0x0000000000002d8c        0x4 src/sm_watchapp.c.23.o
  .bss.music_song_layer
-                0x0000000000002d60        0x4 src/sm_watchapp.c.23.o
+                0x0000000000002d90        0x4 src/sm_watchapp.c.23.o
  .bss.calendar_date_str
-                0x0000000000002d64        0x4 src/sm_watchapp.c.23.o
+                0x0000000000002d94        0x4 src/sm_watchapp.c.23.o
  .bss.text_phone_layer
-                0x0000000000002d68        0x4 src/sm_watchapp.c.23.o
+                0x0000000000002d98        0x4 src/sm_watchapp.c.23.o
  .bss.phone_is_connected
-                0x0000000000002d6c        0x1 src/sm_watchapp.c.23.o
- *fill*         0x0000000000002d6d        0x3 
+                0x0000000000002d9c        0x1 src/sm_watchapp.c.23.o
+ *fill*         0x0000000000002d9d        0x3 
  .bss.text_sms_layer
-                0x0000000000002d70        0x4 src/sm_watchapp.c.23.o
+                0x0000000000002da0        0x4 src/sm_watchapp.c.23.o
  .bss.sms_count_str
-                0x0000000000002d74        0x5 src/sm_watchapp.c.23.o
+                0x0000000000002da4        0x5 src/sm_watchapp.c.23.o
  .bss.music_artist_str1
-                0x0000000000002d79       0xff src/sm_watchapp.c.23.o
+                0x0000000000002da9       0xff src/sm_watchapp.c.23.o
  .bss.background_image
-                0x0000000000002e78        0x4 src/sm_watchapp.c.23.o
- .bss.ani_out   0x0000000000002e7c        0x4 src/sm_watchapp.c.23.o
+                0x0000000000002ea8        0x4 src/sm_watchapp.c.23.o
+ .bss.ani_out   0x0000000000002eac        0x4 src/sm_watchapp.c.23.o
  .bss.text_seconds_layer
-                0x0000000000002e80        0x4 src/sm_watchapp.c.23.o
+                0x0000000000002eb0        0x4 src/sm_watchapp.c.23.o
  .bss.Watch_Face_Initialized
-                0x0000000000002e84        0x1 src/sm_watchapp.c.23.o
- *fill*         0x0000000000002e85        0x3 
+                0x0000000000002eb4        0x1 src/sm_watchapp.c.23.o
+ *fill*         0x0000000000002eb5        0x3 
  .bss.month_int.6651
-                0x0000000000002e88        0x4 src/sm_watchapp.c.23.o
+                0x0000000000002eb8        0x4 src/sm_watchapp.c.23.o
  .bss.active_layer
-                0x0000000000002e8c        0x4 src/sm_watchapp.c.23.o
+                0x0000000000002ebc        0x4 src/sm_watchapp.c.23.o
  .bss.text_weather_temp_layer
-                0x0000000000002e90        0x4 src/sm_watchapp.c.23.o
+                0x0000000000002ec0        0x4 src/sm_watchapp.c.23.o
  .bss.text_weather_cond_layer
-                0x0000000000002e94        0x4 src/sm_watchapp.c.23.o
+                0x0000000000002ec4        0x4 src/sm_watchapp.c.23.o
  .bss.date_time_for_appt.6545
-                0x0000000000002e98       0x32 src/sm_watchapp.c.23.o
+                0x0000000000002ec8       0x32 src/sm_watchapp.c.23.o
  .bss.weather_cond_str
-                0x0000000000002eca       0xff src/sm_watchapp.c.23.o
- *fill*         0x0000000000002fc9        0x3 
+                0x0000000000002efa       0xff src/sm_watchapp.c.23.o
+ *fill*         0x0000000000002ff9        0x3 
  .bss.text_battery_layer
-                0x0000000000002fcc        0x4 src/sm_watchapp.c.23.o
+                0x0000000000002ffc        0x4 src/sm_watchapp.c.23.o
  .bss.days_difference.6550
-                0x0000000000002fd0        0x4 src/sm_watchapp.c.23.o
+                0x0000000000003000        0x4 src/sm_watchapp.c.23.o
  .bss.calendar_text_str
-                0x0000000000002fd4       0xff src/sm_watchapp.c.23.o
- *fill*         0x00000000000030d3        0x1 
+                0x0000000000003004       0xff src/sm_watchapp.c.23.o
+ *fill*         0x0000000000003103        0x1 
  .bss.timerUpdateCalendar
-                0x00000000000030d4        0x4 src/sm_watchapp.c.23.o
- .bss.battery_image_layer
-                0x00000000000030d8        0x4 src/sm_watchapp.c.23.o
- .bss.offset.6533
-                0x00000000000030dc        0x4 src/sm_watchapp.c.23.o
- .bss.batteryPblPercent
-                0x00000000000030e0        0x4 src/sm_watchapp.c.23.o
- .bss.num_chars.6723
-                0x00000000000030e4        0x4 src/sm_watchapp.c.23.o
- .bss.general_Timer
-                0x00000000000030e8        0x4 src/sm_watchapp.c.23.o
- .bss.battery_pbl_layer
-                0x00000000000030ec        0x4 src/sm_watchapp.c.23.o
- .bss.day_int.6650
-                0x00000000000030f0        0x4 src/sm_watchapp.c.23.o
- .bss.mail_count_str
-                0x00000000000030f4        0x5 src/sm_watchapp.c.23.o
- *fill*         0x00000000000030f9        0x3 
- .bss.heure.6648
-                0x00000000000030fc        0x4 src/sm_watchapp.c.23.o
- .bss.timerUpdateWeather
-                0x0000000000003100        0x4 src/sm_watchapp.c.23.o
- .bss.calendar_date_layer
                 0x0000000000003104        0x4 src/sm_watchapp.c.23.o
- .bss.battery_pbl_image_layer
+ .bss.battery_image_layer
                 0x0000000000003108        0x4 src/sm_watchapp.c.23.o
- .bss.text_mail_layer
+ .bss.offset.6533
                 0x000000000000310c        0x4 src/sm_watchapp.c.23.o
+ .bss.batteryPblPercent
+                0x0000000000003110        0x4 src/sm_watchapp.c.23.o
+ .bss.num_chars.6723
+                0x0000000000003114        0x4 src/sm_watchapp.c.23.o
+ .bss.general_Timer
+                0x0000000000003118        0x4 src/sm_watchapp.c.23.o
+ .bss.battery_pbl_layer
+                0x000000000000311c        0x4 src/sm_watchapp.c.23.o
+ .bss.day_int.6650
+                0x0000000000003120        0x4 src/sm_watchapp.c.23.o
+ .bss.mail_count_str
+                0x0000000000003124        0x5 src/sm_watchapp.c.23.o
+ *fill*         0x0000000000003129        0x3 
+ .bss.heure.6648
+                0x000000000000312c        0x4 src/sm_watchapp.c.23.o
+ .bss.timerUpdateWeather
+                0x0000000000003130        0x4 src/sm_watchapp.c.23.o
+ .bss.calendar_date_layer
+                0x0000000000003134        0x4 src/sm_watchapp.c.23.o
+ .bss.battery_pbl_image_layer
+                0x0000000000003138        0x4 src/sm_watchapp.c.23.o
+ .bss.text_mail_layer
+                0x000000000000313c        0x4 src/sm_watchapp.c.23.o
  .bss.date_of_appt.6543
-                0x0000000000003110       0x1e src/sm_watchapp.c.23.o
+                0x0000000000003140       0x1e src/sm_watchapp.c.23.o
  .bss.string_buffer
-                0x000000000000312e       0xff src/sm_watchapp.c.23.o
- *fill*         0x000000000000322d        0x3 
+                0x000000000000315e       0xff src/sm_watchapp.c.23.o
+ *fill*         0x000000000000325d        0x3 
  .bss.text_time_layer
-                0x0000000000003230        0x4 src/sm_watchapp.c.23.o
+                0x0000000000003260        0x4 src/sm_watchapp.c.23.o
  .bss.battery_layer
-                0x0000000000003234        0x4 src/sm_watchapp.c.23.o
+                0x0000000000003264        0x4 src/sm_watchapp.c.23.o
  .bss.letter.6536
-                0x0000000000003238        0x1 src/sm_watchapp.c.23.o
+                0x0000000000003268        0x1 src/sm_watchapp.c.23.o
  .bss.phone_count_str
-                0x0000000000003239        0x5 src/sm_watchapp.c.23.o
- *fill*         0x000000000000323e        0x2 
- COMMON         0x0000000000003240       0x40 src/sm_watchapp.c.23.o
-                0x0000000000003240                battery_image
-                0x0000000000003244                font_secs
-                0x0000000000003248                weather_status_imgs
-                0x000000000000326c                font_date
-                0x0000000000003270                battery_pbl_image
-                0x0000000000003274                font_time
-                0x0000000000003278                appointment
-                0x000000000000327c                bg_image
+                0x0000000000003269        0x5 src/sm_watchapp.c.23.o
+ *fill*         0x000000000000326e        0x2 
+ COMMON         0x0000000000003270       0x40 src/sm_watchapp.c.23.o
+                0x0000000000003270                battery_image
+                0x0000000000003274                font_secs
+                0x0000000000003278                weather_status_imgs
+                0x000000000000329c                font_date
+                0x00000000000032a0                battery_pbl_image
+                0x00000000000032a4                font_time
+                0x00000000000032a8                appointment
+                0x00000000000032ac                bg_image
 
 DISCARD
  libc.a(*)
@@ -1120,22 +1120,22 @@ OUTPUT(/Users/alexandrejouandin/Documents/GitHub/jay-Status/build/pebble-app.elf
  .comment       0x0000000000000000       0x4f appinfo.auto.c.23.o
  .comment       0x0000000000000000       0x4f /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtend.o
 
-.debug_info     0x0000000000000000     0x4564
- .debug_info    0x0000000000000000     0x3fb7 src/sm_watchapp.c.23.o
- .debug_info    0x0000000000003fb7      0x382 appinfo.auto.c.23.o
- .debug_info    0x0000000000004339       0xb9 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
- .debug_info    0x00000000000043f2       0xb9 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
- .debug_info    0x00000000000044ab       0xb9 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
+.debug_info     0x0000000000000000     0x4594
+ .debug_info    0x0000000000000000     0x3fe7 src/sm_watchapp.c.23.o
+ .debug_info    0x0000000000003fe7      0x382 appinfo.auto.c.23.o
+ .debug_info    0x0000000000004369       0xb9 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
+ .debug_info    0x0000000000004422       0xb9 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
+ .debug_info    0x00000000000044db       0xb9 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
 
-.debug_abbrev   0x0000000000000000      0x674
- .debug_abbrev  0x0000000000000000      0x58d src/sm_watchapp.c.23.o
- .debug_abbrev  0x000000000000058d       0xab appinfo.auto.c.23.o
- .debug_abbrev  0x0000000000000638       0x14 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
- .debug_abbrev  0x000000000000064c       0x14 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
- .debug_abbrev  0x0000000000000660       0x14 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
+.debug_abbrev   0x0000000000000000      0x66b
+ .debug_abbrev  0x0000000000000000      0x584 src/sm_watchapp.c.23.o
+ .debug_abbrev  0x0000000000000584       0xab appinfo.auto.c.23.o
+ .debug_abbrev  0x000000000000062f       0x14 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
+ .debug_abbrev  0x0000000000000643       0x14 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
+ .debug_abbrev  0x0000000000000657       0x14 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
 
-.debug_loc      0x0000000000000000      0xe4d
- .debug_loc     0x0000000000000000      0xe4d src/sm_watchapp.c.23.o
+.debug_loc      0x0000000000000000      0xe87
+ .debug_loc     0x0000000000000000      0xe87 src/sm_watchapp.c.23.o
 
 .debug_aranges  0x0000000000000000      0x198
  .debug_aranges
@@ -1152,12 +1152,12 @@ OUTPUT(/Users/alexandrejouandin/Documents/GitHub/jay-Status/build/pebble-app.elf
 .debug_ranges   0x0000000000000000      0x230
  .debug_ranges  0x0000000000000000      0x230 src/sm_watchapp.c.23.o
 
-.debug_line     0x0000000000000000      0xe7b
- .debug_line    0x0000000000000000      0x891 src/sm_watchapp.c.23.o
- .debug_line    0x0000000000000891      0x134 appinfo.auto.c.23.o
- .debug_line    0x00000000000009c5      0x20a /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
- .debug_line    0x0000000000000bcf      0x226 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
- .debug_line    0x0000000000000df5       0x86 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
+.debug_line     0x0000000000000000      0xe7f
+ .debug_line    0x0000000000000000      0x895 src/sm_watchapp.c.23.o
+ .debug_line    0x0000000000000895      0x134 appinfo.auto.c.23.o
+ .debug_line    0x00000000000009c9      0x20a /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_addsubdf3.o)
+ .debug_line    0x0000000000000bd3      0x226 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_muldivdf3.o)
+ .debug_line    0x0000000000000df9       0x86 /Users/alexandrejouandin/pebble-dev/PebbleSDK-2.0.1/arm-cs-tools/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a(_arm_fixdfsi.o)
 
 .debug_str      0x0000000000000000     0x1a8d
  .debug_str     0x0000000000000000     0x193e src/sm_watchapp.c.23.o

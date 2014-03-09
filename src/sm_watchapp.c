@@ -410,10 +410,9 @@ static void update_all(ClickRecognizerRef recognizer, void *context) {
 	if (phone_is_connected) {
 		reset();
 		sendCommandInt(SM_SCREEN_ENTER_KEY, STATUS_SCREEN_APP);
-	} /* else {
-		layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false);
-		layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true);
-	}*/
+	} else {
+		display_Notification("iPhone", STRING_DISCONNECTED, 2000);
+	}
 }
 
 static void call_siri(ClickRecognizerRef recognizer, void *context) {
@@ -473,6 +472,9 @@ static void animate_layers(ClickRecognizerRef recognizer, void *context){
 
 	ani_out = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(0, 100, 143, 45), &GRect(-138, 100, 143, 45)); // &GRect(0, 124, 143, 45), &GRect(-138, 124, 143, 45));
 	animation_schedule((Animation*)ani_out);
+	
+	if (hideMusicLayer != NULL) 
+			app_timer_cancel(hideMusicLayer);
 
 	active_layer = (active_layer + 1) % (NUM_LAYERS);
 
@@ -657,8 +659,8 @@ static void init(void) {
   window_stack_push(window, animated);
   // Choose fonts
 font_date = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_CONDENSED_21));
-font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_47));
-font_secs = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_20));
+font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52));
+font_secs = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_25));
 
 	//init weather images
 	for (int i=0; i<NUM_WEATHER_IMAGES; i++) {
@@ -747,7 +749,7 @@ layer_add_child(window_layer, status_layer);
 	layer_mark_dirty(battery_pbl_layer);
 
 
-	text_weather_cond_layer = text_layer_create(GRect(5, 15, 100, 20)); // GRect(5, 2, 47, 40)
+	text_weather_cond_layer = text_layer_create(GRect(5, 15, 139, 30)); // GRect(5, 2, 47, 40)
 	text_layer_set_text_alignment(text_weather_cond_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(text_weather_cond_layer, GColorWhite);
 	text_layer_set_background_color(text_weather_cond_layer, GColorClear);
@@ -793,7 +795,7 @@ layer_add_child(window_layer, status_layer);
 	text_layer_set_text_alignment(text_time_layer, GTextAlignmentLeft); //Previous was center
 	text_layer_set_text_color(text_time_layer, GColorWhite);
 	text_layer_set_background_color(text_time_layer, GColorClear);
-	layer_set_frame(text_layer_get_layer(text_time_layer), GRect(0, 27, 120, 55)); // GRect(0, -5, 144, 55));
+	layer_set_frame(text_layer_get_layer(text_time_layer), GRect(5, 25, 115, 55)); // GRect(0, -5, 144, 55));
 	text_layer_set_font(text_time_layer, font_time);
 	layer_add_child(window_layer, text_layer_get_layer(text_time_layer));
 
@@ -801,7 +803,7 @@ layer_add_child(window_layer, status_layer);
 	text_layer_set_text_alignment(text_seconds_layer, GTextAlignmentLeft); //Previous was center
 	text_layer_set_text_color(text_seconds_layer, GColorWhite);
 	text_layer_set_background_color(text_seconds_layer, GColorClear);
-	layer_set_frame(text_layer_get_layer(text_seconds_layer), GRect(120, 37, 24, 24)); // GRect(0, -5, 144, 55));
+	layer_set_frame(text_layer_get_layer(text_seconds_layer), GRect(120, 35, 24, 24)); // GRect(0, -5, 144, 55));
 	text_layer_set_font(text_seconds_layer, font_secs);
 	layer_add_child(window_layer, text_layer_get_layer(text_seconds_layer));
 
