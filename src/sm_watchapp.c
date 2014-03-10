@@ -9,7 +9,7 @@
 	© Alexandre Jouandin : https://github.com/Allezxandre/Smart-FrenchIze
 	Idea by J Dishaw
 */
-//#define DEBUG 1
+#define DEBUG 1
 #define STRING_LENGTH 255
 #define NUM_WEATHER_IMAGES	9
 #define VIBE_ON_HOUR true
@@ -698,30 +698,30 @@ font_secs = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_25)
 status_layer = layer_create(GRect(0, 148, 144, 20));
 layer_add_child(window_layer, status_layer);
 
-		text_mail_layer = text_layer_create(GRect(24, -3, 11, 20));
+		text_mail_layer = text_layer_create(GRect(24, -3, 24, 20));
 		text_layer_set_text_alignment(text_mail_layer, GTextAlignmentCenter);
 		text_layer_set_text_color(text_mail_layer, GColorWhite);
 		text_layer_set_background_color(text_mail_layer, GColorClear);
 		text_layer_set_font(text_mail_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
 		layer_add_child(status_layer, text_layer_get_layer(text_mail_layer));
-		text_layer_set_text(text_mail_layer, "-"); 	
+		text_layer_set_text(text_mail_layer, "--"); 	
 
 
-		text_sms_layer = text_layer_create(GRect(72, -3, 11, 20));
+		text_sms_layer = text_layer_create(GRect(72, -3, 24, 20));
 		text_layer_set_text_alignment(text_sms_layer, GTextAlignmentCenter);
 		text_layer_set_text_color(text_sms_layer, GColorWhite);
 		text_layer_set_background_color(text_sms_layer, GColorClear);
 		text_layer_set_font(text_sms_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18));
 		layer_add_child(status_layer, text_layer_get_layer(text_sms_layer));
-		text_layer_set_text(text_sms_layer, "-"); 	
+		text_layer_set_text(text_sms_layer, "--"); 	
 
-		text_phone_layer = text_layer_create(GRect(120, -3, 11, 20));
+		text_phone_layer = text_layer_create(GRect(120, -3, 24, 20));
 		text_layer_set_text_alignment(text_phone_layer, GTextAlignmentCenter);
 		text_layer_set_text_color(text_phone_layer, GColorWhite);
 		text_layer_set_background_color(text_phone_layer, GColorClear);
 		text_layer_set_font(text_phone_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18));
 		layer_add_child(status_layer, text_layer_get_layer(text_phone_layer));
-		text_layer_set_text(text_phone_layer, "-"); 
+		text_layer_set_text(text_phone_layer, "--"); 
 
 	text_battery_layer = text_layer_create(GRect(99, 20, 40, 60)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_battery_layer, GTextAlignmentCenter);
@@ -770,7 +770,7 @@ layer_add_child(window_layer, status_layer);
 	bitmap_layer_set_bitmap(weather_image, weather_status_imgs[weather_img]);
 
 
-	text_weather_temp_layer = text_layer_create(GRect(25, 0, 100, 20));  // GRect(48, 3, 48, 40)); 
+	text_weather_temp_layer = text_layer_create(GRect(25, -2, 100, 20));  // GRect(48, 3, 48, 40)); 
 	text_layer_set_text_alignment(text_weather_temp_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(text_weather_temp_layer, GColorWhite);
 	text_layer_set_background_color(text_weather_temp_layer, GColorClear);
