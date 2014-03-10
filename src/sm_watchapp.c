@@ -58,8 +58,10 @@ static char sms_count_str[5], mail_count_str[5], phone_count_str[5];
 static int weather_img, batteryPercent, batteryPblPercent;
 
 static char *calendar_date_str;
+static char *music_title_str1;
 static char calendar_text_str[STRING_LENGTH];
-static char music_artist_str1[STRING_LENGTH], music_title_str1[STRING_LENGTH];
+static char music_artist_str1[STRING_LENGTH];
+// static char music_artist_str1[STRING_LENGTH], music_title_str1[STRING_LENGTH];
 
 
 GBitmap *bg_image, *battery_image, *battery_pbl_image;
