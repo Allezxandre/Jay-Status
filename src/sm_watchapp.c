@@ -472,9 +472,6 @@ static void animate_layers(ClickRecognizerRef recognizer, void *context){
 
 	ani_out = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(0, 100, 143, 45), &GRect(-138, 100, 143, 45)); // &GRect(0, 124, 143, 45), &GRect(-138, 124, 143, 45));
 	animation_schedule((Animation*)ani_out);
-	
-	if (hideMusicLayer != NULL) 
-			app_timer_cancel(hideMusicLayer);
 
 	active_layer = (active_layer + 1) % (NUM_LAYERS);
 
@@ -916,6 +913,11 @@ static void deinit(void) {
 	layer_destroy(weather_layer);
 	layer_destroy(status_layer);
 	
+	if (music_title_str1 != NULL) {
+		free(music_title_str1);
+		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] 'music_title_str1' memory is now free");
+	}
+
 	if (calendar_date_str != NULL) {
  		free(calendar_date_str);
  		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] 'calendar_date_str' memory is now free");
@@ -1076,6 +1078,21 @@ void rcv(DictionaryIterator *received, void *context) {
 
 	t=dict_find(received, SM_STATUS_MUS_TITLE_KEY); 
 	if (t!=NULL) {
+		if (music_title_str1 != NULL) {
+ 			APP_LOG(APP_LOG_LEVEL_DEBUG,"[ ] sizeof(music_title_str1) = %i",sizeof(music_title_str1));
+			free(music_title_str1);
+			APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] music_title_str1 is no more allocated");
+ 		}
+ 		static int num_chars;
+ 		num_chars = strlen(t->value->cstring);
+ 		music_title_str1 = (char *)malloc(sizeof(char) * num_chars);
+ 		if (music_title_str1 == NULL) {
+ 			APP_LOG(APP_LOG_LEVEL_ERROR,"[/] Malloc << music_title_str1 | Request: (num_chars = %i)",num_chars);
+ 		} else {
+ 			APP_LOG(APP_LOG_LEVEL_DEBUG,"[A] Malloc << music_title_str1 | Request: (num_chars * sizeof(char) = %i * %i)",
+ 				num_chars, (int)(sizeof(char)));
+ 			phone_is_connected = true;
+ 		}
 		memcpy(music_title_str1, t->value->cstring, strlen(t->value->cstring));
         music_title_str1[strlen(t->value->cstring)] = '\0';
 		APP_LOG(APP_LOG_LEVEL_DEBUG,"New music title received is %s",music_title_str1);
@@ -1083,7 +1100,9 @@ void rcv(DictionaryIterator *received, void *context) {
 		if ((strncmp(last_text,music_title_str1,8) != 0) && (strncmp(music_title_str1,"No Title",8) != 0)) {
 			strncpy(last_text,music_title_str1,8);
 			if (active_layer != MUSIC_LAYER) 
+				APP_LOG(APP_LOG_LEVEL_DEBUG,"I'm about to animate layers. Maybe the bug is here");
 				animate_layers(NULL,NULL);
+				APP_LOG(APP_LOG_LEVEL_DEBUG,"NOPE! animate_layers seems to work...");
 			if (hideMusicLayer != NULL) 
 				app_timer_cancel(hideMusicLayer);
 			hideMusicLayer = app_timer_register(5000 , auto_switch, NULL);
