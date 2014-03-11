@@ -12,7 +12,7 @@
 #define DEBUG 1
 #define STRING_LENGTH 255
 #define NUM_WEATHER_IMAGES	9
-#define VIBE_ON_HOUR true
+//#define VIBE_ON_HOUR true
 
 #ifndef DEBUG
 	#pragma message "---- COMPILING IN RELEASE MODE - NO LOGGING WILL BE AVAILABLE ----"
@@ -44,7 +44,7 @@ static Layer *status_layer;
 static TextLayer *text_date_layer, *text_time_layer, *text_seconds_layer;
 
 static TextLayer *text_mail_layer, *text_sms_layer, *text_phone_layer;
-static TextLayer *text_weather_cond_layer, *text_weather_temp_layer, *text_battery_layer;
+static TextLayer *text_weather_cond_layer, *text_weather_temp_layer, *text_battery_layer, *text_pebble_battery_layer;
 static TextLayer *calendar_date_layer, *calendar_text_layer;
 static TextLayer *music_artist_layer, *music_song_layer;
  
@@ -438,12 +438,13 @@ static void notif_find_my_iphone(ClickRecognizerRef recognizer, void *context) {
 		display_Notification("iPhone", STRING_DISCONNECTED, 2000);
 	}
 }
-/* static void find_my_iphone(ClickRecognizerRef recognizer, void *context) {
+
+static void find_my_iphone(ClickRecognizerRef recognizer, void *context) {
 	if (phone_is_connected) {
 		vibes_long_pulse();
 	}
 	sendCommand(SM_FIND_MY_PHONE_KEY);
-} */
+}
 
 static void turn_off_the_light(void *data) {
 		light_enable(false);
@@ -451,6 +452,14 @@ static void turn_off_the_light(void *data) {
 			app_timer_cancel(general_Timer);
 			general_Timer = NULL;
 		}
+}
+
+static void volume_increase(ClickRecognizerRef recognizer, void *context) {
+	sendCommand(SM_VOLUME_UP_KEY);
+}
+
+static void volume_decrease(ClickRecognizerRef recognizer, void *context) {
+	sendCommand(SM_VOLUME_DOWN_KEY);
 }
 
 static void play_pause_action(ClickRecognizerRef recognizer, void *context) {
@@ -490,11 +499,12 @@ static void animate_layers(ClickRecognizerRef recognizer, void *context){
 
 
 static void click_config_provider(void *context) {
-  window_long_click_subscribe(BUTTON_ID_UP, 750, call_siri, NULL);
-  window_single_click_subscribe(BUTTON_ID_SELECT, animate_layers);
-  window_single_click_subscribe(BUTTON_ID_DOWN, update_all);
-  window_long_click_subscribe(BUTTON_ID_SELECT, 750, play_pause_action, NULL);
-  window_long_click_subscribe(BUTTON_ID_DOWN, 750, next_track_action, NULL);
+  window_long_click_subscribe(BUTTON_ID_UP, 3000, notif_find_my_iphone, find_my_iphone);
+  window_single_click_subscribe(BUTTON_ID_UP, call_siri);
+  window_single_click_subscribe(BUTTON_ID_SELECT, volume_decrease);
+  window_single_click_subscribe(BUTTON_ID_DOWN, next_track_action);
+  window_long_click_subscribe(BUTTON_ID_SELECT, 250, volume_increase, NULL);
+  window_long_click_subscribe(BUTTON_ID_DOWN, 750, play_pause_action, NULL);
 }
 
 static void window_load(Window *window) {
@@ -539,6 +549,9 @@ void battery_pbl_layer_update_callback(Layer *me, GContext* ctx) {
 
 	graphics_fill_rect(ctx, GRect(2+16-(int)((batteryPblPercent/100.0)*16.0), 2, (int)((batteryPblPercent/100.0)*16.0), 8), 0, GCornerNone);
 	
+	static char pbl_batt_text[3];
+	snprintf(pbl_batt_text,3,"%02i",batteryPblPercent);
+	text_layer_set_text(text_pebble_battery_layer,pbl_batt_text);
 }
 
 
@@ -565,12 +578,9 @@ if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) 
 	static char time_text[] = "00:00";
 	static char *time_format;
 
-	static int heure;
-	heure = tick_time->tm_hour;
-
 	
   // TODO: Only update the date when it's changed. // DONE ! Even with SECOND ticks
-	if ((units_changed & DAY_UNIT) == DAY_UNIT|| (!Watch_Face_Initialized) ){
+	if ((units_changed & DAY_UNIT) == DAY_UNIT || (!Watch_Face_Initialized) ){
 		  Watch_Face_Initialized = true;
   	static char date_text[] = "DAY 00 MOIS";
   		// Get the day and month as int
@@ -600,13 +610,16 @@ if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) 
     memmove(time_text, &time_text[1], sizeof(time_text) - 1);
   }
 
-	
-	// Don't forget the "heure" variable if you copy this small paragraph
+// Hourly vibe	
+  #ifdef VIBE_ON_HOUR
+	static int heure;
+	heure = tick_time->tm_hour;
   if (((units_changed & HOUR_UNIT) == HOUR_UNIT) && ((heure > 9) && (heure < 23))){
     vibes_double_pulse();
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Hour changed -> Vibration complete");
   } else {APP_LOG(APP_LOG_LEVEL_DEBUG, "However, Hour Unit did not change, no vibration");}
-	
+  #endif
+
   text_layer_set_text(text_time_layer, time_text);
 }
 
@@ -729,30 +742,37 @@ layer_add_child(window_layer, status_layer);
 		layer_add_child(status_layer, text_layer_get_layer(text_phone_layer));
 		text_layer_set_text(text_phone_layer, "--"); 
 
-	text_battery_layer = text_layer_create(GRect(99, 20, 40, 60)); // GRect(99, 20, 40, 60));
+
+	battery_layer = layer_create(GRect(107, 6, 19, 30)); // GRect(102, 8, 19, 11)); GRect(105, -1, 37, 14)
+	layer_set_update_proc(battery_layer, battery_layer_update_callback);
+	layer_add_child(weather_layer, battery_layer);
+
+	text_battery_layer = text_layer_create(GRect(0, 11, 19, 19)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_battery_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_battery_layer, GColorWhite);
 	text_layer_set_background_color(text_battery_layer, GColorClear);
 	text_layer_set_font(text_battery_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
-	layer_add_child(weather_layer, text_layer_get_layer(text_battery_layer));
+	layer_add_child(battery_layer, text_layer_get_layer(text_battery_layer));
 	text_layer_set_text(text_battery_layer, "-");
-	layer_set_hidden(text_layer_get_layer(text_battery_layer), true);
-
-
-	battery_layer = layer_create(GRect(107, 6, 19, 11)); // GRect(102, 8, 19, 11)); GRect(105, -1, 37, 14)
-	layer_set_update_proc(battery_layer, battery_layer_update_callback);
-	layer_add_child(weather_layer, battery_layer);
 
 	batteryPercent = 100;
 	layer_mark_dirty(battery_layer);
 
-	battery_pbl_layer = layer_create(GRect(70, 6, 19, 11)); // GRect(102, 24, 19, 11)); GRect(68, -1, 37, 14)
+	battery_pbl_layer = layer_create(GRect(70, 6, 19, 30)); // GRect(102, 24, 19, 11)); GRect(68, -1, 37, 14)
 	layer_set_update_proc(battery_pbl_layer, battery_pbl_layer_update_callback);
 	layer_add_child(weather_layer, battery_pbl_layer);
 
 	BatteryChargeState pbl_batt = battery_state_service_peek();
 	batteryPblPercent = pbl_batt.charge_percent;
 	layer_mark_dirty(battery_pbl_layer);
+
+	text_pebble_battery_layer = text_layer_create(GRect(0, 11, 19, 19)); // GRect(99, 20, 40, 60));
+	text_layer_set_text_alignment(text_pebble_battery_layer, GTextAlignmentCenter);
+	text_layer_set_text_color(text_pebble_battery_layer, GColorWhite);
+	text_layer_set_background_color(text_pebble_battery_layer, GColorClear);
+	text_layer_set_font(text_pebble_battery_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+	layer_add_child(battery_pbl_layer, text_layer_get_layer(text_pebble_battery_layer));
+	text_layer_set_text(text_pebble_battery_layer, "-");
 
 
 	text_weather_cond_layer = text_layer_create(GRect(5, 15, 139, 30)); // GRect(5, 2, 47, 40)
@@ -904,6 +924,7 @@ static void deinit(void) {
 	bitmap_layer_destroy(battery_image_layer);
 	bitmap_layer_destroy(battery_pbl_image_layer);
 	text_layer_destroy(text_battery_layer);
+	text_layer_destroy(text_pebble_battery_layer);
 	layer_destroy(battery_layer);
 	layer_destroy(battery_pbl_layer);
 	text_layer_destroy(text_weather_cond_layer);

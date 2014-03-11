@@ -22,7 +22,7 @@ static const char *days_from_today[] = { "Demain", "Après-demain", "Dans 3 jour
 // Change the "Translation" Column
 
 //		NAME of the strings 		 Translation 			   English Translation
-#define STRING_UPDATING				"Mise à jour..."		// "Updating..."
+#define STRING_UPDATING				"Mise à jour"			// "Updating..."
 #define STRING_CONNECTED 			"Connecté"				// "Connected"
 #define STRING_DISCONNECTED			"Déconnecté"			// "Disconnected"
 #define STRING_DEFAULT_CALENDAR_1	"Aucun"					// "No"
