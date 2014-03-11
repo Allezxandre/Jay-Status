@@ -7,6 +7,7 @@
 	All credits go to Robhh
 	© Robhh : https://github.com/robhh/SmartStatus-AppStore
 	© Alexandre Jouandin : https://github.com/Allezxandre/Smart-FrenchIze
+	Idea by J Dishaw
 */
 #define DEBUG 1
 #define STRING_LENGTH 255
@@ -28,7 +29,7 @@ static int last_run_minute = -1;
 enum {CALENDAR_LAYER, MUSIC_LAYER, NUM_LAYERS};
 
 static void reset();
-static void animate_layers();
+static void animate_layers(ClickRecognizerRef recognizer, void *context);
 static void auto_switch(void *data);
 static void display_Notification(char *text1, char *text2, int time);
 
@@ -40,7 +41,7 @@ static Layer *animated_layer[NUM_LAYERS], *weather_layer;
 static Layer *battery_layer, *battery_pbl_layer;
 static Layer *status_layer;
 
-static TextLayer *text_date_layer, *text_time_layer;
+static TextLayer *text_date_layer, *text_time_layer, *text_seconds_layer;
 
 static TextLayer *text_mail_layer, *text_sms_layer, *text_phone_layer;
 static TextLayer *text_weather_cond_layer, *text_weather_temp_layer, *text_battery_layer;
@@ -57,8 +58,10 @@ static char sms_count_str[5], mail_count_str[5], phone_count_str[5];
 static int weather_img, batteryPercent, batteryPblPercent;
 
 static char *calendar_date_str;
+static char *music_title_str1;
 static char calendar_text_str[STRING_LENGTH];
-static char music_artist_str1[STRING_LENGTH], music_title_str1[STRING_LENGTH];
+static char music_artist_str1[STRING_LENGTH];
+// static char music_artist_str1[STRING_LENGTH], music_title_str1[STRING_LENGTH];
 
 
 GBitmap *bg_image, *battery_image, *battery_pbl_image;
@@ -73,6 +76,7 @@ static AppTimer *general_Timer = NULL;
 /* Preload the fonts */
 GFont font_date;
 GFont font_time;
+GFont font_secs;
 
 const int WEATHER_IMG_IDS[] = {	
   RESOURCE_ID_IMAGE_SUN,
@@ -390,38 +394,39 @@ static void display_Notification(char *text1, char *text2, int time) {
 			app_timer_cancel(hideMusicLayer);
 		hideMusicLayer = app_timer_register(time , auto_switch, NULL);
 		if (active_layer != MUSIC_LAYER) 
-				animate_layers();
+				animate_layers(NULL,NULL);
 		text_layer_set_text(music_artist_layer, text1);
 		text_layer_set_text(music_song_layer, text2);
 		strncpy(last_text,"12345678",8);
 	}
 
 
-static void select_click_down_handler(ClickRecognizerRef recognizer, void *context) {
+/*static void select_click_down_handler(ClickRecognizerRef recognizer, void *context) {
 	//show the weather condition instead of temperature while center button is pressed
 	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), true);
 	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false);
-}
+} */
 
-static void select_click_up_handler(ClickRecognizerRef recognizer, void *context) {
+static void update_all(ClickRecognizerRef recognizer, void *context) {
 	//update all data
 	if (phone_is_connected) {
 		reset();
 		sendCommandInt(SM_SCREEN_ENTER_KEY, STATUS_SCREEN_APP);
 	} else {
-		layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false);
-		layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true);
+		display_Notification("iPhone", STRING_DISCONNECTED, 2000);
 	}
 }
 
-static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
+static void call_siri(ClickRecognizerRef recognizer, void *context) {
 	sendCommand(SM_OPEN_SIRI_KEY);
 }
 
-static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
+static void next_track_action(ClickRecognizerRef recognizer, void *context) {
 	if (phone_is_connected) {sendCommand(SM_NEXT_TRACK_KEY);} else {light_enable(false);}
-	if (hideMusicLayer != NULL) 
+	if (hideMusicLayer != NULL) {
 			app_timer_cancel(hideMusicLayer);
+			hideMusicLayer = NULL;
+	}
 	auto_switch(NULL);
 }
 
@@ -433,12 +438,12 @@ static void notif_find_my_iphone(ClickRecognizerRef recognizer, void *context) {
 		display_Notification("iPhone", STRING_DISCONNECTED, 2000);
 	}
 }
-static void find_my_iphone(ClickRecognizerRef recognizer, void *context) {
+/* static void find_my_iphone(ClickRecognizerRef recognizer, void *context) {
 	if (phone_is_connected) {
 		vibes_long_pulse();
 	}
 	sendCommand(SM_FIND_MY_PHONE_KEY);
-}
+} */
 
 static void turn_off_the_light(void *data) {
 		light_enable(false);
@@ -448,7 +453,7 @@ static void turn_off_the_light(void *data) {
 		}
 }
 
-static void held_down_button_down(ClickRecognizerRef recognizer, void *context) {
+static void play_pause_action(ClickRecognizerRef recognizer, void *context) {
 	if (phone_is_connected) { // If phone is connected, we play music
 		strncpy(last_text,"12345678",8); // We kind of force a new displaying of song
 		sendCommand(SM_PLAYPAUSE_KEY);
@@ -462,7 +467,7 @@ static void held_down_button_down(ClickRecognizerRef recognizer, void *context) 
 	}
 }
 
-static void animate_layers(){
+static void animate_layers(ClickRecognizerRef recognizer, void *context){
 	//slide layers in/out
 
 	property_animation_destroy((PropertyAnimation*)ani_in);
@@ -472,6 +477,11 @@ static void animate_layers(){
 	ani_out = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(0, 100, 143, 45), &GRect(-138, 100, 143, 45)); // &GRect(0, 124, 143, 45), &GRect(-138, 124, 143, 45));
 	animation_schedule((Animation*)ani_out);
 
+	if (hideMusicLayer != NULL) {
+			app_timer_cancel(hideMusicLayer);
+			hideMusicLayer = NULL;
+	}
+
 	active_layer = (active_layer + 1) % (NUM_LAYERS);
 
 	ani_in = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(138, 100, 144, 45), &GRect(0, 100, 144, 45)); // &GRect(138, 124, 144, 45), &GRect(0, 124, 144, 45));
@@ -480,11 +490,11 @@ static void animate_layers(){
 
 
 static void click_config_provider(void *context) {
-  window_raw_click_subscribe(BUTTON_ID_SELECT, select_click_down_handler, select_click_up_handler, context);
-  window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
-  window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
-  window_long_click_subscribe(BUTTON_ID_UP, 3000, notif_find_my_iphone, find_my_iphone);
-  window_long_click_subscribe(BUTTON_ID_DOWN, 500, held_down_button_down, NULL);
+  window_long_click_subscribe(BUTTON_ID_UP, 750, call_siri, NULL);
+  window_single_click_subscribe(BUTTON_ID_SELECT, animate_layers);
+  window_single_click_subscribe(BUTTON_ID_DOWN, update_all);
+  window_long_click_subscribe(BUTTON_ID_SELECT, 750, play_pause_action, NULL);
+  window_long_click_subscribe(BUTTON_ID_DOWN, 750, next_track_action, NULL);
 }
 
 static void window_load(Window *window) {
@@ -533,17 +543,23 @@ void battery_pbl_layer_update_callback(Layer *me, GContext* ctx) {
 
 
 void reset() {
-	
+	/*
 	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), true);
-	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false);
+	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false); */
 	text_layer_set_text(text_weather_cond_layer, STRING_UPDATING); 	
 	
 }
 
 
 void handle_second_tick(struct tm *tick_time, TimeUnits units_changed) {
-	if ((((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized)) && (calendar_date_str != NULL)) 
-		{apptDisplay(calendar_date_str);}
+	
+	// Seconds Display
+	static char seconds_text[] = "00";
+	strftime(seconds_text, sizeof(seconds_text), "%S", tick_time);
+	text_layer_set_text(text_seconds_layer, seconds_text);
+
+	
+
 if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) ){
 	// Need to be static because they're used by the system later.
 	static char time_text[] = "00:00";
@@ -593,6 +609,10 @@ if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) 
 	
   text_layer_set_text(text_time_layer, time_text);
 }
+
+if ((((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized)) && (calendar_date_str != NULL)) 
+	{apptDisplay(calendar_date_str);}
+
 }
 
 
@@ -645,7 +665,8 @@ static void init(void) {
   window_stack_push(window, animated);
   // Choose fonts
 font_date = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_CONDENSED_21));
-font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52));
+font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_46));
+font_secs = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_20));
 
 	//init weather images
 	for (int i=0; i<NUM_WEATHER_IMAGES; i++) {
@@ -666,47 +687,47 @@ font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_52)
 	
 
 	//init weather layer and add weather image, weather condition, temperature, and battery indicator
-	weather_layer = layer_create(GRect(0, 7, 144, 45)); // GRect(0, 78, 144, 45));
+	weather_layer = layer_create(GRect(0, 0, 144, 45)); // GRect(0, 78, 144, 45));
 	layer_add_child(window_layer, weather_layer);
 
 	battery_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_PHONE);
 	battery_pbl_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_PEBBLE);
 
-	battery_image_layer = bitmap_layer_create(GRect(100, -1, 37, 14)); // GRect(100, 7, 37, 14));
+	battery_image_layer = bitmap_layer_create(GRect(105, 5, 37, 14)); // GRect(100, 7, 37, 14));
 	layer_add_child(weather_layer, bitmap_layer_get_layer(battery_image_layer));
 	bitmap_layer_set_bitmap(battery_image_layer, battery_image);
 
-	battery_pbl_image_layer = bitmap_layer_create(GRect(100, 13, 37, 14)); // GRect(100, 23, 37, 14));
+	battery_pbl_image_layer = bitmap_layer_create(GRect(68, 5, 37, 14)); // GRect(100, 23, 37, 14));
 	layer_add_child(weather_layer, bitmap_layer_get_layer(battery_pbl_image_layer));
 	bitmap_layer_set_bitmap(battery_pbl_image_layer, battery_pbl_image);
 
 status_layer = layer_create(GRect(0, 148, 144, 20));
 layer_add_child(window_layer, status_layer);
 
-		text_mail_layer = text_layer_create(GRect(24, -3, 11, 20));
+		text_mail_layer = text_layer_create(GRect(24, -3, 24, 20));
 		text_layer_set_text_alignment(text_mail_layer, GTextAlignmentCenter);
 		text_layer_set_text_color(text_mail_layer, GColorWhite);
 		text_layer_set_background_color(text_mail_layer, GColorClear);
 		text_layer_set_font(text_mail_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
 		layer_add_child(status_layer, text_layer_get_layer(text_mail_layer));
-		text_layer_set_text(text_mail_layer, "-"); 	
+		text_layer_set_text(text_mail_layer, "--"); 	
 
 
-		text_sms_layer = text_layer_create(GRect(60, -3, 11, 20));
+		text_sms_layer = text_layer_create(GRect(72, -3, 24, 20));
 		text_layer_set_text_alignment(text_sms_layer, GTextAlignmentCenter);
 		text_layer_set_text_color(text_sms_layer, GColorWhite);
 		text_layer_set_background_color(text_sms_layer, GColorClear);
 		text_layer_set_font(text_sms_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18));
 		layer_add_child(status_layer, text_layer_get_layer(text_sms_layer));
-		text_layer_set_text(text_sms_layer, "-"); 	
+		text_layer_set_text(text_sms_layer, "--"); 	
 
-		text_phone_layer = text_layer_create(GRect(93, -3, 11, 20));
+		text_phone_layer = text_layer_create(GRect(120, -3, 24, 20));
 		text_layer_set_text_alignment(text_phone_layer, GTextAlignmentCenter);
 		text_layer_set_text_color(text_phone_layer, GColorWhite);
 		text_layer_set_background_color(text_phone_layer, GColorClear);
 		text_layer_set_font(text_phone_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18));
 		layer_add_child(status_layer, text_layer_get_layer(text_phone_layer));
-		text_layer_set_text(text_phone_layer, "-"); 
+		text_layer_set_text(text_phone_layer, "--"); 
 
 	text_battery_layer = text_layer_create(GRect(99, 20, 40, 60)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_battery_layer, GTextAlignmentCenter);
@@ -718,14 +739,14 @@ layer_add_child(window_layer, status_layer);
 	layer_set_hidden(text_layer_get_layer(text_battery_layer), true);
 
 
-	battery_layer = layer_create(GRect(102, 0, 19, 11)); // GRect(102, 8, 19, 11));
+	battery_layer = layer_create(GRect(107, 6, 19, 11)); // GRect(102, 8, 19, 11)); GRect(105, -1, 37, 14)
 	layer_set_update_proc(battery_layer, battery_layer_update_callback);
 	layer_add_child(weather_layer, battery_layer);
 
 	batteryPercent = 100;
 	layer_mark_dirty(battery_layer);
 
-	battery_pbl_layer = layer_create(GRect(102, 14, 19, 11)); // GRect(102, 24, 19, 11));
+	battery_pbl_layer = layer_create(GRect(70, 6, 19, 11)); // GRect(102, 24, 19, 11)); GRect(68, -1, 37, 14)
 	layer_set_update_proc(battery_pbl_layer, battery_pbl_layer_update_callback);
 	layer_add_child(weather_layer, battery_pbl_layer);
 
@@ -734,7 +755,7 @@ layer_add_child(window_layer, status_layer);
 	layer_mark_dirty(battery_pbl_layer);
 
 
-	text_weather_cond_layer = text_layer_create(GRect(25, 0, 100, 20)); // GRect(5, 2, 47, 40)
+	text_weather_cond_layer = text_layer_create(GRect(5, 15, 139, 30)); // GRect(5, 2, 47, 40)
 	text_layer_set_text_alignment(text_weather_cond_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(text_weather_cond_layer, GColorWhite);
 	text_layer_set_background_color(text_weather_cond_layer, GColorClear);
@@ -755,7 +776,7 @@ layer_add_child(window_layer, status_layer);
 	bitmap_layer_set_bitmap(weather_image, weather_status_imgs[weather_img]);
 
 
-	text_weather_temp_layer = text_layer_create(GRect(25, 0, 100, 20));  // GRect(48, 3, 48, 40)); 
+	text_weather_temp_layer = text_layer_create(GRect(25, -2, 100, 20));  // GRect(48, 3, 48, 40)); 
 	text_layer_set_text_alignment(text_weather_temp_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(text_weather_temp_layer, GColorWhite);
 	text_layer_set_background_color(text_weather_temp_layer, GColorClear);
@@ -763,7 +784,7 @@ layer_add_child(window_layer, status_layer);
 	layer_add_child(weather_layer, text_layer_get_layer(text_weather_temp_layer));
 	text_layer_set_text(text_weather_temp_layer, "-°"); 	
 
-	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), true);
+	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false); // changed from true to false
 
 	
 	//init layers for time and date
@@ -777,12 +798,20 @@ layer_add_child(window_layer, status_layer);
 
 
 	text_time_layer = text_layer_create(bg_bounds);
-	text_layer_set_text_alignment(text_time_layer, GTextAlignmentCenter);
+	text_layer_set_text_alignment(text_time_layer, GTextAlignmentLeft); //Previous was center
 	text_layer_set_text_color(text_time_layer, GColorWhite);
 	text_layer_set_background_color(text_time_layer, GColorClear);
-	layer_set_frame(text_layer_get_layer(text_time_layer), GRect(0, 25, 144, 55)); // GRect(0, -5, 144, 55));
+	layer_set_frame(text_layer_get_layer(text_time_layer), GRect(5, 30, 115, 55)); // GRect(0, -5, 144, 55));
 	text_layer_set_font(text_time_layer, font_time);
 	layer_add_child(window_layer, text_layer_get_layer(text_time_layer));
+
+	text_seconds_layer = text_layer_create(bg_bounds);
+	text_layer_set_text_alignment(text_seconds_layer, GTextAlignmentLeft); //Previous was center
+	text_layer_set_text_color(text_seconds_layer, GColorWhite);
+	text_layer_set_background_color(text_seconds_layer, GColorClear);
+	layer_set_frame(text_layer_get_layer(text_seconds_layer), GRect(120, 40, 24, 24)); // GRect(0, -5, 144, 55));
+	text_layer_set_font(text_seconds_layer, font_secs);
+	layer_add_child(window_layer, text_layer_get_layer(text_seconds_layer));
 
 
 	//init calendar layer
@@ -836,7 +865,7 @@ layer_add_child(window_layer, status_layer);
 	reset();
 
   	//tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
-	tick_timer_service_subscribe(MINUTE_UNIT, handle_second_tick);
+	tick_timer_service_subscribe(SECOND_UNIT, handle_second_tick);
 
 	bluetooth_connection_service_subscribe(bluetoothChanged);
 	battery_state_service_subscribe(batteryChanged);
@@ -882,6 +911,7 @@ static void deinit(void) {
 	text_layer_destroy(text_weather_temp_layer);
 	text_layer_destroy(text_date_layer);
 	text_layer_destroy(text_time_layer);
+	text_layer_destroy(text_seconds_layer);
 	text_layer_destroy(calendar_date_layer);
 	text_layer_destroy(calendar_text_layer);
 	text_layer_destroy(music_artist_layer);
@@ -892,6 +922,11 @@ static void deinit(void) {
 	layer_destroy(weather_layer);
 	layer_destroy(status_layer);
 	
+	if (music_title_str1 != NULL) {
+		free(music_title_str1);
+		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] 'music_title_str1' memory is now free");
+	}
+
 	if (calendar_date_str != NULL) {
  		free(calendar_date_str);
  		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] 'calendar_date_str' memory is now free");
@@ -904,6 +939,7 @@ static void deinit(void) {
 
  	fonts_unload_custom_font(font_date);
 	fonts_unload_custom_font(font_time);
+	fonts_unload_custom_font(font_secs);
 
 	for (int i=0; i<NUM_LAYERS; i++) {
 		if (animated_layer[i]!=NULL)
@@ -943,7 +979,7 @@ static void updateMusic(void *data) {
 
 static void auto_switch(void *data){
 	hideMusicLayer = NULL;
-	if (active_layer == MUSIC_LAYER) animate_layers();
+	if (active_layer == MUSIC_LAYER) animate_layers(NULL,NULL);
 }
 
 void rcv(DictionaryIterator *received, void *context) {
@@ -964,8 +1000,8 @@ void rcv(DictionaryIterator *received, void *context) {
         weather_temp_str[strlen(t->value->cstring)] = '\0';
 		text_layer_set_text(text_weather_temp_layer, weather_temp_str); 
 		
-		layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true);
-		layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false);
+		/*layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true);
+		layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false); */
 			
 	}
 
@@ -1051,6 +1087,21 @@ void rcv(DictionaryIterator *received, void *context) {
 
 	t=dict_find(received, SM_STATUS_MUS_TITLE_KEY); 
 	if (t!=NULL) {
+		if (music_title_str1 != NULL) {
+ 			APP_LOG(APP_LOG_LEVEL_DEBUG,"[ ] sizeof(music_title_str1) = %i",sizeof(music_title_str1));
+			free(music_title_str1);
+			APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] music_title_str1 is no more allocated");
+ 		}
+ 		static int num_chars;
+ 		num_chars = strlen(t->value->cstring);
+ 		music_title_str1 = (char *)malloc(sizeof(char) * num_chars);
+ 		if (music_title_str1 == NULL) {
+ 			APP_LOG(APP_LOG_LEVEL_ERROR,"[/] Malloc << music_title_str1 | Request: (num_chars = %i)",num_chars);
+ 		} else {
+ 			APP_LOG(APP_LOG_LEVEL_DEBUG,"[A] Malloc << music_title_str1 | Request: (num_chars * sizeof(char) = %i * %i)",
+ 				num_chars, (int)(sizeof(char)));
+ 			phone_is_connected = true;
+ 		}
 		memcpy(music_title_str1, t->value->cstring, strlen(t->value->cstring));
         music_title_str1[strlen(t->value->cstring)] = '\0';
 		APP_LOG(APP_LOG_LEVEL_DEBUG,"New music title received is %s",music_title_str1);
@@ -1058,7 +1109,9 @@ void rcv(DictionaryIterator *received, void *context) {
 		if ((strncmp(last_text,music_title_str1,8) != 0) && (strncmp(music_title_str1,"No Title",8) != 0)) {
 			strncpy(last_text,music_title_str1,8);
 			if (active_layer != MUSIC_LAYER) 
-				animate_layers();
+				APP_LOG(APP_LOG_LEVEL_DEBUG,"I'm about to animate layers. Maybe the bug is here");
+				animate_layers(NULL,NULL);
+				APP_LOG(APP_LOG_LEVEL_DEBUG,"NOPE! animate_layers seems to work...");
 			if (hideMusicLayer != NULL) 
 				app_timer_cancel(hideMusicLayer);
 			hideMusicLayer = app_timer_register(5000 , auto_switch, NULL);

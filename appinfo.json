@@ -88,10 +88,17 @@
                 "file": "fonts/ClearSans-Regular.ttf"
             },
             {
+                "trackingAdjust": -3,
+                "characterRegex": "[:0-9]",
+                "type": "font",
+                "name": "FONT_BOLD_46",
+                "file": "fonts/ClearSans-Bold.ttf"
+            },
+            {
                 "trackingAdjust": -2,
                 "characterRegex": "[:0-9]",
                 "type": "font",
-                "name": "FONT_BOLD_52",
+                "name": "FONT_BOLD_20",
                 "file": "fonts/ClearSans-Bold.ttf"
             }
         ]
