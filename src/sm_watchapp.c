@@ -1086,6 +1086,7 @@ void rcv(DictionaryIterator *received, void *context) {
 	if (t!=NULL) {
 		memcpy(music_artist_str1, t->value->cstring, strlen(t->value->cstring));
         music_artist_str1[strlen(t->value->cstring)] = '\0';
+        APP_LOG(APP_LOG_LEVEL_DEBUG,"    New Music Artist received '%s'",music_artist_str1);
 		text_layer_set_text(music_artist_layer, music_artist_str1); 	
 	}
 
@@ -1108,14 +1109,14 @@ void rcv(DictionaryIterator *received, void *context) {
  		}
 		memcpy(music_title_str1, t->value->cstring, strlen(t->value->cstring));
         music_title_str1[strlen(t->value->cstring)] = '\0';
-		APP_LOG(APP_LOG_LEVEL_DEBUG,"New music title received is %s",music_title_str1);
+		APP_LOG(APP_LOG_LEVEL_DEBUG,"    New music title received is %s",music_title_str1);
 		text_layer_set_text(music_song_layer, music_title_str1);
 		if ((strncmp(last_text,music_title_str1,8) != 0) && (strncmp(music_title_str1,"No Title",8) != 0)) {
 			strncpy(last_text,music_title_str1,8);
 			if (active_layer != MUSIC_LAYER) 
-				APP_LOG(APP_LOG_LEVEL_DEBUG,"I'm about to animate layers. Maybe the bug is here");
+				APP_LOG(APP_LOG_LEVEL_DEBUG,"    I'm about to animate layers. Maybe the bug is here");
 				animate_layers(NULL,NULL);
-				APP_LOG(APP_LOG_LEVEL_DEBUG,"NOPE! animate_layers seems to work...");
+				APP_LOG(APP_LOG_LEVEL_DEBUG,"    NOPE! animate_layers seems to work...");
 			if (hideMusicLayer != NULL) 
 				app_timer_cancel(hideMusicLayer);
 			hideMusicLayer = app_timer_register(5000 , auto_switch, NULL);
@@ -1144,7 +1145,7 @@ void rcv(DictionaryIterator *received, void *context) {
 	t=dict_find(received, SM_SONG_LENGTH_KEY); 
 	if (t!=NULL) {
 		int interval = t->value->int32 * 1000;
-		
+		APP_LOG(APP_LOG_LEVEL_DEBUG,"    Received SM_SONG_LENGTH_KEY : '%i'",interval);
 		if (timerUpdateMusic != NULL)
 			app_timer_cancel(timerUpdateMusic);
 		timerUpdateMusic = app_timer_register(interval , updateMusic, NULL);
