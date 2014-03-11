@@ -1116,7 +1116,7 @@ void rcv(DictionaryIterator *received, void *context) {
  		}
 		memcpy(music_title_str1, t->value->cstring, strlen(t->value->cstring));
         music_title_str1[strlen(t->value->cstring)] = '\0';
-		APP_LOG(APP_LOG_LEVEL_DEBUG,"    New music title received is %s",music_title_str1);
+		APP_LOG(APP_LOG_LEVEL_DEBUG,"    New music title received is '%s'",music_title_str1);
 		text_layer_set_text(music_song_layer, music_title_str1);
 		if ((strncmp(last_text,music_title_str1,8) != 0) && (strncmp(music_title_str1,"No Title",8) != 0)) {
 			strncpy(last_text,music_title_str1,8);
