@@ -465,20 +465,27 @@ static void play_pause_action(ClickRecognizerRef recognizer, void *context) {
 	}
 }
 
-static void animate_layers(ClickRecognizerRef recognizer, void *context){
+static void animate_layers(ClickRecognizerRef recognizer, void *context) {
 	//slide layers in/out
+	APP_LOG(APP_LOG_LEVEL_DEBUG_VERBOSE,"I'm about to VERBOSE A LOT");
 
 	property_animation_destroy((PropertyAnimation*)ani_in);
 	property_animation_destroy((PropertyAnimation*)ani_out);
-
+	APP_LOG(APP_LOG_LEVEL_DEBUG_VERBOSE,"property_animation destroyed");
 
 	ani_out = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(0, 100, 143, 45), &GRect(-138, 100, 143, 45)); // &GRect(0, 124, 143, 45), &GRect(-138, 124, 143, 45));
 	animation_schedule((Animation*)ani_out);
 
+	APP_LOG(APP_LOG_LEVEL_DEBUG_VERBOSE,"Animated out");
+
 	active_layer = (active_layer + 1) % (NUM_LAYERS);
 
+	APP_LOG(APP_LOG_LEVEL_DEBUG_VERBOSE,"Incremented the active layer counter");
+
 	ani_in = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(138, 100, 144, 45), &GRect(0, 100, 144, 45)); // &GRect(138, 124, 144, 45), &GRect(0, 124, 144, 45));
+	APP_LOG(APP_LOG_LEVEL_DEBUG_VERBOSE,"Animated in");
 	animation_schedule((Animation*)ani_in);
+	APP_LOG(APP_LOG_LEVEL_DEBUG_VERBOSE,"Done with animate");
 }
 
 
