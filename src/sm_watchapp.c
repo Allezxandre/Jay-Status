@@ -536,8 +536,8 @@ void battery_pbl_layer_update_callback(Layer *me, GContext* ctx) {
 
 	graphics_fill_rect(ctx, GRect(2+16-(int)((batteryPblPercent/100.0)*16.0), 2, (int)((batteryPblPercent/100.0)*16.0), 8), 0, GCornerNone);
 	
-	static char pbl_batt_text[3];
-	snprintf(pbl_batt_text,3,"%02i",batteryPblPercent);
+	static char pbl_batt_text[]="100";
+	snprintf(pbl_batt_text,4,"%02i",batteryPblPercent);
 	text_layer_set_text(text_pebble_battery_layer,pbl_batt_text);
 }
 
@@ -753,12 +753,12 @@ layer_add_child(window_layer, status_layer);
 	batteryPblPercent = pbl_batt.charge_percent;
 	layer_mark_dirty(battery_pbl_layer);
 
-	text_pebble_battery_layer = text_layer_create(GRect(0, 11, 19, 19)); // GRect(99, 20, 40, 60));
+	text_pebble_battery_layer = text_layer_create(GRect(65, 17, 25, 19)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_pebble_battery_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_pebble_battery_layer, GColorWhite);
 	text_layer_set_background_color(text_pebble_battery_layer, GColorClear);
 	text_layer_set_font(text_pebble_battery_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
-	layer_add_child(battery_pbl_layer, text_layer_get_layer(text_pebble_battery_layer));
+	layer_add_child(weather_layer, text_layer_get_layer(text_pebble_battery_layer));
 	text_layer_set_text(text_pebble_battery_layer, "-");
 
 
