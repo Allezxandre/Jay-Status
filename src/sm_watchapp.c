@@ -869,7 +869,7 @@ static void deinit(void) {
 	property_animation_destroy((PropertyAnimation*)ani_out);
 	
 
-	
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"Unloading Timers");
 	if (timerUpdateCalendar != NULL)
 		app_timer_cancel(timerUpdateCalendar);
 	timerUpdateCalendar = NULL;
@@ -890,6 +890,7 @@ static void deinit(void) {
 		app_timer_cancel(general_Timer);
 	general_Timer = NULL;
 
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"Unloading static layers");
 	bitmap_layer_destroy(background_image);
 	bitmap_layer_destroy(battery_image_layer);
 	bitmap_layer_destroy(battery_pbl_image_layer);
@@ -912,21 +913,8 @@ static void deinit(void) {
 	text_layer_destroy(text_phone_layer);
 	layer_destroy(weather_layer);
 	layer_destroy(status_layer);
-	
-	if (music_title_str1 != NULL) {
-		free(music_title_str1);
-		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] 'music_title_str1' memory is now free");
-	}
 
-	if (calendar_date_str != NULL) {
- 		free(calendar_date_str);
- 		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] 'calendar_date_str' memory is now free");
- 	}
-
- 	fonts_unload_custom_font(font_date);
-	fonts_unload_custom_font(font_time);
-	fonts_unload_custom_font(font_secs);
-
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"Unloading animated layers");
 	for (int i=0; i<NUM_LAYERS; i++) {
 		if (animated_layer[i]!=NULL)
 			layer_destroy(animated_layer[i]);
@@ -935,19 +923,31 @@ static void deinit(void) {
 	for (int i=0; i<NUM_WEATHER_IMAGES; i++) {
 	  	gbitmap_destroy(weather_status_imgs[i]);
 	}
-	
 
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"Unloading drawings");
 	gbitmap_destroy(bg_image);
 	gbitmap_destroy(battery_image);
 	gbitmap_destroy(battery_pbl_image);
+	
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"Freeing memory");
+	//if (music_title_str1 != NULL) {
+		free(music_title_str1);
+		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] 'music_title_str1' memory is now free");
+	//}
 
+	//if (calendar_date_str != NULL) {
+ 		free(calendar_date_str);
+ 		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] 'calendar_date_str' memory is now free");
+ 	//}
+	
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"Unsubsribing from services");
 	tick_timer_service_unsubscribe();
 	bluetooth_connection_service_unsubscribe();
 	battery_state_service_unsubscribe();
 
   
+  APP_LOG(APP_LOG_LEVEL_INFO,"QUIT JuStatus window");
   window_destroy(window);
-  APP_LOG(APP_LOG_LEVEL_INFO,"QUIT JuStatus");
 }
 
 
@@ -1095,12 +1095,13 @@ void rcv(DictionaryIterator *received, void *context) {
 		text_layer_set_text(music_song_layer, music_title_str1);
 		if ((strncmp(last_text,music_title_str1,8) != 0) && (strncmp(music_title_str1,"No Title",8) != 0)) {
 			strncpy(last_text,music_title_str1,8);
-			if (active_layer != MUSIC_LAYER) 
+			if (active_layer != MUSIC_LAYER) {
 				APP_LOG(APP_LOG_LEVEL_DEBUG,"    I'm about to animate layers. Maybe the bug is here");
 				animate_layers(NULL,NULL);
-				APP_LOG(APP_LOG_LEVEL_DEBUG,"    NOPE! animate_layers seems to work...");
-			if (hideMusicLayer != NULL) 
+			}
+			if (hideMusicLayer != NULL) {
 				app_timer_cancel(hideMusicLayer);
+			}
 			hideMusicLayer = app_timer_register(5000 , auto_switch, NULL);
 		}
 	}
