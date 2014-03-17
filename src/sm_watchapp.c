@@ -154,14 +154,21 @@ static void apptDisplay(char *appt_string) {
 	
 		//	Determine the variables
 	static int appt_day;
-					strncpy(stringBuffer, appt_string,2);
+					strncpy(stringBuffer, appt_string+3,2);
 					appt_day = string2number(stringBuffer);
 					APP_LOG(APP_LOG_LEVEL_DEBUG,"appt_day is    %i",appt_day);
 
 	static int appt_month;
-					strncpy(stringBuffer, appt_string+3,2);
+					strncpy(stringBuffer, appt_string,2);
 					appt_month = string2number(stringBuffer);
 					APP_LOG(APP_LOG_LEVEL_DEBUG,"appt_month is  %i",appt_month);
+
+	if (appt_month > 12) {
+		APP_LOG(APP_LOG_LEVEL_WARNING,"[!] Please set DATE FORMAT to MM/DD");
+		vibes_short_pulse();
+		display_Notification("Please set FORMAT", "to MM/DD",10000);
+		return;
+	}
 
 	static int appt_hour;
 					if (appt_string[7] == ':'){
