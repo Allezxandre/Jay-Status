@@ -9,17 +9,17 @@
 	© Alexandre Jouandin : https://github.com/Allezxandre/Smart-FrenchIze
 	Idea by J Dishaw
 */
+
 #define DEBUG 1
 #define STRING_LENGTH 255
 #define NUM_WEATHER_IMAGES	9
-//#define VIBE_ON_HOUR true
+#define VIBE_ON_HOUR true
 
 #ifndef DEBUG
 	#pragma message "---- COMPILING IN RELEASE MODE - NO LOGGING WILL BE AVAILABLE ----"
 	#undef APP_LOG
 	#define APP_LOG(...)
 #endif
-
 
 	// Mes variables
 static bool Watch_Face_Initialized = false;
@@ -29,7 +29,7 @@ static int last_run_minute = -1;
 enum {CALENDAR_LAYER, MUSIC_LAYER, NUM_LAYERS};
 
 static void reset();
-static void animate_layers(ClickRecognizerRef recognizer, void *context);
+static void animate_layers();
 static void auto_switch(void *data);
 static void display_Notification(char *text1, char *text2, int time);
 
@@ -54,15 +54,11 @@ static int active_layer;
 
 static char string_buffer[STRING_LENGTH];
 static char weather_cond_str[STRING_LENGTH], weather_temp_str[5];
-static char sms_count_str[5], mail_count_str[5], phone_count_str[5];
 static int weather_img, batteryPercent, batteryPblPercent;
 
 static char *calendar_date_str;
-static char *music_title_str1;
 static char calendar_text_str[STRING_LENGTH];
-static char music_artist_str1[STRING_LENGTH];
-// static char music_artist_str1[STRING_LENGTH], music_title_str1[STRING_LENGTH];
-
+static char music_artist_str1[STRING_LENGTH], music_title_str1[STRING_LENGTH];
 
 GBitmap *bg_image, *battery_image, *battery_pbl_image;
 GBitmap *weather_status_imgs[NUM_WEATHER_IMAGES];
@@ -90,25 +86,13 @@ const int WEATHER_IMG_IDS[] = {
   RESOURCE_ID_IMAGE_DISCONNECT
 };
 
-// We'll use this next struct as storage type for events
-typedef struct Event {
-	int day;
-	int month;
-	int hour;
-	int min;
-	bool is_today;
-	bool is_all_day;
-	bool is_past;
-} event;
-
-event appointment;
 
 
 static uint32_t s_sequence_number = 0xFFFFFFFE;
 
 // Calendar Appointments
 
-/* Convert letter to digit (by Opasco) */
+/* Convert letter to digit */
 int letter2digit(char letter) {
 	if (letter == '\0') {
 		APP_LOG(APP_LOG_LEVEL_ERROR, "[/] letter2digit failed!");
@@ -121,7 +105,7 @@ int letter2digit(char letter) {
 	return -1;
 }
 
-/* Convert string to number (by Opasco) */
+/* Convert string to number */
 static int string2number(char *string) {
 	int result = 0;
 	static int32_t offset;
@@ -140,114 +124,125 @@ static int string2number(char *string) {
 		result = result + (unit * digit);
 		offset--;
 	}
-	//APP_LOG(APP_LOG_LEVEL_DEBUG_VERBOSE, "    string2number(%s) -> %i", string, result);
 	return result;
 }
 
 static void apptDisplay(char *appt_string) {
-		APP_LOG(APP_LOG_LEVEL_INFO," < ---------------------          'apptDisplay' called");
 	
-/*	Make sure there is no error in argument
-	APP_LOG(APP_LOG_LEVEL_INFO, "apptDisplay started with argument (%s)", appt_string);	*/
+	// Make sure there is no error in argument
+//	APP_LOG(APP_LOG_LEVEL_INFO, "apptDisplay started with argument (%s)", appt_string);
 	if (appt_string[0] == '\0') {
 		APP_LOG(APP_LOG_LEVEL_WARNING, "[/] appt_string is empty! ABORTING apptDisplay");
 		return;
-	} else if (sizeof(appt_string) < 4) {
+	} else if (sizeof(appt_string) != 4) {
 		APP_LOG(APP_LOG_LEVEL_WARNING, "[?] appt_string is too small (%i characters)! ABORTING apptDisplay", (int)(sizeof(appt_string)));
-			text_layer_set_text(calendar_date_layer, appt_string); 	
-			layer_set_hidden(animated_layer[CALENDAR_LAYER], 0);
+			text_layer_set_text(calendar_date_layer, appt_string);
 		return;
 	}
-
-	// The main buffers
-	static char date_of_appt[30];
-	static char time_string[20];
 	
 	// Init some variables
-	static char date_time_for_appt[50]; // = "Le XX XXXX à ##h##"; It's the final string
+	static char date_time_for_appt[20]; // = "Le XX XXXX à ##h##";
 	static char stringBuffer[]="XX";
 	time_t now;
 	struct tm *t;
 	now = time(NULL);
 	t = localtime(&now);
-
-	appointment.is_today = false;
-	appointment.is_all_day = false;
-	appointment.is_past = false;
+	static bool event_is_today = false;
+	static bool event_is_all_day = false;
+	static bool event_is_past = false;
 	
-/*		//	Determine the variables
-		// appt_day 	> appointment.day
-		// appt_month 	> appointment.month
-		// appt_hour	> appointment.hour
-		// appt_minute	> appointment.min */
+		//	Determine the variables
+	static int appt_day;
 					strncpy(stringBuffer, appt_string,2);
-					appointment.day = string2number(stringBuffer);
-					//APP_LOG(APP_LOG_LEVEL_DEBUG,"appointment.day is    %i",appointment.day);
+					appt_day = string2number(stringBuffer);
 
+	static int appt_month;
 					strncpy(stringBuffer, appt_string+3,2);
-					appointment.month = string2number(stringBuffer);
-					//APP_LOG(APP_LOG_LEVEL_DEBUG,"appointment.month is  %i",appointment.month);
+					appt_month = string2number(stringBuffer);
 
+	if (appt_month > 12) {
+		APP_LOG(APP_LOG_LEVEL_WARNING,"[!] Please set DATE FORMAT to DD/MM");
+		vibes_short_pulse();
+		display_Notification("Please set FORMAT", "to DD/MM",10000);
+		return;
+	}
+
+	static int appt_hour;
 					if (appt_string[7] == ':'){
 						strncpy(stringBuffer, appt_string+5,2);
 						stringBuffer[0]='0';
-						appointment.hour = string2number(stringBuffer);
+						appt_hour = string2number(stringBuffer);
 					} else if (appt_string[8] == ':') {
 						strncpy(stringBuffer, appt_string+6,2);
-						appointment.hour = string2number(stringBuffer);
+						appt_hour = string2number(stringBuffer);
 					} else {
 						APP_LOG(APP_LOG_LEVEL_DEBUG,"    Event is ALL DAY");
-						appointment.is_all_day = true;
+						event_is_all_day = true;
 					}
-				//APP_LOG(APP_LOG_LEVEL_DEBUG,"appointment.hour is   %i",appointment.hour);
 
+	static int appt_minute;
 					if (appt_string[7] == ':'){
 						strncpy(stringBuffer, appt_string+8,2);
-						appointment.min = string2number(stringBuffer);
+						appt_minute = string2number(stringBuffer);
 					} else if (appt_string[8] == ':') {
 						strncpy(stringBuffer, appt_string+9,2);
-						appointment.min = string2number(stringBuffer);
-					} else {APP_LOG(APP_LOG_LEVEL_ERROR, "appointment.min cannot be determined...");}
-				//APP_LOG(APP_LOG_LEVEL_DEBUG,"appointment.min is %i",appointment.min);
+						appt_minute = string2number(stringBuffer);
+					} else {APP_LOG(APP_LOG_LEVEL_ERROR, "[?] appt_minute cannot be determined...");}
+	APP_LOG(APP_LOG_LEVEL_INFO,"[-] Time        : %02i/%02i [%02i:%02i]", t->tm_mday,t->tm_mon+1, t->tm_hour, t->tm_min);
+	APP_LOG(APP_LOG_LEVEL_INFO,"[X] appointment : %02i/%02i", appt_day,appt_month);
+	if (!event_is_all_day) 
+		{APP_LOG(APP_LOG_LEVEL_INFO,"[X]             :       [%02i:%02i]", appt_hour,appt_minute);}
+		
+	 static int hour_now;
+	 static int min_now;
+	 static int mday_now;
+	 static int mon_now;
+	 hour_now = t->tm_hour;
+	 min_now = t->tm_min;
+	 mday_now = t->tm_mday;
+	 mon_now = t->tm_mon + 1;
 		// Check the DAY and Month of Appointment and write it in date_of_appt
-	
-	int interm = (appointment.month - 1);
+	static char date_of_appt[30];
+	int interm = (appt_month - 1);
 	static int days_difference = 0;
-	if (t->tm_mon+1 != appointment.month) {
-		if ((t->tm_mon+1 - appointment.month > 1) || (t->tm_mon+1 - appointment.month < -1)) {
+	if (mon_now != appt_month) {
+		if ((mon_now - appt_month > 1) || (mon_now - appt_month < -1)) {
 			days_difference = 40; // Set a high value to display the date then
-		} else if (appointment.month < t->tm_mon+1){ // Event has begun last month
-			days_difference = ((t->tm_mday) + (days_per_month[(appointment.month + 1)] - appointment.day));
-			appointment.is_past = true;
-		} else if (appointment.month > t->tm_mon+1){ // Event will begin next month
-			days_difference = ((days_per_month[(t->tm_mday + 1)] - t->tm_mon+1) + appointment.day);
+		} else if (appt_month < mon_now){ // Event has begun last month
+			days_difference = ((mday_now) + (days_per_month[(appt_month + 1)] - appt_day));
+			event_is_past = true;
+		} else if (appt_month > mon_now){ // Event will begin next month
+			days_difference = ((days_per_month[(mday_now + 1)] - mon_now) + appt_day);
 		}
 	} else {
-		days_difference = (appointment.day - t->tm_mday);
+		days_difference = (appt_day - mday_now);
 		if (days_difference < 0) { // That means appointment day is before today
-			appointment.is_past = true;
+			event_is_past = true;
 		}
 	}
+	static char time_string[20];
 	APP_LOG(APP_LOG_LEVEL_DEBUG,"    'days_difference' = %i",days_difference);
-				if (appointment.is_past) {
-					snprintf(date_of_appt,30, STRING_EVENT_IS_PAST,appointment.day, month_of_year[interm]);
-					appointment.is_all_day = true;
+				if (event_is_past) {
+					snprintf(date_of_appt,30, STRING_EVENT_IS_PAST,appt_day, month_of_year[interm]);
+					event_is_all_day = true;
 					APP_LOG(APP_LOG_LEVEL_DEBUG,"    Event has started in the past, not today");
 				} else if (days_difference > 4) {
-					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_GLOBAL,appointment.day, month_of_year[interm], appointment.hour,appointment.min);
-					appointment.is_today = false; // Just so we don't write the time again
+					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_GLOBAL,appt_day, month_of_year[interm], appt_hour,appt_minute);
+					event_is_today = false; // Just so we don't write the time again
 					time_string[0] = '\0';
 				} else if (days_difference != 0) {
-					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_SOON, days_from_today[(days_difference - 1)], appointment.hour,appointment.min);
-					appointment.is_today = false; // Just so we don't write the time again
+					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_SOON, days_from_today[(days_difference - 1)], appt_hour,appt_minute);
+					event_is_today = false; // Just so we don't write the time again
 					time_string[0] = '\0';
 				} else if (days_difference == 0) {
 					date_of_appt[0] = '\0';
-					appointment.is_today = true;
+					event_is_today = true;
 				} else {
 					APP_LOG(APP_LOG_LEVEL_ERROR, "[/] days_difference tests failed :(");
 					return;
 				}
+		// Check the Hour and write it in time_string
+
 		// Check the Hour and write it in time_string
 	 void display_hour (int hour_since, int minutes_since, int quand) {
 	 	if ((minutes_since == 0) && hour_since == 0) {
@@ -272,13 +267,13 @@ static void apptDisplay(char *appt_string) {
 					}
 	  }
 
-				if ((appointment.is_all_day) || (!appointment.is_today)) {
+				if ((event_is_all_day) || (!event_is_today)) {
 					APP_LOG(APP_LOG_LEVEL_DEBUG, "    Do nothing with hour and minutes");
-				} else if (((t->tm_hour) > appointment.hour) || (((t->tm_hour) == appointment.hour) && (t->tm_min >= appointment.min))) {
+				} else if (((hour_now) > appt_hour) || (((hour_now) == appt_hour) && (min_now >= appt_minute))) {
 					int hour_since = 0;
 					int minutes_since = 0;
-					minutes_since = ((t->tm_min) - appointment.min);
-					hour_since = ((t->tm_hour) - appointment.hour);
+					minutes_since = ((min_now) - appt_minute);
+					hour_since = ((hour_now) - appt_hour);
 					if (minutes_since < 0) {
 						hour_since -= 1;
 						minutes_since += 60;
@@ -286,52 +281,25 @@ static void apptDisplay(char *appt_string) {
 					
 					display_hour(hour_since,minutes_since,0);
 
-				} else if (((t->tm_hour) < appointment.hour) || (((t->tm_hour) == appointment.hour) && (t->tm_min < appointment.min))) {
+				} else if (((hour_now) < appt_hour) || (((hour_now) == appt_hour) && (min_now < appt_minute))) {
 					int hour_difference = 0;
 					int minutes_difference = 0;
-					minutes_difference = (appointment.min - (t->tm_min));
-					hour_difference = (appointment.hour - (t->tm_hour));
-					if (minutes_difference < 0) {
+					minutes_difference = (appt_minute - (min_now));
+					hour_difference = (appt_hour - (hour_now));
+					if (minutes_difference == 0) {
+						hour_difference += 1;
+					} else if (minutes_difference < 0) {
 						hour_difference -= 1;
 						minutes_difference += 60;
 					}
 					
 					display_hour(hour_difference,minutes_difference,1);
-					if ((last_run_minute != t->tm_min) && (minutes_difference == 15) && (hour_difference == 0)) { 
-							// Vibrate 15 minutes before the event
-							vibes_short_pulse();
-						}
 				}
-	APP_LOG(APP_LOG_LEVEL_INFO,"[-] Time        : %02i/%02i [%02i:%02i]", t->tm_mday,t->tm_mon+1, t->tm_hour, t->tm_min);
-	APP_LOG(APP_LOG_LEVEL_INFO,"[X] appointment : %02i/%02i", appointment.day,appointment.month);
-	if (!appointment.is_all_day) 
-		{APP_LOG(APP_LOG_LEVEL_INFO,"[X]             :       [%02i:%02i]", appointment.hour,appointment.min);}
-
-/*	if (appointment != NULL) {
-		free(appointment);
-		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] appointment is no more allocated");
-	}*/
-/*	if (calendar_date_str != NULL) {
- 			APP_LOG(APP_LOG_LEVEL_DEBUG,"[ ] sizeof(calendar_date_str) = %i",sizeof(calendar_date_str));
-			free(calendar_date_str);
-			APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] calendar_date_str is no more allocated");
- 	}
- 	static int num_chars = sizeof(date_of_appt) + sizeof(time_string);
- 	calendar_date_str = (char *)malloc(sizeof(char) * num_chars);
- 	if (calendar_date_str == NULL) {
- 		APP_LOG(APP_LOG_LEVEL_ERROR,"[/] Malloc << calendar_date_str | Request: (num_chars = %i)",num_chars);
- 	} else {
- 		APP_LOG(APP_LOG_LEVEL_DEBUG,"[A] Malloc << calendar_date_str | Request: (num_chars * sizeof(char) = %i * %i)",
- 			num_chars, (int)(sizeof(char)));
- 	} */
 
 	strcpy (date_time_for_appt,date_of_appt);
   	strcat (date_time_for_appt,time_string);
-  	last_run_minute = t->tm_min;
 
-	text_layer_set_text(calendar_date_layer, date_time_for_appt); 	
-	layer_set_hidden(animated_layer[CALENDAR_LAYER], 0);
-	APP_LOG(APP_LOG_LEVEL_INFO," > ---------------------          'apptDisplay' ended properly");
+	text_layer_set_text(calendar_date_layer, date_time_for_appt);
 }
 
 // End of calendar appointment utilities
@@ -375,7 +343,6 @@ void sendCommandInt(int key, int param) {
 	app_message_outbox_send();
 }
 
-
 static void display_Notification(char *text1, char *text2, int time) {
 		if (hideMusicLayer != NULL) 
 			app_timer_cancel(hideMusicLayer);
@@ -410,6 +377,15 @@ static void call_siri(ClickRecognizerRef recognizer, void *context) {
 
 static void next_track_action(ClickRecognizerRef recognizer, void *context) {
 	if (phone_is_connected) {sendCommand(SM_NEXT_TRACK_KEY);} else {light_enable(false);}
+	if (hideMusicLayer != NULL) {
+			app_timer_cancel(hideMusicLayer);
+			hideMusicLayer = NULL;
+	}
+	auto_switch(NULL);
+}
+
+static void previous_track_action(ClickRecognizerRef recognizer, void *context) {
+	if (phone_is_connected) {sendCommand(SM_PREVIOUS_TRACK_KEY);} else {light_enable(false);}
 	if (hideMusicLayer != NULL) {
 			app_timer_cancel(hideMusicLayer);
 			hideMusicLayer = NULL;
@@ -463,20 +439,38 @@ static void play_pause_action(ClickRecognizerRef recognizer, void *context) {
 	}
 }
 
-static void animate_layers(ClickRecognizerRef recognizer, void *context){
+/*
+
+static void button_click_animate(ClickRecognizerRef recognizer, void *context) {
+	animate_layers();
+} 
+
+*/
+
+/*  OLD ONE
+static void animate_layers(){
 	//slide layers in/out
 
 	property_animation_destroy((PropertyAnimation*)ani_in);
 	property_animation_destroy((PropertyAnimation*)ani_out);
 
 
-	ani_out = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(0, 100, 143, 45), &GRect(-138, 100, 143, 45)); // &GRect(0, 124, 143, 45), &GRect(-138, 124, 143, 45));
+	ani_out = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(0, 124, 143, 45), &GRect(-138, 124, 143, 45));
 	animation_schedule((Animation*)ani_out);
 
-	if (hideMusicLayer != NULL) {
-			app_timer_cancel(hideMusicLayer);
-			hideMusicLayer = NULL;
-	}
+	active_layer = (active_layer + 1) % (NUM_LAYERS);
+
+	ani_in = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(138, 124, 144, 45), &GRect(0, 124, 144, 45));
+	animation_schedule((Animation*)ani_in);
+} */
+
+static void animate_layers() {
+	//slide layers in/out
+	property_animation_destroy((PropertyAnimation*)ani_in);
+	property_animation_destroy((PropertyAnimation*)ani_out);
+
+	ani_out = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(0, 100, 143, 45), &GRect(-138, 100, 143, 45)); // &GRect(0, 124, 143, 45), &GRect(-138, 124, 143, 45));
+	animation_schedule((Animation*)ani_out);
 
 	active_layer = (active_layer + 1) % (NUM_LAYERS);
 
@@ -487,11 +481,12 @@ static void animate_layers(ClickRecognizerRef recognizer, void *context){
 
 static void click_config_provider(void *context) {
   window_long_click_subscribe(BUTTON_ID_UP, 3000, notif_find_my_iphone, find_my_iphone);
-  window_single_click_subscribe(BUTTON_ID_UP, call_siri);
-  window_single_click_subscribe(BUTTON_ID_SELECT, volume_decrease);
+  window_single_click_subscribe(BUTTON_ID_UP, volume_increase);
+  window_single_click_subscribe(BUTTON_ID_SELECT, call_siri);
+  window_single_click_subscribe(BUTTON_ID_BACK, volume_decrease);
   window_single_click_subscribe(BUTTON_ID_DOWN, next_track_action);
-  window_long_click_subscribe(BUTTON_ID_SELECT, 250, volume_increase, NULL);
-  window_long_click_subscribe(BUTTON_ID_DOWN, 750, play_pause_action, NULL);
+  window_long_click_subscribe(BUTTON_ID_SELECT, 750, play_pause_action, NULL);
+  window_long_click_subscribe(BUTTON_ID_DOWN, 250, previous_track_action, NULL);
 }
 
 static void window_load(Window *window) {
@@ -535,39 +530,42 @@ void battery_pbl_layer_update_callback(Layer *me, GContext* ctx) {
 	graphics_context_set_fill_color(ctx, GColorWhite);
 
 	graphics_fill_rect(ctx, GRect(2+16-(int)((batteryPblPercent/100.0)*16.0), 2, (int)((batteryPblPercent/100.0)*16.0), 8), 0, GCornerNone);
-	
-	static char pbl_batt_text[]="100";
-	snprintf(pbl_batt_text,4,"%02i",batteryPblPercent);
-	text_layer_set_text(text_pebble_battery_layer,pbl_batt_text);
+
+	static char battery_text[STRING_LENGTH];
+	layer_mark_dirty(battery_pbl_layer);
+	snprintf(battery_text, sizeof(battery_text), "%d", batteryPblPercent);
+	text_layer_set_text(text_pebble_battery_layer, battery_text ); 
 }
 
 
 void reset() {
-	/*
-	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), true);
-	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false); */
-	text_layer_set_text(text_weather_cond_layer, STRING_UPDATING); 	
+	
+/*	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), true);
+	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false);
+*/	text_layer_set_text(text_weather_cond_layer, STRING_UPDATING); 	
 	
 }
 
 
 void handle_second_tick(struct tm *tick_time, TimeUnits units_changed) {
-	
+		
 	// Seconds Display
 	static char seconds_text[] = "00";
 	strftime(seconds_text, sizeof(seconds_text), "%S", tick_time);
 	text_layer_set_text(text_seconds_layer, seconds_text);
 
-	
-
+	if ((((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized)) && (calendar_date_str != NULL)) {apptDisplay(calendar_date_str);}
 if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) ){
 	// Need to be static because they're used by the system later.
 	static char time_text[] = "00:00";
 	static char *time_format;
 
+	static int heure;
+	heure = tick_time->tm_hour;
+
 	
   // TODO: Only update the date when it's changed. // DONE ! Even with SECOND ticks
-	if ((units_changed & DAY_UNIT) == DAY_UNIT || (!Watch_Face_Initialized) ){
+	if ((units_changed & DAY_UNIT) == DAY_UNIT|| (!Watch_Face_Initialized) ){
 		  Watch_Face_Initialized = true;
   	static char date_text[] = "DAY 00 MOIS";
   		// Get the day and month as int
@@ -576,11 +574,9 @@ if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) 
 	static int month_int;
 	 month_int = tick_time->tm_mon;
 	 	// Print the result
-
-
    snprintf(date_text, sizeof(date_text), "%s %i %s", day_of_week[day_int], tick_time->tm_mday, month_of_year[month_int]);
    text_layer_set_text(text_date_layer, date_text);
-	  APP_LOG(APP_LOG_LEVEL_INFO, "Displayed date : [%s %i %s]", day_of_week[day_int], tick_time->tm_mday, month_of_year[month_int]);
+	  APP_LOG(APP_LOG_LEVEL_INFO, "[-] Displayed date : [%s %i %s]", day_of_week[day_int], tick_time->tm_mday, month_of_year[month_int]);
   	}
 
   if (clock_is_24h_style()) {
@@ -597,22 +593,15 @@ if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) 
     memmove(time_text, &time_text[1], sizeof(time_text) - 1);
   }
 
-// Hourly vibe	
-  #ifdef VIBE_ON_HOUR
-	static int heure;
-	heure = tick_time->tm_hour;
+	
+	// Don't forget the "heure" variable if you copy this small paragraph
   if (((units_changed & HOUR_UNIT) == HOUR_UNIT) && ((heure > 9) && (heure < 23))){
     vibes_double_pulse();
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Hour changed -> Vibration complete");
-  } else {APP_LOG(APP_LOG_LEVEL_DEBUG, "However, Hour Unit did not change, no vibration");}
-  #endif
-
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "    Hour changed -> Vibration complete");
+  }
+	
   text_layer_set_text(text_time_layer, time_text);
 }
-
-if ((((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized)) && (calendar_date_str != NULL)) 
-	{apptDisplay(calendar_date_str);}
-
 }
 
 
@@ -651,7 +640,6 @@ void batteryChanged(BatteryChargeState batt) {
 
 
 static void init(void) {
-	APP_LOG(APP_LOG_LEVEL_INFO,"STARTING SmartFrenchIze");
   window = window_create();
   window_set_fullscreen(window, true);
   window_set_click_config_provider(window, click_config_provider);
@@ -664,10 +652,9 @@ static void init(void) {
   const bool animated = true;
   window_stack_push(window, animated);
   // Choose fonts
-font_date = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_CONDENSED_21));
+font_date = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_CLEARSANS_REGULAR_21));
 font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_46));
 font_secs = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_20));
-
 	//init weather images
 	for (int i=0; i<NUM_WEATHER_IMAGES; i++) {
 	  	weather_status_imgs[i] = gbitmap_create_with_resource(WEATHER_IMG_IDS[i]);
@@ -729,18 +716,17 @@ layer_add_child(window_layer, status_layer);
 		layer_add_child(status_layer, text_layer_get_layer(text_phone_layer));
 		text_layer_set_text(text_phone_layer, "--"); 
 
-
-	battery_layer = layer_create(GRect(107, 6, 19, 30)); // GRect(102, 8, 19, 11)); GRect(105, -1, 37, 14)
+		battery_layer = layer_create(GRect(107, 6, 19, 30)); // GRect(102, 8, 19, 11)); GRect(105, -1, 37, 14)
 	layer_set_update_proc(battery_layer, battery_layer_update_callback);
 	layer_add_child(weather_layer, battery_layer);
 
-	text_battery_layer = text_layer_create(GRect(0, 11, 19, 19)); // GRect(99, 20, 40, 60));
+	text_battery_layer = text_layer_create(GRect(104, 15, 25, 19)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_battery_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_battery_layer, GColorWhite);
 	text_layer_set_background_color(text_battery_layer, GColorClear);
 	text_layer_set_font(text_battery_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
-	layer_add_child(battery_layer, text_layer_get_layer(text_battery_layer));
-	text_layer_set_text(text_battery_layer, "-");
+	layer_add_child(weather_layer, text_layer_get_layer(text_battery_layer));
+	text_layer_set_text(text_battery_layer, "--");
 
 	batteryPercent = 100;
 	layer_mark_dirty(battery_layer);
@@ -753,23 +739,23 @@ layer_add_child(window_layer, status_layer);
 	batteryPblPercent = pbl_batt.charge_percent;
 	layer_mark_dirty(battery_pbl_layer);
 
-	text_pebble_battery_layer = text_layer_create(GRect(65, 17, 25, 19)); // GRect(99, 20, 40, 60));
+	text_pebble_battery_layer = text_layer_create(GRect(67, 15, 25, 19)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_pebble_battery_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_pebble_battery_layer, GColorWhite);
 	text_layer_set_background_color(text_pebble_battery_layer, GColorClear);
 	text_layer_set_font(text_pebble_battery_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
 	layer_add_child(weather_layer, text_layer_get_layer(text_pebble_battery_layer));
-	text_layer_set_text(text_pebble_battery_layer, "-");
+	text_layer_set_text(text_pebble_battery_layer, "100");
 
 
-	text_weather_cond_layer = text_layer_create(GRect(5, 15, 139, 30)); // GRect(5, 2, 47, 40)
+	text_weather_cond_layer = text_layer_create(GRect(5, 15, 62, 30)); // GRect(5, 2, 47, 40)
 	text_layer_set_text_alignment(text_weather_cond_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(text_weather_cond_layer, GColorWhite);
 	text_layer_set_background_color(text_weather_cond_layer, GColorClear);
 	text_layer_set_font(text_weather_cond_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
 	layer_add_child(weather_layer, text_layer_get_layer(text_weather_cond_layer));
 
-	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false);
+/*	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false); */
 	text_layer_set_text(text_weather_cond_layer, STRING_UPDATING); 	
 	
 	if (bluetooth_connection_service_peek()) {
@@ -783,7 +769,7 @@ layer_add_child(window_layer, status_layer);
 	bitmap_layer_set_bitmap(weather_image, weather_status_imgs[weather_img]);
 
 
-	text_weather_temp_layer = text_layer_create(GRect(25, -2, 100, 20));  // GRect(48, 3, 48, 40)); 
+	text_weather_temp_layer = text_layer_create(GRect(28, 0, 100, 20));  // GRect(48, 3, 48, 40)); 
 	text_layer_set_text_alignment(text_weather_temp_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(text_weather_temp_layer, GColorWhite);
 	text_layer_set_background_color(text_weather_temp_layer, GColorClear);
@@ -791,7 +777,7 @@ layer_add_child(window_layer, status_layer);
 	layer_add_child(weather_layer, text_layer_get_layer(text_weather_temp_layer));
 	text_layer_set_text(text_weather_temp_layer, "-°"); 	
 
-	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false); // changed from true to false
+/*	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false); // changed from true to false */
 
 	
 	//init layers for time and date
@@ -816,7 +802,7 @@ layer_add_child(window_layer, status_layer);
 	text_layer_set_text_alignment(text_seconds_layer, GTextAlignmentLeft); //Previous was center
 	text_layer_set_text_color(text_seconds_layer, GColorWhite);
 	text_layer_set_background_color(text_seconds_layer, GColorClear);
-	layer_set_frame(text_layer_get_layer(text_seconds_layer), GRect(120, 40, 24, 24)); // GRect(0, -5, 144, 55));
+	layer_set_frame(text_layer_get_layer(text_seconds_layer), GRect(120, 38, 24, 45)); // GRect(0, -5, 144, 55));
 	text_layer_set_font(text_seconds_layer, font_secs);
 	layer_add_child(window_layer, text_layer_get_layer(text_seconds_layer));
 
@@ -880,7 +866,7 @@ layer_add_child(window_layer, status_layer);
 }
 
 static void deinit(void) {
-	APP_LOG(APP_LOG_LEVEL_INFO,"Smart FrenchIze is about to quit...");
+	
 	
 	property_animation_destroy((PropertyAnimation*)ani_in);
 	property_animation_destroy((PropertyAnimation*)ani_out);
@@ -908,10 +894,10 @@ static void deinit(void) {
 	general_Timer = NULL;
 
 	bitmap_layer_destroy(background_image);
+	layer_destroy(weather_layer);
 	bitmap_layer_destroy(battery_image_layer);
 	bitmap_layer_destroy(battery_pbl_image_layer);
 	text_layer_destroy(text_battery_layer);
-	text_layer_destroy(text_pebble_battery_layer);
 	layer_destroy(battery_layer);
 	layer_destroy(battery_pbl_layer);
 	text_layer_destroy(text_weather_cond_layer);
@@ -919,7 +905,6 @@ static void deinit(void) {
 	text_layer_destroy(text_weather_temp_layer);
 	text_layer_destroy(text_date_layer);
 	text_layer_destroy(text_time_layer);
-	text_layer_destroy(text_seconds_layer);
 	text_layer_destroy(calendar_date_layer);
 	text_layer_destroy(calendar_text_layer);
 	text_layer_destroy(music_artist_layer);
@@ -927,19 +912,14 @@ static void deinit(void) {
 	text_layer_destroy(text_mail_layer);
 	text_layer_destroy(text_sms_layer);
 	text_layer_destroy(text_phone_layer);
-	layer_destroy(weather_layer);
+	text_layer_destroy(text_pebble_battery_layer);
+	text_layer_destroy(text_seconds_layer);
 	layer_destroy(status_layer);
 	
-	if (music_title_str1 != NULL) {
-		free(music_title_str1);
-		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] 'music_title_str1' memory is now free");
-	}
-
 	if (calendar_date_str != NULL) {
  		free(calendar_date_str);
- 		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] 'calendar_date_str' memory is now free");
+ 		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] calendar_date_str memory is now free");
  	}
-
  	fonts_unload_custom_font(font_date);
 	fonts_unload_custom_font(font_time);
 	fonts_unload_custom_font(font_secs);
@@ -964,7 +944,6 @@ static void deinit(void) {
 
   
   window_destroy(window);
-  APP_LOG(APP_LOG_LEVEL_INFO,"QUIT SmartFrenchIze");
 }
 
 
@@ -982,7 +961,7 @@ static void updateMusic(void *data) {
 
 static void auto_switch(void *data){
 	hideMusicLayer = NULL;
-	if (active_layer == MUSIC_LAYER) animate_layers(NULL,NULL);
+	if (active_layer == MUSIC_LAYER) animate_layers();
 }
 
 void rcv(DictionaryIterator *received, void *context) {
@@ -1003,10 +982,10 @@ void rcv(DictionaryIterator *received, void *context) {
         weather_temp_str[strlen(t->value->cstring)] = '\0';
 		text_layer_set_text(text_weather_temp_layer, weather_temp_str); 
 		
-		/*layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true);
-		layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false); */
+/*		layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true);
+		layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false);
 			
-	}
+*/	}
 
 	t=dict_find(received, SM_WEATHER_ICON_KEY); 
 	if (t!=NULL) {
@@ -1015,6 +994,7 @@ void rcv(DictionaryIterator *received, void *context) {
 
 	t=dict_find(received, SM_COUNT_MAIL_KEY); 
 	if (t!=NULL) {
+		static char mail_count_str[5];
 		memcpy(mail_count_str, t->value->cstring, strlen(t->value->cstring));
         mail_count_str[strlen(t->value->cstring)] = '\0';
 		text_layer_set_text(text_mail_layer, mail_count_str); 	
@@ -1022,6 +1002,7 @@ void rcv(DictionaryIterator *received, void *context) {
 
 	t=dict_find(received, SM_COUNT_SMS_KEY); 
 	if (t!=NULL) {
+		static char sms_count_str[5];
 		memcpy(sms_count_str, t->value->cstring, strlen(t->value->cstring));
         sms_count_str[strlen(t->value->cstring)] = '\0';
 		text_layer_set_text(text_sms_layer, sms_count_str); 	
@@ -1029,6 +1010,7 @@ void rcv(DictionaryIterator *received, void *context) {
 
 	t=dict_find(received, SM_COUNT_PHONE_KEY); 
 	if (t!=NULL) {
+		static char phone_count_str[5];
 		memcpy(phone_count_str, t->value->cstring, strlen(t->value->cstring));
         phone_count_str[strlen(t->value->cstring)] = '\0';
 		text_layer_set_text(text_phone_layer, phone_count_str); 	
@@ -1045,24 +1027,21 @@ void rcv(DictionaryIterator *received, void *context) {
 	t=dict_find(received, SM_STATUS_CAL_TIME_KEY);   // I changed this if that's what you're looking for <-------------------------
  	if (t!=NULL) {
  		if (calendar_date_str != NULL) {
- 			APP_LOG(APP_LOG_LEVEL_DEBUG,"[ ] sizeof(calendar_date_str) = %i",sizeof(calendar_date_str));
-			free(calendar_date_str);
-			APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] calendar_date_str is no more allocated");
+ 			free(calendar_date_str);
  		}
  		static int num_chars;
  		num_chars = strlen(t->value->cstring);
  		calendar_date_str = (char *)malloc(sizeof(char) * num_chars);
  		if (calendar_date_str == NULL) {
- 			APP_LOG(APP_LOG_LEVEL_ERROR,"[/] Malloc << calendar_date_str | Request: (num_chars = %i)",num_chars);
+ 			APP_LOG(APP_LOG_LEVEL_ERROR,"[/] Malloc wasn't able to allocate memory (num_chars = %i)",num_chars);
  		} else {
- 			APP_LOG(APP_LOG_LEVEL_DEBUG,"[A] Malloc << calendar_date_str | Request: (num_chars * sizeof(char) = %i * %i)",
- 				num_chars, (int)(sizeof(char)));
+ 			APP_LOG(APP_LOG_LEVEL_INFO,"[M] Malloc succesfully allocated memory (num_chars * sizeof(char) = %i * %i)",num_chars, (int)(sizeof(char)));
  			phone_is_connected = true;
  		}
  		memcpy(calendar_date_str, t->value->cstring, strlen(t->value->cstring));
         calendar_date_str[strlen(t->value->cstring)] = '\0';
  		text_layer_set_text(calendar_date_layer, calendar_date_str);
-		APP_LOG(APP_LOG_LEVEL_DEBUG_VERBOSE, "    Received DATA for Calendar, launching Appointment Module [apptDisplay]");
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "[R] Received DATA for Calendar, launching Appointment Module [apptDisplay]");
 		apptDisplay(calendar_date_str);
   	}
 	
@@ -1081,6 +1060,20 @@ void rcv(DictionaryIterator *received, void *context) {
 				text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
 	}
 
+/*	t=dict_find(received, SM_VOLUME_VALUE_KEY);
+	if (t!=NULL) {
+		static int volume_value;
+		volume_value = t->value->uint8;
+		APP_LOG(APP_LOG_LEVEL_DEBUG,"    Volume is set to %i",volume_value);
+	}
+
+	t=dict_find(received, SM_PLAY_STATUS_KEY);
+	if (t!=NULL) {
+		static int music_playing;
+		music_playing = t->value->uint8;
+		APP_LOG(APP_LOG_LEVEL_DEBUG,"    Music play status: %i",music_playing);
+	}
+*/
 	t=dict_find(received, SM_STATUS_MUS_ARTIST_KEY); 
 	if (t!=NULL) {
 		memcpy(music_artist_str1, t->value->cstring, strlen(t->value->cstring));
@@ -1090,31 +1083,14 @@ void rcv(DictionaryIterator *received, void *context) {
 
 	t=dict_find(received, SM_STATUS_MUS_TITLE_KEY); 
 	if (t!=NULL) {
-		if (music_title_str1 != NULL) {
- 			APP_LOG(APP_LOG_LEVEL_DEBUG,"[ ] sizeof(music_title_str1) = %i",sizeof(music_title_str1));
-			free(music_title_str1);
-			APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] music_title_str1 is no more allocated");
- 		}
- 		static int num_chars;
- 		num_chars = strlen(t->value->cstring);
- 		music_title_str1 = (char *)malloc(sizeof(char) * num_chars);
- 		if (music_title_str1 == NULL) {
- 			APP_LOG(APP_LOG_LEVEL_ERROR,"[/] Malloc << music_title_str1 | Request: (num_chars = %i)",num_chars);
- 		} else {
- 			APP_LOG(APP_LOG_LEVEL_DEBUG,"[A] Malloc << music_title_str1 | Request: (num_chars * sizeof(char) = %i * %i)",
- 				num_chars, (int)(sizeof(char)));
- 			phone_is_connected = true;
- 		}
 		memcpy(music_title_str1, t->value->cstring, strlen(t->value->cstring));
         music_title_str1[strlen(t->value->cstring)] = '\0';
-		APP_LOG(APP_LOG_LEVEL_DEBUG,"New music title received is %s",music_title_str1);
+		APP_LOG(APP_LOG_LEVEL_DEBUG,"[R] New music title received is %s",music_title_str1);
 		text_layer_set_text(music_song_layer, music_title_str1);
 		if ((strncmp(last_text,music_title_str1,8) != 0) && (strncmp(music_title_str1,"No Title",8) != 0)) {
 			strncpy(last_text,music_title_str1,8);
 			if (active_layer != MUSIC_LAYER) 
-				APP_LOG(APP_LOG_LEVEL_DEBUG,"I'm about to animate layers. Maybe the bug is here");
-				animate_layers(NULL,NULL);
-				APP_LOG(APP_LOG_LEVEL_DEBUG,"NOPE! animate_layers seems to work...");
+				animate_layers();
 			if (hideMusicLayer != NULL) 
 				app_timer_cancel(hideMusicLayer);
 			hideMusicLayer = app_timer_register(5000 , auto_switch, NULL);

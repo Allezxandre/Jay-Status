@@ -84,7 +84,7 @@
             },
             {
                 "type": "font",
-                "name": "FONT_CONDENSED_21",
+                "name": "FONT_CLEARSANS_REGULAR_21",
                 "file": "fonts/ClearSans-Regular.ttf"
             },
             {
