@@ -95,13 +95,13 @@ static uint32_t s_sequence_number = 0xFFFFFFFE;
 /* Convert letter to digit */
 int letter2digit(char letter) {
 	if (letter == '\0') {
-		APP_LOG(APP_LOG_LEVEL_ERROR, "letter2digit failed!");
+		APP_LOG(APP_LOG_LEVEL_ERROR, "[/] letter2digit failed!");
 		return -1;
 	}
 	if((letter >= 48) && (letter <=57)) {
 		return letter - 48;
 	}
-	APP_LOG(APP_LOG_LEVEL_ERROR, "letter2digit(%c) failed", letter);
+	APP_LOG(APP_LOG_LEVEL_ERROR, "[/] letter2digit(%c) failed", letter);
 	return -1;
 }
 
@@ -118,13 +118,12 @@ static int string2number(char *string) {
 		letter = string[offset];
 		digit = letter2digit(letter);
 		if(digit == -1){
-			APP_LOG(APP_LOG_LEVEL_WARNING, "string2number had to deal with '%s' as an argument and failed",string);
+			APP_LOG(APP_LOG_LEVEL_WARNING, "[/] string2number had to deal with '%s' as an argument and failed",string);
 			return -1;
 		}
 		result = result + (unit * digit);
 		offset--;
 	}
-	APP_LOG(APP_LOG_LEVEL_DEBUG, "string2number(%s) -> %i", string, result);
 	return result;
 }
 
@@ -133,10 +132,10 @@ static void apptDisplay(char *appt_string) {
 	// Make sure there is no error in argument
 //	APP_LOG(APP_LOG_LEVEL_INFO, "apptDisplay started with argument (%s)", appt_string);
 	if (appt_string[0] == '\0') {
-		APP_LOG(APP_LOG_LEVEL_WARNING, "appt_string is empty! ABORTING apptDisplay");
+		APP_LOG(APP_LOG_LEVEL_WARNING, "[/] appt_string is empty! ABORTING apptDisplay");
 		return;
 	} else if (sizeof(appt_string) != 4) {
-		APP_LOG(APP_LOG_LEVEL_WARNING, "appt_string is too small (%i characters)! ABORTING apptDisplay", (int)(sizeof(appt_string)));
+		APP_LOG(APP_LOG_LEVEL_WARNING, "[?] appt_string is too small (%i characters)! ABORTING apptDisplay", (int)(sizeof(appt_string)));
 			text_layer_set_text(calendar_date_layer, appt_string);
 		return;
 	}
@@ -156,12 +155,10 @@ static void apptDisplay(char *appt_string) {
 	static int appt_day;
 					strncpy(stringBuffer, appt_string+3,2);
 					appt_day = string2number(stringBuffer);
-					APP_LOG(APP_LOG_LEVEL_DEBUG,"appt_day is    %i",appt_day);
 
 	static int appt_month;
 					strncpy(stringBuffer, appt_string,2);
 					appt_month = string2number(stringBuffer);
-					APP_LOG(APP_LOG_LEVEL_DEBUG,"appt_month is  %i",appt_month);
 
 	if (appt_month > 12) {
 		APP_LOG(APP_LOG_LEVEL_WARNING,"[!] Please set DATE FORMAT to MM/DD");
@@ -179,10 +176,9 @@ static void apptDisplay(char *appt_string) {
 						strncpy(stringBuffer, appt_string+6,2);
 						appt_hour = string2number(stringBuffer);
 					} else {
-						APP_LOG(APP_LOG_LEVEL_DEBUG,"Event is ALL DAY");
+						APP_LOG(APP_LOG_LEVEL_DEBUG,"    Event is ALL DAY");
 						event_is_all_day = true;
 					}
-				APP_LOG(APP_LOG_LEVEL_DEBUG,"appt_hour is   %i",appt_hour);
 
 	static int appt_minute;
 					if (appt_string[7] == ':'){
@@ -191,8 +187,11 @@ static void apptDisplay(char *appt_string) {
 					} else if (appt_string[8] == ':') {
 						strncpy(stringBuffer, appt_string+9,2);
 						appt_minute = string2number(stringBuffer);
-					} else {APP_LOG(APP_LOG_LEVEL_ERROR, "appt_minute cannot be determined...");}
-				APP_LOG(APP_LOG_LEVEL_DEBUG,"appt_minute is %i",appt_minute);
+					} else {APP_LOG(APP_LOG_LEVEL_ERROR, "[?] appt_minute cannot be determined...");}
+	APP_LOG(APP_LOG_LEVEL_INFO,"[-] Time        : %02i/%02i [%02i:%02i]", t->tm_mday,t->tm_mon+1, t->tm_hour, t->tm_min);
+	APP_LOG(APP_LOG_LEVEL_INFO,"[X] appointment : %02i/%02i", appt_day,appt_month);
+	if (!event_is_all_day) 
+		{APP_LOG(APP_LOG_LEVEL_INFO,"[X]             :       [%02i:%02i]", appt_hour,appt_minute);}
 		
 	 static int hour_now;
 	 static int min_now;
@@ -269,7 +268,7 @@ static void apptDisplay(char *appt_string) {
 	  }
 
 				if ((event_is_all_day) || (!event_is_today)) {
-					APP_LOG(APP_LOG_LEVEL_DEBUG, "Do nothing with hour and minutes");
+					APP_LOG(APP_LOG_LEVEL_DEBUG, "    Do nothing with hour and minutes");
 				} else if (((hour_now) > appt_hour) || (((hour_now) == appt_hour) && (min_now >= appt_minute))) {
 					int hour_since = 0;
 					int minutes_since = 0;
@@ -419,6 +418,8 @@ static void held_down_button_down(ClickRecognizerRef recognizer, void *context) 
 	}
 }
 
+
+
 /*  OLD ONE
 static void animate_layers(){
 	//slide layers in/out
@@ -546,7 +547,7 @@ if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) 
 	 	// Print the result
    snprintf(date_text, sizeof(date_text), "%s, %s %i", day_of_week[day_int], month_of_year[month_int], tick_time->tm_mday);
    text_layer_set_text(text_date_layer, date_text);
-	  APP_LOG(APP_LOG_LEVEL_INFO, "Displayed date : [%s %i %s]", day_of_week[day_int], tick_time->tm_mday, month_of_year[month_int]);
+	  APP_LOG(APP_LOG_LEVEL_INFO, "[-] Displayed date : [%s %i %s]", day_of_week[day_int], tick_time->tm_mday, month_of_year[month_int]);
   	}
 
   if (clock_is_24h_style()) {
@@ -567,8 +568,8 @@ if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) 
 	// Don't forget the "heure" variable if you copy this small paragraph
   if (((units_changed & HOUR_UNIT) == HOUR_UNIT) && ((heure > 9) && (heure < 23))){
     vibes_double_pulse();
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Hour changed -> Vibration complete");
-  } else {APP_LOG(APP_LOG_LEVEL_DEBUG, "However, Hour Unit did not change, no vibration");}
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "    Hour changed -> Vibration complete");
+  }
 	
   text_layer_set_text(text_time_layer, time_text);
 }
@@ -589,12 +590,12 @@ void bluetoothChanged(bool connected) {
 		if (!phone_is_connected) {vibes_short_pulse();} 
 		/* Pebble has two channels for connection : Bluetooth-LE and Bluetooth ADP, it's a workaround 
 		   to prevent the watch from vibrating twice*/
-		display_Notification("iPhone", "Connecté", 5000);
+		display_Notification("iPhone", STRING_CONNECTED, 5000);
 		phone_is_connected = true;
 	} else {
 		bitmap_layer_set_bitmap(weather_image, weather_status_imgs[NUM_WEATHER_IMAGES-1]);
 		if (phone_is_connected) {vibes_short_pulse();}
-		display_Notification("iPhone", "Déconnecté", 5000);
+		display_Notification("iPhone", STRING_DISCONNECTED, 5000);
 		phone_is_connected = false;
 	}
 	
@@ -888,7 +889,7 @@ static void deinit(void) {
 	
 	if (calendar_date_str != NULL) {
  		free(calendar_date_str);
- 		APP_LOG(APP_LOG_LEVEL_DEBUG,"calendar_date_str memory is now free");
+ 		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] calendar_date_str memory is now free");
  	}
  	fonts_unload_custom_font(font_date);
 	fonts_unload_custom_font(font_time);
@@ -1003,15 +1004,15 @@ void rcv(DictionaryIterator *received, void *context) {
  		num_chars = strlen(t->value->cstring);
  		calendar_date_str = (char *)malloc(sizeof(char) * num_chars);
  		if (calendar_date_str == NULL) {
- 			APP_LOG(APP_LOG_LEVEL_ERROR,"Malloc wasn't able to allocate memory (num_chars = %i)",num_chars);
+ 			APP_LOG(APP_LOG_LEVEL_ERROR,"[/] Malloc wasn't able to allocate memory (num_chars = %i)",num_chars);
  		} else {
- 			APP_LOG(APP_LOG_LEVEL_INFO,"Malloc succesfully allocated memory (num_chars * sizeof(char) = %i * %i)",num_chars, (int)(sizeof(char)));
+ 			APP_LOG(APP_LOG_LEVEL_INFO,"[M] Malloc succesfully allocated memory (num_chars * sizeof(char) = %i * %i)",num_chars, (int)(sizeof(char)));
  			phone_is_connected = true;
  		}
  		memcpy(calendar_date_str, t->value->cstring, strlen(t->value->cstring));
         calendar_date_str[strlen(t->value->cstring)] = '\0';
  		text_layer_set_text(calendar_date_layer, calendar_date_str);
-		APP_LOG(APP_LOG_LEVEL_DEBUG, "Received DATA for Calendar, launching Appointment Module [apptDisplay]");
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "[R] Received DATA for Calendar, launching Appointment Module [apptDisplay]");
 		apptDisplay(calendar_date_str);
   	}
 	
@@ -1055,7 +1056,7 @@ void rcv(DictionaryIterator *received, void *context) {
 	if (t!=NULL) {
 		memcpy(music_title_str1, t->value->cstring, strlen(t->value->cstring));
         music_title_str1[strlen(t->value->cstring)] = '\0';
-		APP_LOG(APP_LOG_LEVEL_DEBUG,"New music title received is %s",music_title_str1);
+		APP_LOG(APP_LOG_LEVEL_DEBUG,"[R] New music title received is %s",music_title_str1);
 		text_layer_set_text(music_song_layer, music_title_str1);
 		if ((strncmp(last_text,music_title_str1,8) != 0) && (strncmp(music_title_str1,"No Title",8) != 0)) {
 			strncpy(last_text,music_title_str1,8);
