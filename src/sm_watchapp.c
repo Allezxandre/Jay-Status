@@ -702,12 +702,12 @@ layer_add_child(window_layer, status_layer);
 	layer_set_update_proc(battery_layer, battery_layer_update_callback);
 	layer_add_child(weather_layer, battery_layer);
 
-	text_battery_layer = text_layer_create(GRect(0, 11, 19, 19)); // GRect(99, 20, 40, 60));
+	text_battery_layer = text_layer_create(GRect(104, 15, 25, 19)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_battery_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_battery_layer, GColorWhite);
 	text_layer_set_background_color(text_battery_layer, GColorClear);
 	text_layer_set_font(text_battery_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
-	layer_add_child(battery_layer, text_layer_get_layer(text_battery_layer));
+	layer_add_child(weather_layer, text_layer_get_layer(text_battery_layer));
 	text_layer_set_text(text_battery_layer, "-");
 
 	batteryPercent = 100;
@@ -721,16 +721,16 @@ layer_add_child(window_layer, status_layer);
 	batteryPblPercent = pbl_batt.charge_percent;
 	layer_mark_dirty(battery_pbl_layer);
 
-	text_pebble_battery_layer = text_layer_create(GRect(0, 11, 19, 19)); // GRect(99, 20, 40, 60));
+	text_pebble_battery_layer = text_layer_create(GRect(67, 15, 25, 19)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_pebble_battery_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_pebble_battery_layer, GColorWhite);
 	text_layer_set_background_color(text_pebble_battery_layer, GColorClear);
 	text_layer_set_font(text_pebble_battery_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
-	layer_add_child(battery_pbl_layer, text_layer_get_layer(text_pebble_battery_layer));
+	layer_add_child(weather_layer, text_layer_get_layer(text_pebble_battery_layer));
 	text_layer_set_text(text_pebble_battery_layer, "-");
 
 
-	text_weather_cond_layer = text_layer_create(GRect(5, 15, 139, 30)); // GRect(5, 2, 47, 40)
+	text_weather_cond_layer = text_layer_create(GRect(5, 15, 62, 30)); // GRect(5, 2, 47, 40)
 	text_layer_set_text_alignment(text_weather_cond_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(text_weather_cond_layer, GColorWhite);
 	text_layer_set_background_color(text_weather_cond_layer, GColorClear);
