@@ -10,7 +10,7 @@
 	Idea by J Dishaw
 */
 
-#define DEBUG 1
+//#define DEBUG 1
 #define STRING_LENGTH 255
 #define NUM_WEATHER_IMAGES	9
 #define VIBE_ON_HOUR true
@@ -344,6 +344,14 @@ void sendCommandInt(int key, int param) {
 }
 
 
+static void turn_off_the_light(void *data) {
+		light_enable(false);
+		if (general_Timer != NULL) {
+			app_timer_cancel(general_Timer);
+			general_Timer = NULL;
+		}
+}
+
 static void display_Notification(char *text1, char *text2, int time) {
 		if (hideMusicLayer != NULL) 
 			app_timer_cancel(hideMusicLayer);
@@ -356,55 +364,14 @@ static void display_Notification(char *text1, char *text2, int time) {
 	}
 
 
-static void select_click_down_handler(ClickRecognizerRef recognizer, void *context) {
+static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
+	animate_layers();
 	//show the weather condition instead of temperature while center button is pressed
 /*	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), true);
 	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false);
 */}
 
-static void select_click_up_handler(ClickRecognizerRef recognizer, void *context) {
-	//update all data
-	if (phone_is_connected) {
-		reset();
-		sendCommandInt(SM_SCREEN_ENTER_KEY, STATUS_SCREEN_APP);
-	}
-}
-
-static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
-	sendCommand(SM_OPEN_SIRI_KEY);
-}
-
-static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
-	if (phone_is_connected) {sendCommand(SM_NEXT_TRACK_KEY);} else {light_enable(false);}
-	if (hideMusicLayer != NULL) 
-			app_timer_cancel(hideMusicLayer);
-	auto_switch(NULL);
-}
-
-static void notif_find_my_iphone(ClickRecognizerRef recognizer, void *context) {
-	vibes_short_pulse();
-	if (phone_is_connected) {
-		display_Notification(STRING_FIND_IPHONE_CONF_1, STRING_FIND_IPHONE_CONF_2, 5000);
-	} else {
-		display_Notification("iPhone", STRING_DISCONNECTED, 2000);
-	}
-}
-static void find_my_iphone(ClickRecognizerRef recognizer, void *context) {
-	if (phone_is_connected) {
-		vibes_long_pulse();
-	}
-	sendCommand(SM_FIND_MY_PHONE_KEY);
-}
-
-static void turn_off_the_light(void *data) {
-		light_enable(false);
-		if (general_Timer != NULL) {
-			app_timer_cancel(general_Timer);
-			general_Timer = NULL;
-		}
-}
-
-static void held_down_button_down(ClickRecognizerRef recognizer, void *context) {
+static void select_hold_handler(ClickRecognizerRef recognizer, void *context) {
 	if (phone_is_connected) { // If phone is connected, we play music
 		strncpy(last_text,"12345678",8); // We kind of force a new displaying of song
 		sendCommand(SM_PLAYPAUSE_KEY);
@@ -418,7 +385,51 @@ static void held_down_button_down(ClickRecognizerRef recognizer, void *context) 
 	}
 }
 
+static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
+	sendCommand(SM_OPEN_SIRI_KEY);
+}
 
+
+static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
+	if (phone_is_connected) {
+		reset();
+		sendCommandInt(SM_SCREEN_ENTER_KEY, STATUS_SCREEN_APP);
+	} else {
+		light_enable(true);
+		if (general_Timer != NULL) {
+			app_timer_cancel(general_Timer);
+			general_Timer = NULL;
+		}
+		general_Timer = app_timer_register(120000 , turn_off_the_light, NULL);
+	}
+}
+
+/*
+static void notif_find_my_iphone(ClickRecognizerRef recognizer, void *context) {
+	vibes_short_pulse();
+	if (phone_is_connected) {
+		display_Notification(STRING_FIND_IPHONE_CONF_1, STRING_FIND_IPHONE_CONF_2, 5000);
+	} else {
+		display_Notification("iPhone", STRING_DISCONNECTED, 2000);
+	}
+}
+
+static void find_my_iphone(ClickRecognizerRef recognizer, void *context) {
+	if (phone_is_connected) {
+		vibes_long_pulse();
+	}
+	sendCommand(SM_FIND_MY_PHONE_KEY);
+}
+*/
+
+static void held_down_button_down(ClickRecognizerRef recognizer, void *context) {
+	if (phone_is_connected) {
+		sendCommand(SM_NEXT_TRACK_KEY);
+	} else {light_enable(false);}
+	if (hideMusicLayer != NULL) 
+			app_timer_cancel(hideMusicLayer);
+	auto_switch(NULL);
+}
 
 /*  OLD ONE
 static void animate_layers(){
@@ -453,11 +464,11 @@ static void animate_layers() {
 
 
 static void click_config_provider(void *context) {
-  window_raw_click_subscribe(BUTTON_ID_SELECT, select_click_down_handler, select_click_up_handler, context);
-  window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
+  window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
+  window_long_click_subscribe(BUTTON_ID_UP, 750, up_click_handler, NULL);
   window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
-  window_long_click_subscribe(BUTTON_ID_UP, 3000, notif_find_my_iphone, find_my_iphone);
-  window_long_click_subscribe(BUTTON_ID_DOWN, 500, held_down_button_down, NULL);
+  window_long_click_subscribe(BUTTON_ID_SELECT, 750, select_hold_handler, NULL);
+  window_long_click_subscribe(BUTTON_ID_DOWN, 350, held_down_button_down, NULL);
 }
 
 static void window_load(Window *window) {
@@ -1031,7 +1042,7 @@ void rcv(DictionaryIterator *received, void *context) {
 				text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
 	}
 
-	t=dict_find(received, SM_VOLUME_VALUE_KEY);
+/*	t=dict_find(received, SM_VOLUME_VALUE_KEY);
 	if (t!=NULL) {
 		static int volume_value;
 		volume_value = t->value->uint8;
@@ -1044,7 +1055,7 @@ void rcv(DictionaryIterator *received, void *context) {
 		music_playing = t->value->uint8;
 		APP_LOG(APP_LOG_LEVEL_DEBUG,"    Music play status: %i",music_playing);
 	}
-
+*/
 	t=dict_find(received, SM_STATUS_MUS_ARTIST_KEY); 
 	if (t!=NULL) {
 		memcpy(music_artist_str1, t->value->cstring, strlen(t->value->cstring));
