@@ -10,7 +10,7 @@
 	Idea by J Dishaw
 */
 
-#define DEBUG 1
+//#define DEBUG 1
 #define STRING_LENGTH 255
 #define NUM_WEATHER_IMAGES	9
 #define VIBE_ON_HOUR true
@@ -802,7 +802,7 @@ layer_add_child(window_layer, status_layer);
 	text_layer_set_text_alignment(text_seconds_layer, GTextAlignmentLeft); //Previous was center
 	text_layer_set_text_color(text_seconds_layer, GColorWhite);
 	text_layer_set_background_color(text_seconds_layer, GColorClear);
-	layer_set_frame(text_layer_get_layer(text_seconds_layer), GRect(120, 38, 24, 45)); // GRect(0, -5, 144, 55));
+	layer_set_frame(text_layer_get_layer(text_seconds_layer), GRect(120, 39, 24, 45)); // GRect(0, -5, 144, 55));
 	text_layer_set_font(text_seconds_layer, font_secs);
 	layer_add_child(window_layer, text_layer_get_layer(text_seconds_layer));
 
