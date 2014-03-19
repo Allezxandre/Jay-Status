@@ -101,28 +101,38 @@ static uint32_t s_sequence_number = 0xFFFFFFFE;
 
 void load_memories() {
 static bool event_is_all_day_int;
-event_is_all_day_int = persist_exists(PERSIST_IS_ALL_DAY) ? persist_read_int(PERSIST_IS_ALL_DAY) : -1;
-event_is_all_day = (event_is_all_day_int == 1) ? 1 : 0;
-appt_day = persist_exists(PERSIST_DAY) ? persist_read_int(PERSIST_DAY) : -1;
-appt_month = persist_exists(PERSIST_MONTH) ? persist_read_int(PERSIST_MONTH) : -1;
-appt_hour = persist_exists(PERSIST_HOUR) ? persist_read_int(PERSIST_HOUR) : -1;
-appt_minute = persist_exists(PERSIST_MINUTE) ? persist_read_int(PERSIST_MINUTE) : -1;
+	event_is_all_day_int = persist_exists(PERSIST_IS_ALL_DAY) ? persist_read_int(PERSIST_IS_ALL_DAY) : -1;
+	event_is_all_day = (event_is_all_day_int == 1) ? 1 : 0;
+	appt_day = persist_exists(PERSIST_DAY) ? persist_read_int(PERSIST_DAY) : -1;
+	appt_month = persist_exists(PERSIST_MONTH) ? persist_read_int(PERSIST_MONTH) : -1;
+	appt_hour = persist_exists(PERSIST_HOUR) ? persist_read_int(PERSIST_HOUR) : -1;
+	appt_minute = persist_exists(PERSIST_MINUTE) ? persist_read_int(PERSIST_MINUTE) : -1;
 	APP_LOG(APP_LOG_LEVEL_INFO,"[B] appointment : %02i/%02i", appt_day,appt_month);
 	if (!event_is_all_day) 
 		{APP_LOG(APP_LOG_LEVEL_INFO,"[B]             :       [%02i:%02i]", appt_hour,appt_minute);}
+	if (persist_exists(PERSIST_EVENT_STRG)) {
+		persist_read_string(PERSIST_EVENT_STRG, calendar_text_str, STRING_LENGTH);
+		text_layer_set_text(calendar_text_layer, calendar_text_str); 	
+			// Resize Calendar text if needed
+			if(strlen(calendar_text_str) <= 15)
+				text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+			else
+				if(strlen(calendar_text_str) <= 18)
+					text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+				else 
+					text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
+
+	}
 }
 
 void store_for_later() {
-bool event_is_today_int = event_is_today ? 1 : 0;
 bool event_is_all_day_int = event_is_all_day ? 1 : 0;
-bool event_is_past_int = event_is_past ? 1 : 0;
-persist_write_int(PERSIST_IS_TODAY, event_is_today_int);
 persist_write_int(PERSIST_IS_ALL_DAY, event_is_all_day_int);
-persist_write_int(PERSIST_IS_PAST, event_is_past_int);
 persist_write_int(PERSIST_DAY, appt_day);
 persist_write_int(PERSIST_MONTH, appt_month);
 persist_write_int(PERSIST_HOUR, appt_hour);
 persist_write_int(PERSIST_MINUTE, appt_minute);
+persist_write_string(PERSIST_EVENT_STRG, calendar_text_str);
 }
 
 // Calendar Appointments
@@ -909,12 +919,13 @@ layer_add_child(window_layer, status_layer);
 
 static void deinit(void) {
 	
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"[B] Writing to Persistent Memory");
 	store_for_later();
 
 	property_animation_destroy((PropertyAnimation*)ani_in);
 	property_animation_destroy((PropertyAnimation*)ani_out);
 	
-
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"    Destroy EVERYTHING");
 	
 	if (timerUpdateCalendar != NULL)
 		app_timer_cancel(timerUpdateCalendar);

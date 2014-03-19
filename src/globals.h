@@ -81,13 +81,13 @@
 #define SM_STREAMING_BMP_KEY    	0xFC4D
 #define SM_CANVAS_DICT_KEY          0xFC4E
 
-#define PERSIST_IS_TODAY				101
+#define PERSIST_EVENT_STRG			101
 #define PERSIST_IS_ALL_DAY			102
 #define PERSIST_IS_PAST				103
 #define PERSIST_DAY					104
-#define PERSIST_MONTH					105
-#define PERSIST_HOUR					106
-#define PERSIST_MINUTE					107
+#define PERSIST_MONTH				105
+#define PERSIST_HOUR				106
+#define PERSIST_MINUTE				107
 
 #define STATUS_SCREEN_APP 			NUM_APPS
 
