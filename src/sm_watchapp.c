@@ -534,7 +534,16 @@ static void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, volume_increase);
   window_single_click_subscribe(BUTTON_ID_SELECT, call_siri);
   window_single_click_subscribe(BUTTON_ID_BACK, volume_decrease);
-  window_long_click_subscribe(BUTTON_ID_BACK, 750, NULL, NULL);
+  window_multi_click_subscribe(BUTTON_ID_BACK, 2, 0, 250, true, update_all);
+  	/*
+			void window_multi_click_subscribe	(	ButtonId 	button_id,
+													uint8_t 	min_clicks,
+													uint8_t 	max_clicks,
+													uint16_t 	timeout,
+													bool 	last_click_only,
+													ClickHandler 	handler 
+												)	
+  	*/
   window_single_click_subscribe(BUTTON_ID_DOWN, next_track_action);
   window_long_click_subscribe(BUTTON_ID_SELECT, 750, play_pause_action, NULL);
   window_long_click_subscribe(BUTTON_ID_DOWN, 250, previous_track_action, NULL);
