@@ -10,7 +10,7 @@
 	Idea by J Dishaw
 */
 
-//#define DEBUG 1
+#define DEBUG 1
 #define STRING_LENGTH 255
 #define NUM_WEATHER_IMAGES	9
 #define VIBE_ON_HOUR true
@@ -67,12 +67,21 @@ static AppTimer *timerUpdateCalendar = NULL;
 static AppTimer *timerUpdateWeather = NULL;
 static AppTimer *timerUpdateMusic = NULL;
 static AppTimer *hideMusicLayer = NULL;
-static AppTimer *general_Timer = NULL;
+static AppTimer *long_light_timer = NULL;
 
 /* Preload the fonts */
 GFont font_date;
 GFont font_time;
 GFont font_secs;
+
+/* Calendar Variables */
+static bool event_is_today = false;
+static bool event_is_all_day = false;
+static bool event_is_past = false;
+static int appt_day = -1;
+static int appt_month = -1;
+static int appt_hour = -1;
+static int appt_minute = -1;
 
 const int WEATHER_IMG_IDS[] = {	
   RESOURCE_ID_IMAGE_SUN,
@@ -89,6 +98,32 @@ const int WEATHER_IMG_IDS[] = {
 
 
 static uint32_t s_sequence_number = 0xFFFFFFFE;
+
+void load_memories() {
+static bool event_is_all_day_int;
+event_is_all_day_int = persist_exists(PERSIST_IS_ALL_DAY) ? persist_read_int(PERSIST_IS_ALL_DAY) : -1;
+event_is_all_day = (event_is_all_day_int == 1) ? 1 : 0;
+appt_day = persist_exists(PERSIST_DAY) ? persist_read_int(PERSIST_DAY) : -1;
+appt_month = persist_exists(PERSIST_MONTH) ? persist_read_int(PERSIST_MONTH) : -1;
+appt_hour = persist_exists(PERSIST_HOUR) ? persist_read_int(PERSIST_HOUR) : -1;
+appt_minute = persist_exists(PERSIST_MINUTE) ? persist_read_int(PERSIST_MINUTE) : -1;
+	APP_LOG(APP_LOG_LEVEL_INFO,"[B] appointment : %02i/%02i", appt_day,appt_month);
+	if (!event_is_all_day) 
+		{APP_LOG(APP_LOG_LEVEL_INFO,"[B]             :       [%02i:%02i]", appt_hour,appt_minute);}
+}
+
+void store_for_later() {
+bool event_is_today_int = event_is_today ? 1 : 0;
+bool event_is_all_day_int = event_is_all_day ? 1 : 0;
+bool event_is_past_int = event_is_past ? 1 : 0;
+persist_write_int(PERSIST_IS_TODAY, event_is_today_int);
+persist_write_int(PERSIST_IS_ALL_DAY, event_is_all_day_int);
+persist_write_int(PERSIST_IS_PAST, event_is_past_int);
+persist_write_int(PERSIST_DAY, appt_day);
+persist_write_int(PERSIST_MONTH, appt_month);
+persist_write_int(PERSIST_HOUR, appt_hour);
+persist_write_int(PERSIST_MINUTE, appt_minute);
+}
 
 // Calendar Appointments
 
@@ -131,7 +166,7 @@ static void apptDisplay(char *appt_string) {
 	
 	// Make sure there is no error in argument
 //	APP_LOG(APP_LOG_LEVEL_INFO, "apptDisplay started with argument (%s)", appt_string);
-	if (appt_string[0] == '\0') {
+/*	if (appt_string[0] == '\0') {
 		APP_LOG(APP_LOG_LEVEL_WARNING, "[/] appt_string is empty! ABORTING apptDisplay");
 		return;
 	} else if (sizeof(appt_string) != 4) {
@@ -139,6 +174,7 @@ static void apptDisplay(char *appt_string) {
 			text_layer_set_text(calendar_date_layer, appt_string);
 		return;
 	}
+	*/
 	
 	// Init some variables
 	static char date_time_for_appt[20]; // = "Le XX XXXX à ##h##";
@@ -147,16 +183,13 @@ static void apptDisplay(char *appt_string) {
 	struct tm *t;
 	now = time(NULL);
 	t = localtime(&now);
-	static bool event_is_today = false;
-	static bool event_is_all_day = false;
-	static bool event_is_past = false;
 	
+  if ((appt_string[0] != '\0') && (sizeof(appt_string) != 4) && (appt_string != NULL)) {
+  	APP_LOG(APP_LOG_LEVEL_INFO,"    Determining variables");
 		//	Determine the variables
-	static int appt_day;
 					strncpy(stringBuffer, appt_string,2);
 					appt_day = string2number(stringBuffer);
 
-	static int appt_month;
 					strncpy(stringBuffer, appt_string+3,2);
 					appt_month = string2number(stringBuffer);
 
@@ -167,7 +200,6 @@ static void apptDisplay(char *appt_string) {
 		return;
 	}
 
-	static int appt_hour;
 					if (appt_string[7] == ':'){
 						strncpy(stringBuffer, appt_string+5,2);
 						stringBuffer[0]='0';
@@ -180,7 +212,6 @@ static void apptDisplay(char *appt_string) {
 						event_is_all_day = true;
 					}
 
-	static int appt_minute;
 					if (appt_string[7] == ':'){
 						strncpy(stringBuffer, appt_string+8,2);
 						appt_minute = string2number(stringBuffer);
@@ -188,11 +219,19 @@ static void apptDisplay(char *appt_string) {
 						strncpy(stringBuffer, appt_string+9,2);
 						appt_minute = string2number(stringBuffer);
 					} else {APP_LOG(APP_LOG_LEVEL_ERROR, "[?] appt_minute cannot be determined...");}
+  } else {
+  		APP_LOG(APP_LOG_LEVEL_WARNING, "[/] appt_string is empty or too small!");
+		if (appt_day == -1 || appt_month == -1){
+			APP_LOG(APP_LOG_LEVEL_ERROR,"[!] No backup -> ABORT");
+			return;
+		}
+		APP_LOG(APP_LOG_LEVEL_INFO,"[-] Have a BACKUP!");
+  }
 	APP_LOG(APP_LOG_LEVEL_INFO,"[-] Time        : %02i/%02i [%02i:%02i]", t->tm_mday,t->tm_mon+1, t->tm_hour, t->tm_min);
 	APP_LOG(APP_LOG_LEVEL_INFO,"[X] appointment : %02i/%02i", appt_day,appt_month);
 	if (!event_is_all_day) 
 		{APP_LOG(APP_LOG_LEVEL_INFO,"[X]             :       [%02i:%02i]", appt_hour,appt_minute);}
-		
+
 	 static int hour_now;
 	 static int min_now;
 	 static int mday_now;
@@ -411,9 +450,9 @@ static void find_my_iphone(ClickRecognizerRef recognizer, void *context) {
 
 static void turn_off_the_light(void *data) {
 		light_enable(false);
-		if (general_Timer != NULL) {
-			app_timer_cancel(general_Timer);
-			general_Timer = NULL;
+		if (long_light_timer != NULL) {
+			app_timer_cancel(long_light_timer);
+			long_light_timer = NULL;
 		}
 }
 
@@ -431,11 +470,11 @@ static void play_pause_action(ClickRecognizerRef recognizer, void *context) {
 		sendCommand(SM_PLAYPAUSE_KEY);
 	} else {
 		light_enable(true);
-		if (general_Timer != NULL) {
-			app_timer_cancel(general_Timer);
-			general_Timer = NULL;
+		if (long_light_timer != NULL) {
+			app_timer_cancel(long_light_timer);
+			long_light_timer = NULL;
 		}
-		general_Timer = app_timer_register(120000 , turn_off_the_light, NULL);
+		long_light_timer = app_timer_register(120000 , turn_off_the_light, NULL);
 	}
 }
 
@@ -484,6 +523,7 @@ static void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, volume_increase);
   window_single_click_subscribe(BUTTON_ID_SELECT, call_siri);
   window_single_click_subscribe(BUTTON_ID_BACK, volume_decrease);
+  window_long_click_subscribe(BUTTON_ID_BACK, 750, NULL, NULL);
   window_single_click_subscribe(BUTTON_ID_DOWN, next_track_action);
   window_long_click_subscribe(BUTTON_ID_SELECT, 750, play_pause_action, NULL);
   window_long_click_subscribe(BUTTON_ID_DOWN, 250, previous_track_action, NULL);
@@ -554,7 +594,7 @@ void handle_second_tick(struct tm *tick_time, TimeUnits units_changed) {
 	strftime(seconds_text, sizeof(seconds_text), "%S", tick_time);
 	text_layer_set_text(text_seconds_layer, seconds_text);
 
-	if ((((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized)) && (calendar_date_str != NULL)) {apptDisplay(calendar_date_str);}
+	if ((((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized))) {apptDisplay(calendar_date_str);}
 if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) ){
 	// Need to be static because they're used by the system later.
 	static char time_text[] = "00:00";
@@ -626,6 +666,7 @@ void bluetoothChanged(bool connected) {
 		if (phone_is_connected) {vibes_short_pulse();}
 		display_Notification("iPhone", STRING_DISCONNECTED, 5000);
 		phone_is_connected = false;
+		store_for_later();
 	}
 	
 }
@@ -857,6 +898,7 @@ layer_add_child(window_layer, status_layer);
 
 	reset();
 
+	load_memories();
   	//tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
 	tick_timer_service_subscribe(SECOND_UNIT, handle_second_tick);
 
@@ -867,7 +909,8 @@ layer_add_child(window_layer, status_layer);
 
 static void deinit(void) {
 	
-	
+	store_for_later();
+
 	property_animation_destroy((PropertyAnimation*)ani_in);
 	property_animation_destroy((PropertyAnimation*)ani_out);
 	
@@ -889,9 +932,9 @@ static void deinit(void) {
 		app_timer_cancel(hideMusicLayer);
 	hideMusicLayer = NULL;
 
-	if (general_Timer != NULL)
-		app_timer_cancel(general_Timer);
-	general_Timer = NULL;
+	if (long_light_timer != NULL)
+		app_timer_cancel(long_light_timer);
+	long_light_timer = NULL;
 
 	bitmap_layer_destroy(background_image);
 	layer_destroy(weather_layer);
