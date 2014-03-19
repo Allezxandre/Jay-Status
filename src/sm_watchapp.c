@@ -107,9 +107,9 @@ static bool event_is_all_day_int;
 	appt_month = persist_exists(PERSIST_MONTH) ? persist_read_int(PERSIST_MONTH) : -1;
 	appt_hour = persist_exists(PERSIST_HOUR) ? persist_read_int(PERSIST_HOUR) : -1;
 	appt_minute = persist_exists(PERSIST_MINUTE) ? persist_read_int(PERSIST_MINUTE) : -1;
-	APP_LOG(APP_LOG_LEVEL_INFO,"[B] appointment : %02i/%02i", appt_day,appt_month);
 	if (!event_is_all_day) 
-		{APP_LOG(APP_LOG_LEVEL_INFO,"[B]             :       [%02i:%02i]", appt_hour,appt_minute);}
+		{APP_LOG(APP_LOG_LEVEL_INFO,"[B] appointment : %02i/%02i [%02i:%02i]", appt_day,appt_month, appt_hour,appt_minute);
+	} else {APP_LOG(APP_LOG_LEVEL_INFO,"[B] appointment : %02i/%02i", appt_day,appt_month);}
 	if (persist_exists(PERSIST_EVENT_STRG)) {
 		persist_read_string(PERSIST_EVENT_STRG, calendar_text_str, STRING_LENGTH);
 		text_layer_set_text(calendar_text_layer, calendar_text_str); 	
@@ -164,7 +164,7 @@ static int string2number(char *string) {
 		letter = string[offset];
 		digit = letter2digit(letter);
 		if(digit == -1){
-			APP_LOG(APP_LOG_LEVEL_WARNING, "[/] string2number had to deal with '%s' as an argument and failed",string);
+			APP_LOG(APP_LOG_LEVEL_ERROR, "[/] string2number had to deal with '%s' as an argument and failed",string);
 			return -1;
 		}
 		result = result + (unit * digit);
@@ -194,9 +194,27 @@ static void apptDisplay(char *appt_string) {
 	struct tm *t;
 	now = time(NULL);
 	t = localtime(&now);
-	
-  if ((appt_string[0] != '\0') && (sizeof(appt_string) != 4) && (appt_string != NULL)) {
-  	APP_LOG(APP_LOG_LEVEL_INFO,"    Determining variables");
+  if (phone_is_connected) {
+  	APP_LOG(APP_LOG_LEVEL_DEBUG,"    Determining variables");
+
+  	if (appt_string[0] == '\0') {
+		APP_LOG(APP_LOG_LEVEL_WARNING, "[/] appt_string is empty! ABORTING apptDisplay");
+		return;
+	} else if (sizeof(appt_string) != 4) {
+		APP_LOG(APP_LOG_LEVEL_WARNING, "[?] appt_string is too small (%i characters)! ABORTING apptDisplay", (int)(sizeof(appt_string)));
+			text_layer_set_text(calendar_date_layer, appt_string);
+		return;
+	}
+	// reset variables
+
+	event_is_today = false;
+	event_is_all_day = false;
+	event_is_past = false;
+	appt_day = -1;
+	appt_month = -1;
+	appt_hour = -1;
+	appt_minute = -1;
+
 		//	Determine the variables
 					strncpy(stringBuffer, appt_string,2);
 					appt_day = string2number(stringBuffer);
@@ -231,12 +249,12 @@ static void apptDisplay(char *appt_string) {
 						appt_minute = string2number(stringBuffer);
 					} else {APP_LOG(APP_LOG_LEVEL_ERROR, "[?] appt_minute cannot be determined...");}
   } else {
-  		APP_LOG(APP_LOG_LEVEL_WARNING, "[/] appt_string is empty or too small!");
+  		APP_LOG(APP_LOG_LEVEL_WARNING, "[/] Phone isn't connected :-/");
 		if (appt_day == -1 || appt_month == -1){
-			APP_LOG(APP_LOG_LEVEL_ERROR,"[!] No backup -> ABORT");
+			APP_LOG(APP_LOG_LEVEL_WARNING,"[!] There is no backup -> ABORT");
 			return;
 		}
-		APP_LOG(APP_LOG_LEVEL_INFO,"[-] Have a BACKUP!");
+		APP_LOG(APP_LOG_LEVEL_INFO,"[-] I have a BACKUP!");
   }
 	APP_LOG(APP_LOG_LEVEL_INFO,"[-] Time        : %02i/%02i [%02i:%02i]", t->tm_mday,t->tm_mon+1, t->tm_hour, t->tm_min);
 	APP_LOG(APP_LOG_LEVEL_INFO,"[X] appointment : %02i/%02i", appt_day,appt_month);
