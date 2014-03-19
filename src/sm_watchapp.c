@@ -10,7 +10,7 @@
 	Idea by J Dishaw
 */
 
-#define DEBUG 1
+//#define DEBUG 1
 #define STRING_LENGTH 255
 #define NUM_WEATHER_IMAGES	9
 #define VIBE_ON_HOUR true
@@ -126,13 +126,14 @@ static bool event_is_all_day_int;
 }
 
 void store_for_later() {
-bool event_is_all_day_int = event_is_all_day ? 1 : 0;
-persist_write_int(PERSIST_IS_ALL_DAY, event_is_all_day_int);
-persist_write_int(PERSIST_DAY, appt_day);
-persist_write_int(PERSIST_MONTH, appt_month);
-persist_write_int(PERSIST_HOUR, appt_hour);
-persist_write_int(PERSIST_MINUTE, appt_minute);
-persist_write_string(PERSIST_EVENT_STRG, calendar_text_str);
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"[B] Writing to Persistent Memory");
+	bool event_is_all_day_int = event_is_all_day ? 1 : 0;
+	persist_write_int(PERSIST_IS_ALL_DAY, event_is_all_day_int);
+	persist_write_int(PERSIST_DAY, appt_day);
+	persist_write_int(PERSIST_MONTH, appt_month);
+	persist_write_int(PERSIST_HOUR, appt_hour);
+	persist_write_int(PERSIST_MINUTE, appt_minute);
+	persist_write_string(PERSIST_EVENT_STRG, calendar_text_str);
 }
 
 // Calendar Appointments
@@ -666,16 +667,24 @@ void bluetoothChanged(bool connected) {
 
 	if (connected) {
 		app_timer_register(5000, reconnect, NULL);
+		layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true);
 		if (!phone_is_connected) {vibes_short_pulse();} 
 		/* Pebble has two channels for connection : Bluetooth-LE and Bluetooth ADP, it's a workaround 
 		   to prevent the watch from vibrating twice*/
 		display_Notification("iPhone", STRING_CONNECTED, 5000);
+		// Display Battery layers or it won't show
+/*		layer_set_hidden(bitmap_layer_get_layer(battery_image_layer), false);
+		layer_set_hidden(battery_layer, false);
+		layer_set_hidden(text_layer_get_layer(text_battery_layer), false); */
 		phone_is_connected = true;
 	} else {
 		bitmap_layer_set_bitmap(weather_image, weather_status_imgs[NUM_WEATHER_IMAGES-1]);
 		if (phone_is_connected) {vibes_short_pulse();}
 		display_Notification("iPhone", STRING_DISCONNECTED, 5000);
 		phone_is_connected = false;
+		layer_set_hidden(bitmap_layer_get_layer(battery_image_layer), true);
+		layer_set_hidden(battery_layer, true);
+		layer_set_hidden(text_layer_get_layer(text_battery_layer), true);
 		store_for_later();
 	}
 	
@@ -731,11 +740,11 @@ font_secs = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_20)
 	battery_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_PHONE);
 	battery_pbl_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_PEBBLE);
 
-	battery_image_layer = bitmap_layer_create(GRect(105, 5, 37, 14)); // GRect(100, 7, 37, 14));
+	battery_image_layer = bitmap_layer_create(GRect(68, 5, 37, 14)); // GRect(100, 7, 37, 14));
 	layer_add_child(weather_layer, bitmap_layer_get_layer(battery_image_layer));
 	bitmap_layer_set_bitmap(battery_image_layer, battery_image);
 
-	battery_pbl_image_layer = bitmap_layer_create(GRect(68, 5, 37, 14)); // GRect(100, 23, 37, 14));
+	battery_pbl_image_layer = bitmap_layer_create(GRect(105, 5, 37, 14)); // GRect(100, 23, 37, 14));
 	layer_add_child(weather_layer, bitmap_layer_get_layer(battery_pbl_image_layer));
 	bitmap_layer_set_bitmap(battery_pbl_image_layer, battery_pbl_image);
 
@@ -767,11 +776,11 @@ layer_add_child(window_layer, status_layer);
 		layer_add_child(status_layer, text_layer_get_layer(text_phone_layer));
 		text_layer_set_text(text_phone_layer, "--"); 
 
-		battery_layer = layer_create(GRect(107, 6, 19, 30)); // GRect(102, 8, 19, 11)); GRect(105, -1, 37, 14)
+		battery_layer = layer_create(GRect(70, 6, 19, 30)); // GRect(102, 8, 19, 11)); GRect(105, -1, 37, 14)
 	layer_set_update_proc(battery_layer, battery_layer_update_callback);
 	layer_add_child(weather_layer, battery_layer);
 
-	text_battery_layer = text_layer_create(GRect(104, 15, 25, 19)); // GRect(99, 20, 40, 60));
+	text_battery_layer = text_layer_create(GRect(67, 15, 25, 19)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_battery_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_battery_layer, GColorWhite);
 	text_layer_set_background_color(text_battery_layer, GColorClear);
@@ -779,10 +788,16 @@ layer_add_child(window_layer, status_layer);
 	layer_add_child(weather_layer, text_layer_get_layer(text_battery_layer));
 	text_layer_set_text(text_battery_layer, "--");
 
+	if (!phone_is_connected) {
+		layer_set_hidden(bitmap_layer_get_layer(battery_image_layer), true);
+		layer_set_hidden(battery_layer, true);
+		layer_set_hidden(text_layer_get_layer(text_battery_layer), true);
+	}
+
 	batteryPercent = 100;
 	layer_mark_dirty(battery_layer);
 
-	battery_pbl_layer = layer_create(GRect(70, 6, 19, 30)); // GRect(102, 24, 19, 11)); GRect(68, -1, 37, 14)
+	battery_pbl_layer = layer_create(GRect(107, 6, 19, 30)); // GRect(102, 24, 19, 11)); GRect(68, -1, 37, 14)
 	layer_set_update_proc(battery_pbl_layer, battery_pbl_layer_update_callback);
 	layer_add_child(weather_layer, battery_pbl_layer);
 
@@ -790,7 +805,7 @@ layer_add_child(window_layer, status_layer);
 	batteryPblPercent = pbl_batt.charge_percent;
 	layer_mark_dirty(battery_pbl_layer);
 
-	text_pebble_battery_layer = text_layer_create(GRect(67, 15, 25, 19)); // GRect(99, 20, 40, 60));
+	text_pebble_battery_layer = text_layer_create(GRect(104, 15, 25, 19)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_pebble_battery_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_pebble_battery_layer, GColorWhite);
 	text_layer_set_background_color(text_pebble_battery_layer, GColorClear);
@@ -806,7 +821,7 @@ layer_add_child(window_layer, status_layer);
 	text_layer_set_font(text_weather_cond_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
 	layer_add_child(weather_layer, text_layer_get_layer(text_weather_cond_layer));
 
-/*	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false); */
+	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true); 
 	text_layer_set_text(text_weather_cond_layer, STRING_UPDATING); 	
 	
 	if (bluetooth_connection_service_peek()) {
@@ -918,8 +933,6 @@ layer_add_child(window_layer, status_layer);
 }
 
 static void deinit(void) {
-	
-	APP_LOG(APP_LOG_LEVEL_DEBUG,"[B] Writing to Persistent Memory");
 	store_for_later();
 
 	property_animation_destroy((PropertyAnimation*)ani_in);
@@ -1035,7 +1048,7 @@ void rcv(DictionaryIterator *received, void *context) {
 		memcpy(weather_temp_str, t->value->cstring, strlen(t->value->cstring));
         weather_temp_str[strlen(t->value->cstring)] = '\0';
 		text_layer_set_text(text_weather_temp_layer, weather_temp_str); 
-		
+		layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false);
 /*		layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true);
 		layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false);
 			
@@ -1072,6 +1085,9 @@ void rcv(DictionaryIterator *received, void *context) {
 
 	t=dict_find(received, SM_COUNT_BATTERY_KEY); 
 	if (t!=NULL) {
+		layer_set_hidden(bitmap_layer_get_layer(battery_image_layer), false);
+		layer_set_hidden(battery_layer, false);
+		layer_set_hidden(text_layer_get_layer(text_battery_layer), false);
 		batteryPercent = t->value->uint8;
 		layer_mark_dirty(battery_layer);
 		snprintf(string_buffer, sizeof(string_buffer), "%d", batteryPercent);
