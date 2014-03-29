@@ -15,7 +15,7 @@ static const char *month_of_year[] = { "Janv", "Fevr", "Mars", "Avr", "Mai", "Ju
 static const int days_per_month [12] = {31,28,31,30,31,30,31,31,30,31,30,31};
 		  // This is the header that appears when days are not far away from now. 
 		  // 		E.g: If the event is in one day, this will display "Tomorrow"
-static const char *days_from_today[] = { "Demain", "Après-demain", "Dans 3 jours", "Dans 4 jours" };
+static const char *days_from_today[] = {"Aujourd'hui", "Demain", "Après-demain", "Dans 3 jours", "Dans 4 jours" };
 
 
 // These are the main translation strings

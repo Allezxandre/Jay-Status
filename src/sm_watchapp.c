@@ -10,7 +10,7 @@
 	Idea by J Dishaw
 */
 
-//#define DEBUG 1
+#define DEBUG 1
 #define STRING_LENGTH 255
 #define NUM_WEATHER_IMAGES	9
 #define VIBE_ON_HOUR true
@@ -291,11 +291,14 @@ static void apptDisplay(char *appt_string) {
 					event_is_today = false; // Just so we don't write the time again
 					time_string[0] = '\0';
 				} else if (days_difference != 0) {
-					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_SOON, days_from_today[(days_difference - 1)]);
+					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_SOON, days_from_today[days_difference]);
 					event_is_today = false; // Just so we don't write the time again
 					time_string[0] = '\0';
 				} else if (days_difference == 0) {
 					date_of_appt[0] = '\0';
+					if (event_is_all_day) {
+						snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_SOON, days_from_today[days_difference]);
+					}
 					event_is_today = true;
 				} else {
 					APP_LOG(APP_LOG_LEVEL_ERROR, "[/] days_difference tests failed :(");
