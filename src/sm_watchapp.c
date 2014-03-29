@@ -100,36 +100,40 @@ const int WEATHER_IMG_IDS[] = {
 static uint32_t s_sequence_number = 0xFFFFFFFE;
 
 void load_memories() {
-static bool event_is_all_day_int;
-	event_is_all_day_int = persist_exists(PERSIST_IS_ALL_DAY) ? persist_read_int(PERSIST_IS_ALL_DAY) : -1;
-	event_is_all_day = (event_is_all_day_int == 1) ? 1 : 0;
-	appt_day = persist_exists(PERSIST_DAY) ? persist_read_int(PERSIST_DAY) : -1;
-	appt_month = persist_exists(PERSIST_MONTH) ? persist_read_int(PERSIST_MONTH) : -1;
-	appt_hour = persist_exists(PERSIST_HOUR) ? persist_read_int(PERSIST_HOUR) : -1;
-	appt_minute = persist_exists(PERSIST_MINUTE) ? persist_read_int(PERSIST_MINUTE) : -1;
-	if (!event_is_all_day) 
-		{APP_LOG(APP_LOG_LEVEL_INFO,"[B] appointment : %02i/%02i [%02i:%02i]", appt_day,appt_month, appt_hour,appt_minute);
-	} else {APP_LOG(APP_LOG_LEVEL_INFO,"[B] appointment : %02i/%02i", appt_day,appt_month);}
-	if (persist_exists(PERSIST_EVENT_STRG)) {
-		persist_read_string(PERSIST_EVENT_STRG, calendar_text_str, STRING_LENGTH);
-		text_layer_set_text(calendar_text_layer, calendar_text_str); 	
-			// Resize Calendar text if needed
-			if(strlen(calendar_text_str) <= 15)
+static bool event_is_all_day_int = -1;
+	if (persist_exists(PERSIST_IS_ALL_DAY)) {
+		APP_LOG(APP_LOG_LEVEL_INFO,"[B] Have DATA");
+		event_is_all_day_int = persist_read_int(PERSIST_IS_ALL_DAY);
+		event_is_all_day = (event_is_all_day_int == 1) ? 1 : 0;
+		appt_day = persist_exists(PERSIST_DAY) ? persist_read_int(PERSIST_DAY) : -1;
+		appt_month = persist_exists(PERSIST_MONTH) ? persist_read_int(PERSIST_MONTH) : -1;
+		appt_hour = persist_exists(PERSIST_HOUR) ? persist_read_int(PERSIST_HOUR) : -1;
+		appt_minute = persist_exists(PERSIST_MINUTE) ? persist_read_int(PERSIST_MINUTE) : -1;
+		APP_LOG(APP_LOG_LEVEL_INFO,"[B] appointment : %02i/%02i [%02i:%02i]", appt_day,appt_month, appt_hour,appt_minute);
+		if (persist_exists(PERSIST_EVENT_STRG)) {
+			persist_read_string(PERSIST_EVENT_STRG, calendar_text_str, STRING_LENGTH);
+			text_layer_set_text(calendar_text_layer, calendar_text_str); 	
+				// Resize Calendar text if needed
+			if (strlen(calendar_text_str) <= 15) {
 				text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
-			else
-				if(strlen(calendar_text_str) <= 18)
+			} else if (strlen(calendar_text_str) <= 18) {
 					text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
-				else 
-					text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
+			} else {
+				text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
+			}
 
+		}
 	}
 }
 
 void store_for_later() {
-	APP_LOG(APP_LOG_LEVEL_DEBUG,"[B] Writing to Persistent Memory");
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"[B] Writing to Persistent Memory: %i/%i",appt_day, appt_month);
 	bool event_is_all_day_int = event_is_all_day ? 1 : 0;
 	persist_write_int(PERSIST_IS_ALL_DAY, event_is_all_day_int);
 	persist_write_int(PERSIST_DAY, appt_day);
+	int bufferMonth = persist_exists(PERSIST_MONTH) ? persist_read_int(PERSIST_MONTH) : -1;
+	int bufferDay = persist_exists(PERSIST_DAY) ? persist_read_int(PERSIST_DAY) : -1;
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"[B] Testing Persistent Memory: %i/%i",bufferDay, bufferMonth);
 	persist_write_int(PERSIST_MONTH, appt_month);
 	persist_write_int(PERSIST_HOUR, appt_hour);
 	persist_write_int(PERSIST_MINUTE, appt_minute);
@@ -174,18 +178,6 @@ static int string2number(char *string) {
 }
 
 static void apptDisplay(char *appt_string) {
-	
-	// Make sure there is no error in argument
-//	APP_LOG(APP_LOG_LEVEL_INFO, "apptDisplay started with argument (%s)", appt_string);
-/*	if (appt_string[0] == '\0') {
-		APP_LOG(APP_LOG_LEVEL_WARNING, "[/] appt_string is empty! ABORTING apptDisplay");
-		return;
-	} else if (sizeof(appt_string) != 4) {
-		APP_LOG(APP_LOG_LEVEL_WARNING, "[?] appt_string is too small (%i characters)! ABORTING apptDisplay", (int)(sizeof(appt_string)));
-			text_layer_set_text(calendar_date_layer, appt_string);
-		return;
-	}
-	*/
 	
 	// Init some variables
 	static char date_time_for_appt[20]; // = "Le XX XXXX à ##h##";
@@ -295,11 +287,11 @@ static void apptDisplay(char *appt_string) {
 					event_is_all_day = true;
 					APP_LOG(APP_LOG_LEVEL_DEBUG,"    Event has started in the past, not today");
 				} else if (days_difference > 4) {
-					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_GLOBAL,appt_day, month_of_year[interm], appt_hour,appt_minute);
+					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_GLOBAL,appt_day, month_of_year[interm]);
 					event_is_today = false; // Just so we don't write the time again
 					time_string[0] = '\0';
 				} else if (days_difference != 0) {
-					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_SOON, days_from_today[(days_difference - 1)], appt_hour,appt_minute);
+					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_SOON, days_from_today[(days_difference - 1)]);
 					event_is_today = false; // Just so we don't write the time again
 					time_string[0] = '\0';
 				} else if (days_difference == 0) {
@@ -335,8 +327,11 @@ static void apptDisplay(char *appt_string) {
 					}
 	  }
 
-				if ((event_is_all_day) || (!event_is_today)) {
+				if (event_is_all_day) {
+					time_string[0] = '\0';
 					APP_LOG(APP_LOG_LEVEL_DEBUG, "    Do nothing with hour and minutes");
+				} else if (!event_is_today){
+					snprintf(time_string,20,STRING_DEFAULT_HOUR_MIN, appt_hour, appt_minute);
 				} else if (((hour_now) > appt_hour) || (((hour_now) == appt_hour) && (min_now >= appt_minute))) {
 					int hour_since = 0;
 					int minutes_since = 0;
@@ -506,31 +501,6 @@ static void play_pause_action(ClickRecognizerRef recognizer, void *context) {
 		long_light_timer = app_timer_register(120000 , turn_off_the_light, NULL);
 	}
 }
-
-/*
-
-static void button_click_animate(ClickRecognizerRef recognizer, void *context) {
-	animate_layers();
-} 
-
-*/
-
-/*  OLD ONE
-static void animate_layers(){
-	//slide layers in/out
-
-	property_animation_destroy((PropertyAnimation*)ani_in);
-	property_animation_destroy((PropertyAnimation*)ani_out);
-
-
-	ani_out = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(0, 124, 143, 45), &GRect(-138, 124, 143, 45));
-	animation_schedule((Animation*)ani_out);
-
-	active_layer = (active_layer + 1) % (NUM_LAYERS);
-
-	ani_in = property_animation_create_layer_frame(animated_layer[active_layer], &GRect(138, 124, 144, 45), &GRect(0, 124, 144, 45));
-	animation_schedule((Animation*)ani_in);
-} */
 
 static void animate_layers() {
 	//slide layers in/out
@@ -1131,6 +1101,7 @@ void rcv(DictionaryIterator *received, void *context) {
  		calendar_date_str = (char *)malloc(sizeof(char) * num_chars);
  		if (calendar_date_str == NULL) {
  			APP_LOG(APP_LOG_LEVEL_ERROR,"[/] Malloc wasn't able to allocate memory (num_chars = %i)",num_chars);
+ 			return;
  		} else {
  			APP_LOG(APP_LOG_LEVEL_INFO,"[M] Malloc succesfully allocated memory (num_chars * sizeof(char) = %i * %i)",num_chars, (int)(sizeof(char)));
  			phone_is_connected = true;
@@ -1157,20 +1128,6 @@ void rcv(DictionaryIterator *received, void *context) {
 				text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
 	}
 
-/*	t=dict_find(received, SM_VOLUME_VALUE_KEY);
-	if (t!=NULL) {
-		static int volume_value;
-		volume_value = t->value->uint8;
-		APP_LOG(APP_LOG_LEVEL_DEBUG,"    Volume is set to %i",volume_value);
-	}
-
-	t=dict_find(received, SM_PLAY_STATUS_KEY);
-	if (t!=NULL) {
-		static int music_playing;
-		music_playing = t->value->uint8;
-		APP_LOG(APP_LOG_LEVEL_DEBUG,"    Music play status: %i",music_playing);
-	}
-*/
 	t=dict_find(received, SM_STATUS_MUS_ARTIST_KEY); 
 	if (t!=NULL) {
 		memcpy(music_artist_str1, t->value->cstring, strlen(t->value->cstring));
