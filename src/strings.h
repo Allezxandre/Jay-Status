@@ -15,7 +15,7 @@ static const char *month_of_year[] = { "Jan", "Febr", "Mar", "Apr", "May", "June
 static const int days_per_month [12] = {31,28,31,30,31,30,31,31,30,31,30,31};
 		  // This is the header that appears when days are not far away from now. 
 		  // 		E.g: If the event is in one day, this will display "Tomorrow"
-static const char *days_from_today[] = { "Tomorrow", "In 2 days", "In 3 days", "In 4 days" };
+static const char *days_from_today[] = { "Today", "Tomorrow", "In 2 days", "In 3 days", "In 4 days" };
 
 
 // These are the main translation strings
@@ -45,8 +45,9 @@ static const char *before_after[] = {"For", "In"};
 
 //		NAME of the strings 		English Translation 
 #define STRING_EVENT_IS_PAST		"Started %s %i"		
-#define STRING_EVENT_FUTURE_GLOBAL	"%s %i at %i:%02i"	
-#define STRING_EVENT_FUTURE_SOON	"%s, at %i:%02i"	
+#define STRING_EVENT_FUTURE_GLOBAL	"%s %i "	
+#define STRING_EVENT_FUTURE_SOON	"%s, "
+#define STRING_DEFAULT_HOUR_MIN		"at %ih%02i"	
 #define STRING_NOW					"Now!"				
 #define STRING_EVENT_HOUR			"%s 1 hour"			
 #define STRING_EVENT_HOURS			"%s %i hours"		

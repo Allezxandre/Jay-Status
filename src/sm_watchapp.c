@@ -10,7 +10,7 @@
 	Idea by J Dishaw
 */
 
-//#define DEBUG 1
+#define DEBUG 1
 #define STRING_LENGTH 255
 #define NUM_WEATHER_IMAGES	9
 #define VIBE_ON_HOUR true
@@ -74,6 +74,15 @@ GFont font_date;
 GFont font_time;
 GFont font_secs;
 
+/* Calendar Variables */
+static bool event_is_today = false;
+static bool event_is_all_day = false;
+static bool event_is_past = false;
+static int appt_day = -1;
+static int appt_month = -1;
+static int appt_hour = -1;
+static int appt_minute = -1;
+
 const int WEATHER_IMG_IDS[] = {	
   RESOURCE_ID_IMAGE_SUN,
   RESOURCE_ID_IMAGE_RAIN,
@@ -89,6 +98,47 @@ const int WEATHER_IMG_IDS[] = {
 
 
 static uint32_t s_sequence_number = 0xFFFFFFFE;
+
+void load_memories() {
+static bool event_is_all_day_int = -1;
+	if (persist_exists(PERSIST_IS_ALL_DAY)) {
+		APP_LOG(APP_LOG_LEVEL_INFO,"[B] Have DATA");
+		event_is_all_day_int = persist_read_int(PERSIST_IS_ALL_DAY);
+		event_is_all_day = (event_is_all_day_int == 1) ? 1 : 0;
+		appt_day = persist_exists(PERSIST_DAY) ? persist_read_int(PERSIST_DAY) : -1;
+		appt_month = persist_exists(PERSIST_MONTH) ? persist_read_int(PERSIST_MONTH) : -1;
+		appt_hour = persist_exists(PERSIST_HOUR) ? persist_read_int(PERSIST_HOUR) : -1;
+		appt_minute = persist_exists(PERSIST_MINUTE) ? persist_read_int(PERSIST_MINUTE) : -1;
+		APP_LOG(APP_LOG_LEVEL_INFO,"[B] appointment : %02i/%02i [%02i:%02i]", appt_day,appt_month, appt_hour,appt_minute);
+		if (persist_exists(PERSIST_EVENT_STRG)) {
+			persist_read_string(PERSIST_EVENT_STRG, calendar_text_str, STRING_LENGTH);
+			text_layer_set_text(calendar_text_layer, calendar_text_str); 	
+				// Resize Calendar text if needed
+			if (strlen(calendar_text_str) <= 15) {
+				text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+			} else if (strlen(calendar_text_str) <= 18) {
+					text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+			} else {
+				text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
+			}
+
+		}
+	}
+}
+
+void store_for_later() {
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"[B] Writing to Persistent Memory: %i/%i",appt_day, appt_month);
+	bool event_is_all_day_int = event_is_all_day ? 1 : 0;
+	persist_write_int(PERSIST_IS_ALL_DAY, event_is_all_day_int);
+	persist_write_int(PERSIST_DAY, appt_day);
+	int bufferMonth = persist_exists(PERSIST_MONTH) ? persist_read_int(PERSIST_MONTH) : -1;
+	int bufferDay = persist_exists(PERSIST_DAY) ? persist_read_int(PERSIST_DAY) : -1;
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"[B] Testing Persistent Memory: %i/%i",bufferDay, bufferMonth);
+	persist_write_int(PERSIST_MONTH, appt_month);
+	persist_write_int(PERSIST_HOUR, appt_hour);
+	persist_write_int(PERSIST_MINUTE, appt_minute);
+	persist_write_string(PERSIST_EVENT_STRG, calendar_text_str);
+}
 
 // Calendar Appointments
 
@@ -118,7 +168,7 @@ static int string2number(char *string) {
 		letter = string[offset];
 		digit = letter2digit(letter);
 		if(digit == -1){
-			APP_LOG(APP_LOG_LEVEL_WARNING, "[/] string2number had to deal with '%s' as an argument and failed",string);
+			APP_LOG(APP_LOG_LEVEL_ERROR, "[/] string2number had to deal with '%s' as an argument and failed",string);
 			return -1;
 		}
 		result = result + (unit * digit);
@@ -128,18 +178,7 @@ static int string2number(char *string) {
 }
 
 static void apptDisplay(char *appt_string) {
-	
-	// Make sure there is no error in argument
-//	APP_LOG(APP_LOG_LEVEL_INFO, "apptDisplay started with argument (%s)", appt_string);
-	if (appt_string[0] == '\0') {
-		APP_LOG(APP_LOG_LEVEL_WARNING, "[/] appt_string is empty! ABORTING apptDisplay");
-		return;
-	} else if (sizeof(appt_string) != 4) {
-		APP_LOG(APP_LOG_LEVEL_WARNING, "[?] appt_string is too small (%i characters)! ABORTING apptDisplay", (int)(sizeof(appt_string)));
-			text_layer_set_text(calendar_date_layer, appt_string);
-		return;
-	}
-	
+
 	// Init some variables
 	static char date_time_for_appt[20]; // = "Le XX XXXX à ##h##";
 	static char stringBuffer[]="XX";
@@ -147,16 +186,31 @@ static void apptDisplay(char *appt_string) {
 	struct tm *t;
 	now = time(NULL);
 	t = localtime(&now);
-	static bool event_is_today = false;
-	static bool event_is_all_day = false;
-	static bool event_is_past = false;
-	
+  if (phone_is_connected) {
+  	APP_LOG(APP_LOG_LEVEL_DEBUG,"    Determining variables");
+
+  	if (appt_string[0] == '\0') {
+		APP_LOG(APP_LOG_LEVEL_WARNING, "[/] appt_string is empty! ABORTING apptDisplay");
+		return;
+	} else if (sizeof(appt_string) != 4) {
+		APP_LOG(APP_LOG_LEVEL_WARNING, "[?] appt_string is too small (%i characters)! ABORTING apptDisplay", (int)(sizeof(appt_string)));
+			text_layer_set_text(calendar_date_layer, appt_string);
+		return;
+	}
+	// reset variables
+
+	event_is_today = false;
+	event_is_all_day = false;
+	event_is_past = false;
+	appt_day = -1;
+	appt_month = -1;
+	appt_hour = -1;
+	appt_minute = -1;
+
 		//	Determine the variables
-	static int appt_day;
 					strncpy(stringBuffer, appt_string+3,2);
 					appt_day = string2number(stringBuffer);
 
-	static int appt_month;
 					strncpy(stringBuffer, appt_string,2);
 					appt_month = string2number(stringBuffer);
 
@@ -167,7 +221,6 @@ static void apptDisplay(char *appt_string) {
 		return;
 	}
 
-	static int appt_hour;
 					if (appt_string[7] == ':'){
 						strncpy(stringBuffer, appt_string+5,2);
 						stringBuffer[0]='0';
@@ -180,7 +233,6 @@ static void apptDisplay(char *appt_string) {
 						event_is_all_day = true;
 					}
 
-	static int appt_minute;
 					if (appt_string[7] == ':'){
 						strncpy(stringBuffer, appt_string+8,2);
 						appt_minute = string2number(stringBuffer);
@@ -188,11 +240,19 @@ static void apptDisplay(char *appt_string) {
 						strncpy(stringBuffer, appt_string+9,2);
 						appt_minute = string2number(stringBuffer);
 					} else {APP_LOG(APP_LOG_LEVEL_ERROR, "[?] appt_minute cannot be determined...");}
+  } else {
+  		APP_LOG(APP_LOG_LEVEL_WARNING, "[/] Phone isn't connected :-/");
+		if (appt_day == -1 || appt_month == -1){
+			APP_LOG(APP_LOG_LEVEL_WARNING,"[!] There is no backup -> ABORT");
+			return;
+		}
+		APP_LOG(APP_LOG_LEVEL_INFO,"[-] I have a BACKUP!");
+  }
 	APP_LOG(APP_LOG_LEVEL_INFO,"[-] Time        : %02i/%02i [%02i:%02i]", t->tm_mday,t->tm_mon+1, t->tm_hour, t->tm_min);
 	APP_LOG(APP_LOG_LEVEL_INFO,"[X] appointment : %02i/%02i", appt_day,appt_month);
 	if (!event_is_all_day) 
 		{APP_LOG(APP_LOG_LEVEL_INFO,"[X]             :       [%02i:%02i]", appt_hour,appt_minute);}
-		
+
 	 static int hour_now;
 	 static int min_now;
 	 static int mday_now;
@@ -207,12 +267,12 @@ static void apptDisplay(char *appt_string) {
 	static int days_difference = 0;
 	if (mon_now != appt_month) {
 		if ((mon_now - appt_month > 1) || (mon_now - appt_month < -1)) {
-			days_difference = 40; // Set a high value to display the date then
+			days_difference = 40; // Set a high value to display the date
 		} else if (appt_month < mon_now){ // Event has begun last month
 			days_difference = ((mday_now) + (days_per_month[(appt_month + 1)] - appt_day));
 			event_is_past = true;
 		} else if (appt_month > mon_now){ // Event will begin next month
-			days_difference = ((days_per_month[(mday_now + 1)] - mon_now) + appt_day);
+			days_difference = ((days_per_month[(mon_now + 1)] - mday_now) + appt_day);
 		}
 	} else {
 		days_difference = (appt_day - mday_now);
@@ -227,16 +287,14 @@ static void apptDisplay(char *appt_string) {
 					event_is_all_day = true;
 					APP_LOG(APP_LOG_LEVEL_DEBUG,"    Event has started in the past, not today");
 				} else if (days_difference > 4) {
-					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_GLOBAL,month_of_year[interm], appt_day, appt_hour,appt_minute);
+					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_GLOBAL,month_of_year[interm], appt_day);
 					event_is_today = false; // Just so we don't write the time again
 					time_string[0] = '\0';
-				} else if (days_difference != 0) {
-					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_SOON, days_from_today[(days_difference - 1)], appt_hour,appt_minute);
+				} else if (days_difference >= 0) {
+					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_SOON, days_from_today[days_difference]);
 					event_is_today = false; // Just so we don't write the time again
 					time_string[0] = '\0';
-				} else if (days_difference == 0) {
-					date_of_appt[0] = '\0';
-					event_is_today = true;
+					event_is_today = (days_difference == 0) ? true : false;
 				} else {
 					APP_LOG(APP_LOG_LEVEL_ERROR, "[/] days_difference tests failed :(");
 					return;
@@ -245,6 +303,7 @@ static void apptDisplay(char *appt_string) {
 
 		// Check the Hour and write it in time_string
 	 void display_hour (int hour_since, int minutes_since, int quand) {
+	 	date_of_appt[0]='\0';
 	 	if ((minutes_since == 0) && hour_since == 0) {
 						snprintf(time_string,20, STRING_NOW);
 						if (last_run_minute != t->tm_min) {
@@ -267,8 +326,11 @@ static void apptDisplay(char *appt_string) {
 					}
 	  }
 
-				if ((event_is_all_day) || (!event_is_today)) {
+				if (event_is_all_day) {
+					time_string[0] = '\0';
 					APP_LOG(APP_LOG_LEVEL_DEBUG, "    Do nothing with hour and minutes");
+				} else if (!event_is_today){
+					snprintf(time_string,20,STRING_DEFAULT_HOUR_MIN, appt_hour, appt_minute);
 				} else if (((hour_now) > appt_hour) || (((hour_now) == appt_hour) && (min_now >= appt_minute))) {
 					int hour_since = 0;
 					int minutes_since = 0;
@@ -278,7 +340,7 @@ static void apptDisplay(char *appt_string) {
 						hour_since -= 1;
 						minutes_since += 60;
 					}
-					
+
 					display_hour(hour_since,minutes_since,0);
 
 				} else if (((hour_now) < appt_hour) || (((hour_now) == appt_hour) && (min_now < appt_minute))) {
@@ -286,14 +348,16 @@ static void apptDisplay(char *appt_string) {
 					int minutes_difference = 0;
 					minutes_difference = (appt_minute - (min_now));
 					hour_difference = (appt_hour - (hour_now));
-					if (minutes_difference == 0) {
-						hour_difference += 1;
-					} else if (minutes_difference < 0) {
+					if (minutes_difference < 0) {
 						hour_difference -= 1;
 						minutes_difference += 60;
 					}
-					
-					display_hour(hour_difference,minutes_difference,1);
+
+					if (hour_difference < 6) {
+						display_hour(hour_difference,minutes_difference,1);
+					} else {
+						snprintf(time_string,20,STRING_DEFAULT_HOUR_MIN, appt_hour, appt_minute);
+					}
 				}
 
 	strcpy (date_time_for_appt,date_of_appt);
