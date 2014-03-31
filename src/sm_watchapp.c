@@ -67,7 +67,7 @@ static AppTimer *timerUpdateCalendar = NULL;
 static AppTimer *timerUpdateWeather = NULL;
 static AppTimer *timerUpdateMusic = NULL;
 static AppTimer *hideMusicLayer = NULL;
-static AppTimer *general_Timer = NULL;
+static AppTimer *long_light_timer = NULL;
 
 /* Preload the fonts */
 GFont font_date;
@@ -549,7 +549,7 @@ static void window_unload(Window *window) {
 static void window_appear(Window *window)
 {
 	sendCommandInt(SM_SCREEN_ENTER_KEY, STATUS_SCREEN_APP);
-	  
+
 }
 
 
@@ -560,17 +560,17 @@ static void window_disappear(Window *window)
 
 
 void battery_layer_update_callback(Layer *me, GContext* ctx) {
-	
+
 	//draw the remaining battery percentage
 	graphics_context_set_stroke_color(ctx, GColorBlack);
 	graphics_context_set_fill_color(ctx, GColorWhite);
 
 	graphics_fill_rect(ctx, GRect(2+16-(int)((batteryPercent/100.0)*16.0), 2, (int)((batteryPercent/100.0)*16.0), 8), 0, GCornerNone);
-	
+
 }
 
 void battery_pbl_layer_update_callback(Layer *me, GContext* ctx) {
-	
+
 	//draw the remaining pebble battery percentage
 	graphics_context_set_stroke_color(ctx, GColorBlack);
 	graphics_context_set_fill_color(ctx, GColorWhite);
@@ -585,22 +585,22 @@ void battery_pbl_layer_update_callback(Layer *me, GContext* ctx) {
 
 
 void reset() {
-	
+
 /*	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), true);
 	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false);
 */	text_layer_set_text(text_weather_cond_layer, STRING_UPDATING); 	
-	
+
 }
 
 
 void handle_second_tick(struct tm *tick_time, TimeUnits units_changed) {
-		
+
 	// Seconds Display
 	static char seconds_text[] = "00";
 	strftime(seconds_text, sizeof(seconds_text), "%S", tick_time);
 	text_layer_set_text(text_seconds_layer, seconds_text);
 
-	if ((((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized)) && (calendar_date_str != NULL)) {apptDisplay(calendar_date_str);}
+	if ((((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized))) {apptDisplay(calendar_date_str);}
 if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) ){
 	// Need to be static because they're used by the system later.
 	static char time_text[] = "00:00";
@@ -609,7 +609,7 @@ if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) 
 	static int heure;
 	heure = tick_time->tm_hour;
 
-	
+
   // TODO: Only update the date when it's changed. // DONE ! Even with SECOND ticks
 	if ((units_changed & DAY_UNIT) == DAY_UNIT|| (!Watch_Face_Initialized) ){
 		  Watch_Face_Initialized = true;
@@ -639,13 +639,13 @@ if (((units_changed & MINUTE_UNIT) == MINUTE_UNIT) || (!Watch_Face_Initialized) 
     memmove(time_text, &time_text[1], sizeof(time_text) - 1);
   }
 
-	
+
 	// Don't forget the "heure" variable if you copy this small paragraph
   if (((units_changed & HOUR_UNIT) == HOUR_UNIT) && ((heure > 9) && (heure < 23))){
     vibes_double_pulse();
     APP_LOG(APP_LOG_LEVEL_DEBUG, "    Hour changed -> Vibration complete");
   }
-	
+
   text_layer_set_text(text_time_layer, time_text);
 }
 }
@@ -655,33 +655,41 @@ void reconnect(void *data) {
 	reset();
 
 	sendCommandInt(SM_SCREEN_ENTER_KEY, STATUS_SCREEN_APP);
-	
+
 }
 
 void bluetoothChanged(bool connected) {
 
 	if (connected) {
 		app_timer_register(5000, reconnect, NULL);
+		layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true);
 		if (!phone_is_connected) {vibes_short_pulse();} 
 		/* Pebble has two channels for connection : Bluetooth-LE and Bluetooth ADP, it's a workaround 
 		   to prevent the watch from vibrating twice*/
 		display_Notification("iPhone", STRING_CONNECTED, 5000);
+		// Display Battery layers or it won't show
+/*		layer_set_hidden(bitmap_layer_get_layer(battery_image_layer), false);
+		layer_set_hidden(battery_layer, false);
+		layer_set_hidden(text_layer_get_layer(text_battery_layer), false); */
 		phone_is_connected = true;
 	} else {
 		bitmap_layer_set_bitmap(weather_image, weather_status_imgs[NUM_WEATHER_IMAGES-1]);
 		if (phone_is_connected) {vibes_short_pulse();}
 		display_Notification("iPhone", STRING_DISCONNECTED, 5000);
 		phone_is_connected = false;
+		layer_set_hidden(bitmap_layer_get_layer(battery_image_layer), true);
+		layer_set_hidden(battery_layer, true);
+		layer_set_hidden(text_layer_get_layer(text_battery_layer), true);
 	}
-	
+
 }
 
 
 void batteryChanged(BatteryChargeState batt) {
-	
+
 	batteryPblPercent = batt.charge_percent;
 	layer_mark_dirty(battery_layer);
-	
+
 }
 
 
@@ -705,7 +713,7 @@ font_secs = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIGITAL_
 	for (int i=0; i<NUM_WEATHER_IMAGES; i++) {
 	  	weather_status_imgs[i] = gbitmap_create_with_resource(WEATHER_IMG_IDS[i]);
 	}
-	
+
   	bg_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);
 
 
@@ -717,7 +725,7 @@ font_secs = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIGITAL_
 	background_image = bitmap_layer_create(bg_bounds);
 	layer_add_child(window_layer, bitmap_layer_get_layer(background_image));
 	bitmap_layer_set_bitmap(background_image, bg_image);
-	
+
 
 	//init weather layer and add weather image, weather condition, temperature, and battery indicator
 	weather_layer = layer_create(GRect(0, 0, 144, 45)); // GRect(0, 78, 144, 45));
@@ -726,11 +734,11 @@ font_secs = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIGITAL_
 	battery_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_PHONE);
 	battery_pbl_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_PEBBLE);
 
-	battery_image_layer = bitmap_layer_create(GRect(105, 5, 37, 14)); // GRect(100, 7, 37, 14));
+	battery_image_layer = bitmap_layer_create(GRect(68, 5, 37, 14)); // GRect(100, 7, 37, 14));
 	layer_add_child(weather_layer, bitmap_layer_get_layer(battery_image_layer));
 	bitmap_layer_set_bitmap(battery_image_layer, battery_image);
 
-	battery_pbl_image_layer = bitmap_layer_create(GRect(68, 5, 37, 14)); // GRect(100, 23, 37, 14));
+	battery_pbl_image_layer = bitmap_layer_create(GRect(105, 5, 37, 14)); // GRect(100, 23, 37, 14));
 	layer_add_child(weather_layer, bitmap_layer_get_layer(battery_pbl_image_layer));
 	bitmap_layer_set_bitmap(battery_pbl_image_layer, battery_pbl_image);
 
@@ -762,22 +770,28 @@ layer_add_child(window_layer, status_layer);
 		layer_add_child(status_layer, text_layer_get_layer(text_phone_layer));
 		text_layer_set_text(text_phone_layer, "--"); 
 
-		battery_layer = layer_create(GRect(107, 6, 19, 30)); // GRect(102, 8, 19, 11)); GRect(105, -1, 37, 14)
+		battery_layer = layer_create(GRect(70, 6, 19, 30)); // GRect(102, 8, 19, 11)); GRect(105, -1, 37, 14)
 	layer_set_update_proc(battery_layer, battery_layer_update_callback);
 	layer_add_child(weather_layer, battery_layer);
 
-	text_battery_layer = text_layer_create(GRect(104, 15, 25, 19)); // GRect(99, 20, 40, 60));
+	text_battery_layer = text_layer_create(GRect(67, 15, 25, 19)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_battery_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_battery_layer, GColorWhite);
 	text_layer_set_background_color(text_battery_layer, GColorClear);
 	text_layer_set_font(text_battery_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
 	layer_add_child(weather_layer, text_layer_get_layer(text_battery_layer));
-	text_layer_set_text(text_battery_layer, "-");
+	text_layer_set_text(text_battery_layer, "--");
+
+	if (!phone_is_connected) {
+		layer_set_hidden(bitmap_layer_get_layer(battery_image_layer), true);
+		layer_set_hidden(battery_layer, true);
+		layer_set_hidden(text_layer_get_layer(text_battery_layer), true);
+	}
 
 	batteryPercent = 100;
 	layer_mark_dirty(battery_layer);
 
-	battery_pbl_layer = layer_create(GRect(70, 6, 19, 30)); // GRect(102, 24, 19, 11)); GRect(68, -1, 37, 14)
+	battery_pbl_layer = layer_create(GRect(107, 6, 19, 30)); // GRect(102, 24, 19, 11)); GRect(68, -1, 37, 14)
 	layer_set_update_proc(battery_pbl_layer, battery_pbl_layer_update_callback);
 	layer_add_child(weather_layer, battery_pbl_layer);
 
@@ -785,13 +799,13 @@ layer_add_child(window_layer, status_layer);
 	batteryPblPercent = pbl_batt.charge_percent;
 	layer_mark_dirty(battery_pbl_layer);
 
-	text_pebble_battery_layer = text_layer_create(GRect(67, 15, 25, 19)); // GRect(99, 20, 40, 60));
+	text_pebble_battery_layer = text_layer_create(GRect(104, 15, 25, 19)); // GRect(99, 20, 40, 60));
 	text_layer_set_text_alignment(text_pebble_battery_layer, GTextAlignmentCenter);
 	text_layer_set_text_color(text_pebble_battery_layer, GColorWhite);
 	text_layer_set_background_color(text_pebble_battery_layer, GColorClear);
 	text_layer_set_font(text_pebble_battery_layer,  fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
 	layer_add_child(weather_layer, text_layer_get_layer(text_pebble_battery_layer));
-	text_layer_set_text(text_pebble_battery_layer, "-");
+	text_layer_set_text(text_pebble_battery_layer, "100");
 
 
 	text_weather_cond_layer = text_layer_create(GRect(5, 15, 62, 30)); // GRect(5, 2, 47, 40)
@@ -801,9 +815,9 @@ layer_add_child(window_layer, status_layer);
 	text_layer_set_font(text_weather_cond_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
 	layer_add_child(weather_layer, text_layer_get_layer(text_weather_cond_layer));
 
-/*	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false); */
+	layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true); 
 	text_layer_set_text(text_weather_cond_layer, STRING_UPDATING); 	
-	
+
 	if (bluetooth_connection_service_peek()) {
 		weather_img = 0;
 	} else {
@@ -825,7 +839,7 @@ layer_add_child(window_layer, status_layer);
 
 /*	layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false); // changed from true to false */
 
-	
+
 	//init layers for time and date
 	text_date_layer = text_layer_create(bg_bounds);
 	text_layer_set_text_alignment(text_date_layer, GTextAlignmentCenter);
@@ -857,7 +871,7 @@ layer_add_child(window_layer, status_layer);
 	animated_layer[CALENDAR_LAYER] = layer_create(GRect(0, 100, 144, 45)); //(GRect(0, 124, 144, 45)); 
 		//										 _with_data to make sure it can be allocated dynamically
 	layer_add_child(window_layer, animated_layer[CALENDAR_LAYER]);
-	
+
 	calendar_date_layer = text_layer_create(GRect(6, 0, 132, 21)); //(GRect(6, 0, 132, 21));
 	text_layer_set_text_alignment(calendar_date_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(calendar_date_layer, GColorWhite);
@@ -874,13 +888,13 @@ layer_add_child(window_layer, status_layer);
 	text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
 	layer_add_child(animated_layer[CALENDAR_LAYER], text_layer_get_layer(calendar_text_layer));
 	text_layer_set_text(calendar_text_layer, STRING_DEFAULT_CALENDAR_2);
-	
-	
-	
+
+
+
 	//init music layer
 	animated_layer[MUSIC_LAYER] = layer_create(GRect(144, 100, 144, 45)); // (GRect(144, 124, 144, 45));
 	layer_add_child(window_layer, animated_layer[MUSIC_LAYER]);
-	
+
 	music_artist_layer = text_layer_create(GRect(6, 0, 132, 21)); // (GRect(6, 0, 132, 21));
 	text_layer_set_text_alignment(music_artist_layer, GTextAlignmentLeft);
 	text_layer_set_text_color(music_artist_layer, GColorWhite);
@@ -903,6 +917,7 @@ layer_add_child(window_layer, status_layer);
 
 	reset();
 
+	load_memories();
   	//tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
 	tick_timer_service_subscribe(SECOND_UNIT, handle_second_tick);
 
@@ -912,21 +927,21 @@ layer_add_child(window_layer, status_layer);
 }
 
 static void deinit(void) {
-	
-	
+	store_for_later();
+
 	property_animation_destroy((PropertyAnimation*)ani_in);
 	property_animation_destroy((PropertyAnimation*)ani_out);
-	
 
-	
+	APP_LOG(APP_LOG_LEVEL_DEBUG,"    Destroy EVERYTHING");
+
 	if (timerUpdateCalendar != NULL)
 		app_timer_cancel(timerUpdateCalendar);
 	timerUpdateCalendar = NULL;
-	
+
 	if (timerUpdateWeather != NULL)	
 		app_timer_cancel(timerUpdateWeather);
 	timerUpdateWeather = NULL;
-	
+
 	if (timerUpdateMusic != NULL)
 		app_timer_cancel(timerUpdateMusic);
 	timerUpdateMusic = NULL;
@@ -935,9 +950,9 @@ static void deinit(void) {
 		app_timer_cancel(hideMusicLayer);
 	hideMusicLayer = NULL;
 
-	if (general_Timer != NULL)
-		app_timer_cancel(general_Timer);
-	general_Timer = NULL;
+	if (long_light_timer != NULL)
+		app_timer_cancel(long_light_timer);
+	long_light_timer = NULL;
 
 	bitmap_layer_destroy(background_image);
 	layer_destroy(weather_layer);
@@ -961,7 +976,7 @@ static void deinit(void) {
 	text_layer_destroy(text_pebble_battery_layer);
 	text_layer_destroy(text_seconds_layer);
 	layer_destroy(status_layer);
-	
+
 	if (calendar_date_str != NULL) {
  		free(calendar_date_str);
  		APP_LOG(APP_LOG_LEVEL_DEBUG,"[F] calendar_date_str memory is now free");
@@ -978,7 +993,7 @@ static void deinit(void) {
 	for (int i=0; i<NUM_WEATHER_IMAGES; i++) {
 	  	gbitmap_destroy(weather_status_imgs[i]);
 	}
-	
+
 
 	gbitmap_destroy(bg_image);
 	gbitmap_destroy(battery_image);
@@ -1027,7 +1042,7 @@ void rcv(DictionaryIterator *received, void *context) {
 		memcpy(weather_temp_str, t->value->cstring, strlen(t->value->cstring));
         weather_temp_str[strlen(t->value->cstring)] = '\0';
 		text_layer_set_text(text_weather_temp_layer, weather_temp_str); 
-		
+		layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), false);
 /*		layer_set_hidden(text_layer_get_layer(text_weather_cond_layer), true);
 		layer_set_hidden(text_layer_get_layer(text_weather_temp_layer), false);
 			
@@ -1064,6 +1079,9 @@ void rcv(DictionaryIterator *received, void *context) {
 
 	t=dict_find(received, SM_COUNT_BATTERY_KEY); 
 	if (t!=NULL) {
+		layer_set_hidden(bitmap_layer_get_layer(battery_image_layer), false);
+		layer_set_hidden(battery_layer, false);
+		layer_set_hidden(text_layer_get_layer(text_battery_layer), false);
 		batteryPercent = t->value->uint8;
 		layer_mark_dirty(battery_layer);
 		snprintf(string_buffer, sizeof(string_buffer), "%d", batteryPercent);
@@ -1080,6 +1098,7 @@ void rcv(DictionaryIterator *received, void *context) {
  		calendar_date_str = (char *)malloc(sizeof(char) * num_chars);
  		if (calendar_date_str == NULL) {
  			APP_LOG(APP_LOG_LEVEL_ERROR,"[/] Malloc wasn't able to allocate memory (num_chars = %i)",num_chars);
+ 			return;
  		} else {
  			APP_LOG(APP_LOG_LEVEL_INFO,"[M] Malloc succesfully allocated memory (num_chars * sizeof(char) = %i * %i)",num_chars, (int)(sizeof(char)));
  			phone_is_connected = true;
@@ -1090,7 +1109,7 @@ void rcv(DictionaryIterator *received, void *context) {
 		APP_LOG(APP_LOG_LEVEL_DEBUG, "[R] Received DATA for Calendar, launching Appointment Module [apptDisplay]");
 		apptDisplay(calendar_date_str);
   	}
-	
+
 	t=dict_find(received, SM_STATUS_CAL_TEXT_KEY); 
 	if (t!=NULL) {
 		memcpy(calendar_text_str, t->value->cstring, strlen(t->value->cstring));
@@ -1106,20 +1125,6 @@ void rcv(DictionaryIterator *received, void *context) {
 				text_layer_set_font(calendar_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
 	}
 
-/*	t=dict_find(received, SM_VOLUME_VALUE_KEY);
-	if (t!=NULL) {
-		static int volume_value;
-		volume_value = t->value->uint8;
-		APP_LOG(APP_LOG_LEVEL_DEBUG,"    Volume is set to %i",volume_value);
-	}
-
-	t=dict_find(received, SM_PLAY_STATUS_KEY);
-	if (t!=NULL) {
-		static int music_playing;
-		music_playing = t->value->uint8;
-		APP_LOG(APP_LOG_LEVEL_DEBUG,"    Music play status: %i",music_playing);
-	}
-*/
 	t=dict_find(received, SM_STATUS_MUS_ARTIST_KEY); 
 	if (t!=NULL) {
 		memcpy(music_artist_str1, t->value->cstring, strlen(t->value->cstring));
@@ -1165,7 +1170,7 @@ void rcv(DictionaryIterator *received, void *context) {
 	t=dict_find(received, SM_SONG_LENGTH_KEY); 
 	if (t!=NULL) {
 		int interval = t->value->int32 * 1000;
-		
+
 		if (timerUpdateMusic != NULL)
 			app_timer_cancel(timerUpdateMusic);
 		timerUpdateMusic = app_timer_register(interval , updateMusic, NULL);
@@ -1177,7 +1182,7 @@ void rcv(DictionaryIterator *received, void *context) {
 int main(void) {
 	app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum() );
 	app_message_register_inbox_received(rcv);
-	
+
   init();
 
 
@@ -1186,4 +1191,3 @@ int main(void) {
 
   deinit();
 
-}
