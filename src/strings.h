@@ -46,7 +46,7 @@ static const char *before_after[] = {"Depuis", "Dans"};
 //		NAME of the strings 		 Translation 			   English Translation 		   E.g of Diplay (it sounds bad in DAY MONTH frormat)
 #define STRING_EVENT_IS_PAST		"Depuis le %i %s"		// "Since %i %s"			// "Since 1 Nov"
 #define STRING_EVENT_FUTURE_GLOBAL	"Le %i %s "				// "%i %s at %i:%02i"		// "1 Nov at 08:00"
-#define STRING_EVENT_FUTURE_SOON	"%s "		 			// "%s, at %i:%02i"			// "Tomorrow, at 9:25"
+#define STRING_EVENT_FUTURE_SOON	"%s, "		 			// "%s, "					// "Tomorrow, "
 #define STRING_DEFAULT_HOUR_MIN		"à %ih%02i"				// "%i:%02i"				// "8:30"
 #define STRING_NOW					"Maintenant!"			// "Now!"					// "Now!"
 #define STRING_EVENT_HOUR			"%s 1 heure"			// "%s 1 hour"				// "In 1 hour"

@@ -290,16 +290,11 @@ static void apptDisplay(char *appt_string) {
 					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_GLOBAL,appt_day, month_of_year[interm]);
 					event_is_today = false; // Just so we don't write the time again
 					time_string[0] = '\0';
-				} else if (days_difference != 0) {
+				} else if (days_difference >= 0) {
 					snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_SOON, days_from_today[days_difference]);
 					event_is_today = false; // Just so we don't write the time again
 					time_string[0] = '\0';
-				} else if (days_difference == 0) {
-					date_of_appt[0] = '\0';
-					if (event_is_all_day) {
-						snprintf(date_of_appt, 30, STRING_EVENT_FUTURE_SOON, days_from_today[days_difference]);
-					}
-					event_is_today = true;
+					event_is_today = (days_difference == 0) ? true : false;
 				} else {
 					APP_LOG(APP_LOG_LEVEL_ERROR, "[/] days_difference tests failed :(");
 					return;
@@ -308,6 +303,7 @@ static void apptDisplay(char *appt_string) {
 
 		// Check the Hour and write it in time_string
 	 void display_hour (int hour_since, int minutes_since, int quand) {
+	 	date_of_appt[0]='\0';
 	 	if ((minutes_since == 0) && hour_since == 0) {
 						snprintf(time_string,20, STRING_NOW);
 						if (last_run_minute != t->tm_min) {
@@ -352,14 +348,16 @@ static void apptDisplay(char *appt_string) {
 					int minutes_difference = 0;
 					minutes_difference = (appt_minute - (min_now));
 					hour_difference = (appt_hour - (hour_now));
-					if (minutes_difference == 0) {
-						hour_difference += 1;
-					} else if (minutes_difference < 0) {
+					if (minutes_difference < 0) {
 						hour_difference -= 1;
 						minutes_difference += 60;
 					}
 					
-					display_hour(hour_difference,minutes_difference,1);
+					if (hour_difference < 6) {
+						display_hour(hour_difference,minutes_difference,1);
+					} else {
+						snprintf(time_string,20,STRING_DEFAULT_HOUR_MIN, appt_hour, appt_minute);
+					}
 				}
 
 	strcpy (date_time_for_appt,date_of_appt);
