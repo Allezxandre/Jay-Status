@@ -267,12 +267,12 @@ static void apptDisplay(char *appt_string) {
 	static int days_difference = 0;
 	if (mon_now != appt_month) {
 		if ((mon_now - appt_month > 1) || (mon_now - appt_month < -1)) {
-			days_difference = 40; // Set a high value to display the date then
+			days_difference = 40; // Set a high value to display the date
 		} else if (appt_month < mon_now){ // Event has begun last month
 			days_difference = ((mday_now) + (days_per_month[(appt_month + 1)] - appt_day));
 			event_is_past = true;
 		} else if (appt_month > mon_now){ // Event will begin next month
-			days_difference = ((days_per_month[(mday_now + 1)] - mon_now) + appt_day);
+			days_difference = ((days_per_month[(mon_now + 1)] - mday_now) + appt_day);
 		}
 	} else {
 		days_difference = (appt_day - mday_now);
