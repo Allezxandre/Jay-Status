@@ -47,7 +47,7 @@ static const char *before_after[] = {"For", "In"};
 #define STRING_EVENT_IS_PAST		"Started %s %i"		
 #define STRING_EVENT_FUTURE_GLOBAL	"%s %i "	
 #define STRING_EVENT_FUTURE_SOON	"%s, "
-#define STRING_DEFAULT_HOUR_MIN		"at %ih%02i"	
+#define STRING_DEFAULT_HOUR_MIN		"at %i:%02i"	
 #define STRING_NOW					"Now!"				
 #define STRING_EVENT_HOUR			"%s 1 hour"			
 #define STRING_EVENT_HOURS			"%s %i hours"		

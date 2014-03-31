@@ -10,7 +10,7 @@
 	Idea by J Dishaw
 */
 
-#define DEBUG 1
+//#define DEBUG 1
 #define STRING_LENGTH 255
 #define NUM_WEATHER_IMAGES	9
 #define VIBE_ON_HOUR true
@@ -410,9 +410,9 @@ void sendCommandInt(int key, int param) {
 
 static void turn_off_the_light(void *data) {
 		light_enable(false);
-		if (general_Timer != NULL) {
-			app_timer_cancel(general_Timer);
-			general_Timer = NULL;
+		if (long_light_timer != NULL) {
+			app_timer_cancel(long_light_timer);
+			long_light_timer = NULL;
 		}
 }
 
@@ -441,11 +441,11 @@ static void select_hold_handler(ClickRecognizerRef recognizer, void *context) {
 		sendCommand(SM_PLAYPAUSE_KEY);
 	} else {
 		light_enable(true);
-		if (general_Timer != NULL) {
-			app_timer_cancel(general_Timer);
-			general_Timer = NULL;
+		if (long_light_timer != NULL) {
+			app_timer_cancel(long_light_timer);
+			long_light_timer = NULL;
 		}
-		general_Timer = app_timer_register(120000 , turn_off_the_light, NULL);
+		long_light_timer = app_timer_register(120000 , turn_off_the_light, NULL);
 	}
 }
 
@@ -460,11 +460,11 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 		sendCommandInt(SM_SCREEN_ENTER_KEY, STATUS_SCREEN_APP);
 	} else {
 		light_enable(true);
-		if (general_Timer != NULL) {
-			app_timer_cancel(general_Timer);
-			general_Timer = NULL;
+		if (long_light_timer != NULL) {
+			app_timer_cancel(long_light_timer);
+			long_light_timer = NULL;
 		}
-		general_Timer = app_timer_register(120000 , turn_off_the_light, NULL);
+		long_light_timer = app_timer_register(120000 , turn_off_the_light, NULL);
 	}
 }
 
@@ -1191,3 +1191,4 @@ int main(void) {
 
   deinit();
 
+}
