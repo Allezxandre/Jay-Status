@@ -8,3 +8,8 @@ Compatible with the Cydia Version of [SmartWatch+](http://smartwatchplusapp.apps
 An SmartWatch+ WatchFace idea by J. Dishaw
 
 Based on [**Smart FrenchIze**](https://github.com/Allezxandre/Smart-FrenchIze) WatchFace
+
+--
+Resources :
+* Icons from [FlatIcon](http://www.flaticon.com)
+* *Phone Auricular With Up Arrow* by Freepik from Flaticon
