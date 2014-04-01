@@ -47,7 +47,7 @@
 					<dict>
 						<key>tokenizedValue</key>
 						<array>
-							<string>PDF à convertir en image :</string>
+							<string>Images à convertir :</string>
 						</array>
 					</dict>
 				</dict>
@@ -67,13 +67,13 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>defaultLocation</key>
-					<string>~/Downloads/Weather_Icons_by-spovv/PDF</string>
+					<string>~/Downloads</string>
 					<key>granularity</key>
 					<integer>0</integer>
 					<key>multipleSelection</key>
-					<false/>
+					<true/>
 					<key>promptMessage</key>
-					<string>PDF à convertir en image :</string>
+					<string>Images à convertir :</string>
 				</dict>
 				<key>BundleIdentifier</key>
 				<string>com.apple.Automator.AskForFinderItems</string>
@@ -164,12 +164,10 @@
 						<string>3</string>
 					</dict>
 				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>529.500000:786.000000</string>
+				<string>529.500000:518.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Ask for Finder Items.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -288,270 +286,12 @@
 						<string>1</string>
 					</dict>
 				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>529.500000:631.000000</string>
+				<string>529.500000:363.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Copy Finder Items.action/Contents/Resources/Base.lproj/main.nib</string>
-			</dict>
-			<key>isViewVisible</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>action</key>
-			<dict>
-				<key>AMAccepts</key>
-				<dict>
-					<key>Container</key>
-					<string>List</string>
-					<key>Optional</key>
-					<false/>
-					<key>Types</key>
-					<array>
-						<string>com.apple.applescript.alias-object.pdf</string>
-					</array>
-				</dict>
-				<key>AMActionVersion</key>
-				<string>462</string>
-				<key>AMApplication</key>
-				<array>
-					<string>PDF</string>
-				</array>
-				<key>AMParameterProperties</key>
-				<dict>
-					<key>colorModel</key>
-					<dict/>
-					<key>compression</key>
-					<dict/>
-					<key>imageFormat</key>
-					<dict/>
-					<key>resolution</key>
-					<dict>
-						<key>tokenizedValue</key>
-						<array>
-							<string>300</string>
-						</array>
-					</dict>
-				</dict>
-				<key>AMProvides</key>
-				<dict>
-					<key>Container</key>
-					<string>List</string>
-					<key>Types</key>
-					<array>
-						<string>com.apple.applescript.alias-object.image</string>
-					</array>
-				</dict>
-				<key>ActionBundlePath</key>
-				<string>/System/Library/Automator/Render PDF Pages as Images.action</string>
-				<key>ActionName</key>
-				<string>Rendre comme images les pages de documents PDF</string>
-				<key>ActionParameters</key>
-				<dict>
-					<key>colorModel</key>
-					<integer>1</integer>
-					<key>compression</key>
-					<real>0.77777777777777768</real>
-					<key>imageFormat</key>
-					<string>public.png</string>
-					<key>resolution</key>
-					<string>300</string>
-				</dict>
-				<key>BundleIdentifier</key>
-				<string>com.apple.action.imagepdf</string>
-				<key>CFBundleVersion</key>
-				<string>462</string>
-				<key>CanShowSelectedItemsWhenRun</key>
-				<false/>
-				<key>CanShowWhenRun</key>
-				<true/>
-				<key>Category</key>
-				<array>
-					<string>AMCategoryPDFs</string>
-				</array>
-				<key>Class Name</key>
-				<string>ImagePDFAction</string>
-				<key>Disabled</key>
-				<true/>
-				<key>InputUUID</key>
-				<string>9616F94A-01CB-4CEE-B97B-D7B72B024783</string>
-				<key>Keywords</key>
-				<array>
-					<string>Imprimer</string>
-					<string>Rendre</string>
-				</array>
-				<key>OutputUUID</key>
-				<string>E923DD5D-320D-4D7D-95F6-E6AD6FD685B1</string>
-				<key>StartAction</key>
-				<false/>
-				<key>UUID</key>
-				<string>5B494784-D63A-4F94-B09D-F259957B1004</string>
-				<key>UnlocalizedApplications</key>
-				<array>
-					<string>PDF</string>
-				</array>
-				<key>arguments</key>
-				<dict>
-					<key>0</key>
-					<dict>
-						<key>default value</key>
-						<real>0.5</real>
-						<key>name</key>
-						<string>compression</string>
-						<key>required</key>
-						<string>0</string>
-						<key>type</key>
-						<string>0</string>
-						<key>uuid</key>
-						<string>0</string>
-					</dict>
-					<key>1</key>
-					<dict>
-						<key>default value</key>
-						<string>public.jpeg</string>
-						<key>name</key>
-						<string>imageFormat</string>
-						<key>required</key>
-						<string>0</string>
-						<key>type</key>
-						<string>0</string>
-						<key>uuid</key>
-						<string>1</string>
-					</dict>
-					<key>2</key>
-					<dict>
-						<key>default value</key>
-						<integer>200</integer>
-						<key>name</key>
-						<string>resolution</string>
-						<key>required</key>
-						<string>0</string>
-						<key>type</key>
-						<string>0</string>
-						<key>uuid</key>
-						<string>2</string>
-					</dict>
-					<key>3</key>
-					<dict>
-						<key>default value</key>
-						<integer>0</integer>
-						<key>name</key>
-						<string>colorModel</string>
-						<key>required</key>
-						<string>0</string>
-						<key>type</key>
-						<string>0</string>
-						<key>uuid</key>
-						<string>3</string>
-					</dict>
-				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
-				<key>isViewVisible</key>
-				<false/>
-				<key>location</key>
-				<string>529.500000:528.000000</string>
-				<key>nibPath</key>
-				<string>/System/Library/Automator/Render PDF Pages as Images.action/Contents/Resources/Base.lproj/main.nib</string>
-			</dict>
-			<key>isViewVisible</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>action</key>
-			<dict>
-				<key>AMAccepts</key>
-				<dict>
-					<key>Container</key>
-					<string>List</string>
-					<key>Optional</key>
-					<false/>
-					<key>Types</key>
-					<array>
-						<string>com.apple.cocoa.path</string>
-					</array>
-				</dict>
-				<key>AMActionVersion</key>
-				<string>8</string>
-				<key>AMApplication</key>
-				<array>
-					<string>Aperçu</string>
-				</array>
-				<key>AMParameterProperties</key>
-				<dict>
-					<key>outputDirectory</key>
-					<dict>
-						<key>isPathPopUp</key>
-						<true/>
-						<key>variableUUIDsInMenu</key>
-						<array/>
-					</dict>
-				</dict>
-				<key>AMProvides</key>
-				<dict>
-					<key>Container</key>
-					<string>List</string>
-					<key>Types</key>
-					<array>
-						<string>com.apple.cocoa.path</string>
-					</array>
-				</dict>
-				<key>AMRequiredResources</key>
-				<array/>
-				<key>ActionBundlePath</key>
-				<string>/System/Library/Automator/PDF to Images.action</string>
-				<key>ActionName</key>
-				<string>PDF vers Images</string>
-				<key>ActionParameters</key>
-				<dict>
-					<key>outputDirectory</key>
-					<string>~/Desktop/Weather</string>
-					<key>outputName</key>
-					<string>PDF vers Images</string>
-					<key>outputNamingMode</key>
-					<integer>0</integer>
-					<key>replaceExistingOutput</key>
-					<false/>
-				</dict>
-				<key>BundleIdentifier</key>
-				<string>com.apple.Automator.PDFtoImages</string>
-				<key>CFBundleVersion</key>
-				<string>8</string>
-				<key>CanShowSelectedItemsWhenRun</key>
-				<true/>
-				<key>CanShowWhenRun</key>
-				<true/>
-				<key>Category</key>
-				<array>
-					<string>AMCategoryPDFs</string>
-				</array>
-				<key>Class Name</key>
-				<string>SeparatePages</string>
-				<key>InputUUID</key>
-				<string>D5C30B1B-F850-4D7F-89F4-58D04032F22F</string>
-				<key>Keywords</key>
-				<array/>
-				<key>OutputUUID</key>
-				<string>5F94EFE1-A9BD-46AE-BF1E-88E1F91226CA</string>
-				<key>UUID</key>
-				<string>13D4BE4B-0FB2-4552-81AF-A74E78834758</string>
-				<key>UnlocalizedApplications</key>
-				<array>
-					<string>Preview</string>
-				</array>
-				<key>arguments</key>
-				<dict/>
-				<key>conversionLabel</key>
-				<integer>0</integer>
-				<key>isViewVisible</key>
-				<true/>
-				<key>location</key>
-				<string>529.500000:486.000000</string>
-				<key>nibPath</key>
-				<string>/System/Library/Automator/PDF to Images.action/Contents/Resources/French.lproj/main.nib</string>
 			</dict>
 			<key>isViewVisible</key>
 			<true/>
@@ -579,8 +319,6 @@
 				<key>AMParameterProperties</key>
 				<dict>
 					<key>imageType</key>
-					<dict/>
-					<key>temporary items path</key>
 					<dict/>
 				</dict>
 				<key>AMProvides</key>
@@ -615,6 +353,8 @@
 				</array>
 				<key>Class Name</key>
 				<string>AMChangeImageTypeAction</string>
+				<key>Disabled</key>
+				<true/>
 				<key>InputUUID</key>
 				<string>883814B2-59DA-4201-966C-C34CE7845500</string>
 				<key>Keywords</key>
@@ -627,8 +367,6 @@
 				</array>
 				<key>OutputUUID</key>
 				<string>889D8D39-285E-4333-AEFD-BEBFEEB9A1C8</string>
-				<key>StartAction</key>
-				<false/>
 				<key>UUID</key>
 				<string>391E21DA-EAE8-4284-9848-32BB652366EE</string>
 				<key>UnlocalizedApplications</key>
@@ -651,17 +389,15 @@
 						<string>0</string>
 					</dict>
 				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 				<key>isViewVisible</key>
-				<true/>
+				<false/>
 				<key>location</key>
-				<string>529.500000:302.000000</string>
+				<string>529.500000:260.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Change Type of Images.action/Contents/Resources/French.lproj/main.nib</string>
 			</dict>
 			<key>isViewVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>action</key>
@@ -684,6 +420,8 @@
 				<key>AMParameterProperties</key>
 				<dict>
 					<key>filterIdentifier</key>
+					<dict/>
+					<key>filterParameters</key>
 					<dict/>
 				</dict>
 				<key>AMProvides</key>
@@ -736,8 +474,6 @@
 				<string>D9A8938D-AE11-4A85-9658-1CD439DC0615</string>
 				<key>ShowWhenRun</key>
 				<false/>
-				<key>StartAction</key>
-				<false/>
 				<key>UUID</key>
 				<string>49C2FA12-0C95-41C2-93EB-2AF9AF38E1CD</string>
 				<key>arguments</key>
@@ -756,12 +492,10 @@
 						<string>0</string>
 					</dict>
 				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 				<key>isViewVisible</key>
 				<false/>
 				<key>location</key>
-				<string>529.500000:198.000000</string>
+				<string>529.500000:218.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Apply Quartz Composition Filter to Image Files.action/Contents/Resources/French.lproj/main.nib</string>
 			</dict>
@@ -825,6 +559,8 @@
 				</array>
 				<key>Class Name</key>
 				<string>AMChangeImageTypeAction</string>
+				<key>Disabled</key>
+				<true/>
 				<key>InputUUID</key>
 				<string>D5BCF2F4-43DD-4C04-A8DC-644376336DEF</string>
 				<key>Keywords</key>
@@ -859,17 +595,15 @@
 						<string>0</string>
 					</dict>
 				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 				<key>isViewVisible</key>
-				<true/>
+				<false/>
 				<key>location</key>
-				<string>529.500000:156.000000</string>
+				<string>529.500000:176.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Change Type of Images.action/Contents/Resources/French.lproj/main.nib</string>
 			</dict>
 			<key>isViewVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>action</key>
@@ -1012,12 +746,10 @@
 						<string>3</string>
 					</dict>
 				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 				<key>isViewVisible</key>
 				<false/>
 				<key>location</key>
-				<string>529.500000:52.000000</string>
+				<string>529.500000:134.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Scale Images.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -1027,54 +759,40 @@
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>0C29409B-B6DE-4DA6-B159-8E221A91BDA9</key>
-		<dict>
-			<key>from</key>
-			<string>1CCC18C7-8EF9-4434-8E54-0465F58F1402 - 1CCC18C7-8EF9-4434-8E54-0465F58F1402</string>
-			<key>to</key>
-			<string>86B2A7E6-4253-48F4-B7AB-A73C272706AE - 86B2A7E6-4253-48F4-B7AB-A73C272706AE</string>
-		</dict>
-		<key>173F0490-8148-4860-BA1B-457D954E92D9</key>
+		<key>00EDD3BE-32B6-47A7-B5D4-52EEE8D91A1B</key>
 		<dict>
 			<key>from</key>
 			<string>E4C1C647-668E-4A9C-A6B6-676ACFE31834 - E4C1C647-668E-4A9C-A6B6-676ACFE31834</string>
 			<key>to</key>
-			<string>5B494784-D63A-4F94-B09D-F259957B1004 - 5B494784-D63A-4F94-B09D-F259957B1004</string>
+			<string>391E21DA-EAE8-4284-9848-32BB652366EE - 391E21DA-EAE8-4284-9848-32BB652366EE</string>
 		</dict>
-		<key>59E7761B-1873-45F9-A309-7EE02845544A</key>
+		<key>2B3B27E1-1E39-416F-B8F9-D98D1BEA5097</key>
 		<dict>
 			<key>from</key>
-			<string>5B494784-D63A-4F94-B09D-F259957B1004 - 5B494784-D63A-4F94-B09D-F259957B1004</string>
+			<string>391E21DA-EAE8-4284-9848-32BB652366EE - 391E21DA-EAE8-4284-9848-32BB652366EE</string>
 			<key>to</key>
-			<string>13D4BE4B-0FB2-4552-81AF-A74E78834758 - 13D4BE4B-0FB2-4552-81AF-A74E78834758</string>
-		</dict>
-		<key>9256A2AE-5708-48B9-8BFE-A41821E1AEDA</key>
-		<dict>
-			<key>from</key>
 			<string>49C2FA12-0C95-41C2-93EB-2AF9AF38E1CD - 49C2FA12-0C95-41C2-93EB-2AF9AF38E1CD</string>
-			<key>to</key>
-			<string>1CCC18C7-8EF9-4434-8E54-0465F58F1402 - 1CCC18C7-8EF9-4434-8E54-0465F58F1402</string>
 		</dict>
-		<key>A85D7A02-2E62-4AE4-BFAD-F3E11829F955</key>
+		<key>AF86F0B8-BA3A-484F-875C-25D29E35F8CF</key>
 		<dict>
 			<key>from</key>
 			<string>A0B3B421-CE8B-4F8C-B4F4-65674749C156 - A0B3B421-CE8B-4F8C-B4F4-65674749C156</string>
 			<key>to</key>
 			<string>E4C1C647-668E-4A9C-A6B6-676ACFE31834 - E4C1C647-668E-4A9C-A6B6-676ACFE31834</string>
 		</dict>
-		<key>AB1CA0C5-4B74-447D-BBA9-7244DA6D663E</key>
+		<key>EE7A19F7-8987-4F90-B730-744FE8B4C178</key>
 		<dict>
 			<key>from</key>
-			<string>391E21DA-EAE8-4284-9848-32BB652366EE - 391E21DA-EAE8-4284-9848-32BB652366EE</string>
-			<key>to</key>
 			<string>49C2FA12-0C95-41C2-93EB-2AF9AF38E1CD - 49C2FA12-0C95-41C2-93EB-2AF9AF38E1CD</string>
+			<key>to</key>
+			<string>1CCC18C7-8EF9-4434-8E54-0465F58F1402 - 1CCC18C7-8EF9-4434-8E54-0465F58F1402</string>
 		</dict>
-		<key>E0B82169-C0DC-4C10-8E83-30AA4FEDE877</key>
+		<key>F9CFA661-D9BA-4600-AB8E-7B9E3FA47CB4</key>
 		<dict>
 			<key>from</key>
-			<string>13D4BE4B-0FB2-4552-81AF-A74E78834758 - 13D4BE4B-0FB2-4552-81AF-A74E78834758</string>
+			<string>1CCC18C7-8EF9-4434-8E54-0465F58F1402 - 1CCC18C7-8EF9-4434-8E54-0465F58F1402</string>
 			<key>to</key>
-			<string>391E21DA-EAE8-4284-9848-32BB652366EE - 391E21DA-EAE8-4284-9848-32BB652366EE</string>
+			<string>86B2A7E6-4253-48F4-B7AB-A73C272706AE - 86B2A7E6-4253-48F4-B7AB-A73C272706AE</string>
 		</dict>
 	</dict>
 	<key>workflowMetaData</key>

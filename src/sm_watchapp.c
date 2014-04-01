@@ -10,7 +10,7 @@
 	Idea by J Dishaw
 */
 
-#define DEBUG 1
+//#define DEBUG 1
 #define STRING_LENGTH 255
 #define NUM_WEATHER_IMAGES	9
 #define VIBE_ON_HOUR true
