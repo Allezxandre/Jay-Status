@@ -427,6 +427,7 @@ static void display_Notification(char *text1, char *text2, int time) {
 
 static void update_all(ClickRecognizerRef recognizer, void *context) {
 	//update all data
+	strncpy(last_text,"12345678",8); // Hack to display the music Layer without using more than one line of code
 	if (phone_is_connected) {
 		reset();
 		sendCommandInt(SM_SCREEN_ENTER_KEY, STATUS_SCREEN_APP);
