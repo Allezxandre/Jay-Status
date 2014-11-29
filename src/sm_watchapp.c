@@ -10,7 +10,7 @@
 	Idea by J Dishaw
 */
 
-//#define DEBUG 1
+// #define DEBUG 1 // I don't have enough memory for debug.
 #define STRING_LENGTH 255
 #define NUM_WEATHER_IMAGES	9
 #define VIBE_ON_HOUR true
@@ -32,8 +32,12 @@ static void reset();
 static void animate_layers();
 static void auto_switch(void *data);
 static void display_Notification(char *text1, char *text2, int time);
+static void switch_to_calendar_window(ClickRecognizerRef recognizer, void *context); // Calendar Window implementation
+static void destroy_calendar_window(ClickRecognizerRef recognizer, void *context);
+static void toggle_music_blink(ClickRecognizerRef recognizer, void *context);
 
-static Window *window;
+static Window *main_window;
+static Window *calendar_window;
 
 static PropertyAnimation *ani_out, *ani_in;
 
@@ -69,6 +73,10 @@ static AppTimer *timerUpdateMusic = NULL;
 static AppTimer *hideMusicLayer = NULL;
 static AppTimer *long_light_timer = NULL;
 
+static Layer *calendar_event_one;
+static TextLayer *text_event_layer_one;
+static char* text_event_one;
+
 /* Preload the fonts */
 GFont font_date;
 GFont font_time;
@@ -95,6 +103,7 @@ const int WEATHER_IMG_IDS[] = {
   RESOURCE_ID_IMAGE_DISCONNECT
 };
 
+const bool animated = true;
 
 
 static uint32_t s_sequence_number = 0xFFFFFFFE;
@@ -440,6 +449,34 @@ static void call_siri(ClickRecognizerRef recognizer, void *context) {
 	sendCommand(SM_OPEN_SIRI_KEY);
 }
 
+static void notif_calendar_window(ClickRecognizerRef recognizer, void *context) {
+	display_Notification("Fenetre", "Activator", 1000);
+}
+
+static void activator_bottom(ClickRecognizerRef recognizer, void *context) {
+	sendCommandInt(SM_ACTIVATOR_KEY_PRESSED, ACTIVATOR_KEY_PRESSED_DOWN);
+}
+
+static void activator_middle(ClickRecognizerRef recognizer, void *context) {
+	sendCommandInt(SM_ACTIVATOR_KEY_PRESSED, ACTIVATOR_KEY_PRESSED_SELECT);
+}
+
+static void activator_top(ClickRecognizerRef recognizer, void *context) {
+	sendCommandInt(SM_ACTIVATOR_KEY_PRESSED, ACTIVATOR_KEY_PRESSED_UP);
+}
+
+static void activator_bottom_held(ClickRecognizerRef recognizer, void *context) {
+	sendCommandInt(SM_ACTIVATOR_KEY_PRESSED, ACTIVATOR_KEY_HELD_DOWN);
+}
+
+static void activator_middle_held(ClickRecognizerRef recognizer, void *context) {
+	sendCommandInt(SM_ACTIVATOR_KEY_PRESSED, ACTIVATOR_KEY_HELD_SELECT);
+}
+
+static void activator_top_held(ClickRecognizerRef recognizer, void *context) {
+	sendCommandInt(SM_ACTIVATOR_KEY_PRESSED, ACTIVATOR_KEY_HELD_UP);
+}
+
 static void next_track_action(ClickRecognizerRef recognizer, void *context) {
 	if (phone_is_connected) {sendCommand(SM_NEXT_TRACK_KEY);} else {light_enable(false);}
 	if (hideMusicLayer != NULL) {
@@ -519,10 +556,11 @@ static void animate_layers() {
 }
 
 
-static void click_config_provider(void *context) {
+static void click_config_provider_main(void *context) {
   window_long_click_subscribe(BUTTON_ID_UP, 3000, notif_find_my_iphone, find_my_iphone);
   window_single_click_subscribe(BUTTON_ID_UP, volume_increase);
-  window_single_click_subscribe(BUTTON_ID_SELECT, call_siri);
+  window_single_click_subscribe(BUTTON_ID_SELECT, play_pause_action);
+  window_long_click_subscribe(BUTTON_ID_UP, 750, notif_calendar_window, switch_to_calendar_window);
   window_single_click_subscribe(BUTTON_ID_BACK, volume_decrease);
   window_multi_click_subscribe(BUTTON_ID_BACK, 2, 0, 250, true, update_all);
   	/*
@@ -535,8 +573,28 @@ static void click_config_provider(void *context) {
 												)	
   	*/
   window_single_click_subscribe(BUTTON_ID_DOWN, next_track_action);
-  window_long_click_subscribe(BUTTON_ID_SELECT, 750, play_pause_action, NULL);
+  window_long_click_subscribe(BUTTON_ID_SELECT, 750, call_siri, NULL);
   window_long_click_subscribe(BUTTON_ID_DOWN, 250, previous_track_action, NULL);
+}
+
+static void click_config_provider_calendar(void *context) {
+  window_single_click_subscribe(BUTTON_ID_UP, activator_top);
+  window_long_click_subscribe(BUTTON_ID_UP, 750, activator_top_held, NULL);
+  window_single_click_subscribe(BUTTON_ID_SELECT, activator_middle);
+  window_long_click_subscribe(BUTTON_ID_SELECT, 750, activator_middle_held, NULL);
+  window_single_click_subscribe(BUTTON_ID_BACK, destroy_calendar_window);
+  window_multi_click_subscribe(BUTTON_ID_BACK, 2, 0, 250, true, toggle_music_blink);
+  	/*
+			void window_multi_click_subscribe	(	ButtonId 	button_id,
+													uint8_t 	min_clicks,
+													uint8_t 	max_clicks,
+													uint16_t 	timeout,
+													bool 	last_click_only,
+													ClickHandler 	handler 
+												)	
+  	*/
+  window_single_click_subscribe(BUTTON_ID_DOWN, activator_bottom);
+  window_long_click_subscribe(BUTTON_ID_DOWN, 750, activator_bottom_held, NULL);
 }
 
 static void window_load(Window *window) {
@@ -699,17 +757,16 @@ void batteryChanged(BatteryChargeState batt) {
 
 
 static void init(void) {
-  window = window_create();
-  window_set_fullscreen(window, true);
-  window_set_click_config_provider(window, click_config_provider);
-  window_set_window_handlers(window, (WindowHandlers) {
+  main_window = window_create();
+  window_set_fullscreen(main_window, true);
+  window_set_click_config_provider(main_window, click_config_provider_main);
+  window_set_window_handlers(main_window, (WindowHandlers) {
     .load = window_load,
     .unload = window_unload,
 	.appear = window_appear,
 	.disappear = window_disappear
   });
-  const bool animated = true;
-  window_stack_push(window, animated);
+  window_stack_push(main_window, animated);
   // Choose fonts
 font_date = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_CLEARSANS_REGULAR_21));
 font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_46));
@@ -722,7 +779,7 @@ font_secs = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BOLD_20)
   	bg_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);
 
 
-  	Layer *window_layer = window_get_root_layer(window);
+  	Layer *window_layer = window_get_root_layer(main_window);
 
 	//init background image
   	GRect bg_bounds = layer_get_frame(window_layer);
@@ -931,8 +988,58 @@ layer_add_child(window_layer, status_layer);
 
 }
 
+// Calendar Window
+static void toggle_music_blink(ClickRecognizerRef recognizer, void *context){
+	vibes_short_pulse();
+	/*for (int i = 0; i < 50; ++i)
+	{
+		window_set_background_color(calendar_window, GColorWhite);
+		psleep(468);
+		window_set_background_color(calendar_window, GColorBlack);
+		psleep(468);
+	} */
+}
+
+static void switch_to_calendar_window(ClickRecognizerRef recognizer, void *context){
+	calendar_window = window_create();
+	window_set_fullscreen(calendar_window, true);
+  	window_set_click_config_provider(calendar_window, click_config_provider_calendar);
+ 	/* window_set_window_handlers(calendar_window, (WindowHandlers) {
+    	.load = window_load,
+    	.unload = window_unload,
+		.appear = window_appear,
+		.disappear = window_disappear
+  	}); */
+	window_set_background_color(calendar_window, GColorBlack);
+	
+	// Layers
+	Layer *calendar_window_layer = window_get_root_layer(calendar_window);
+
+  	calendar_event_one = layer_create(GRect(0, 0, 144, 45)); // GRect(0, 78, 144, 45));
+	layer_add_child(calendar_window_layer, calendar_event_one);
+	text_event_layer_one = text_layer_create(GRect(0, 0, 144, 45));
+	text_layer_set_background_color(text_event_layer_one,GColorBlack);
+	layer_add_child(calendar_event_one,text_layer_get_layer(text_event_layer_one));
+	text_layer_set_text(text_event_layer_one, text_event_one);
+  	window_stack_push(calendar_window, animated);
+}
+
+static void destroy_calendar_window(ClickRecognizerRef recognizer, void *context){
+	if (calendar_window != NULL) {
+		text_layer_destroy(text_event_layer_one);
+		layer_destroy(calendar_event_one);
+		window_stack_remove(calendar_window,animated);
+		window_destroy(calendar_window);
+		calendar_window = NULL;
+	}
+}
+
+
+// Goodbye
 static void deinit(void) {
 	store_for_later();
+	
+	destroy_calendar_window(NULL,NULL);
 
 	property_animation_destroy((PropertyAnimation*)ani_in);
 	property_animation_destroy((PropertyAnimation*)ani_out);
@@ -1009,7 +1116,7 @@ static void deinit(void) {
 	battery_state_service_unsubscribe();
 
   
-  window_destroy(window);
+  window_destroy(main_window);
 }
 
 
@@ -1033,7 +1140,6 @@ static void auto_switch(void *data){
 void rcv(DictionaryIterator *received, void *context) {
 	// Got a message callback
 	Tuple *t;
-
 
 	t=dict_find(received, SM_WEATHER_COND_KEY); 
 	if (t!=NULL) {
