@@ -2,3 +2,11 @@
 build/*
 
 *.psd
+
+wscript
+
+wscript
+
+*.sublime-project
+
+*.sublime-workspace
